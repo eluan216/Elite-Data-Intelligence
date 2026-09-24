@@ -1,6 +1,6 @@
 # Elite-Data-Intelligence Agent System
 
-This directory contains the definitions, prompts, skills, and operating instructions for the 15 specialized agents.
+This directory contains the definitions, prompts, skills, and operating instructions for the 16 specialized agents.
 
 ## Agent Roster
 1. Founder / Managing Partner / Strategy Lead (human-primary)
@@ -18,5 +18,9 @@ This directory contains the definitions, prompts, skills, and operating instruct
 13. Business Development / Client Success & Operations Support
 14. Validation / Test Execution Agent
 15. Failure Analysis & Improvement Agent
+16. **Customer Support & Client Interaction Agent**
 
-Each agent will have its own definition file and skill set. The Project Manager Agent coordinates task breakdown, timelines, dependencies, and progress reporting across all other agents.
+Each agent has (or will have) its own definition file and skill set.
+
+The Project Manager Agent coordinates task breakdown, timelines, dependencies, and progress reporting across all other agents.
+The Customer Support & Client Interaction Agent is the primary always-on interface on the website and client portal for bookings, status reports, documentation, and first-line support.
