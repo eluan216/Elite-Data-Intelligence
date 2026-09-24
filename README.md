@@ -6,7 +6,7 @@ Full production system designed to deliver measurable enterprise outcomes while 
 
 ## Core Operating Model
 - **Senior human core** (Founder + 1–3 seniors) owns strategy, client relationships, governance, final quality gates, and risk.
-- **15 specialized agents** operating primarily inside GitHub:
+- **16 specialized agents** operating primarily inside GitHub and the agency website:
   1. Founder / Managing Partner / Strategy Lead (human-primary)
   2. Principal Decision Scientist / Senior AI Lead
   3. Lead Data Engineer / Lakehouse Architect
@@ -14,7 +14,7 @@ Full production system designed to deliver measurable enterprise outcomes while 
   5. AI Governance, Risk & Compliance Lead
   6. Domain / Industry & Change Management Lead
   7. Engagement / Delivery Manager
-  8. **Project Manager Agent**
+  8. Project Manager Agent
   9. Applied ML / Agent Engineer
   10. Data Scientist / Decision Analyst
   11. Platform & Integration Specialist
@@ -22,9 +22,10 @@ Full production system designed to deliver measurable enterprise outcomes while 
   13. Business Development / Client Success & Operations Support
   14. Validation / Test Execution Agent (Pytest-style)
   15. Failure Analysis & Improvement Agent
+  16. **Customer Support & Client Interaction Agent**
 - Outcome-focused delivery: data → models/agents → production → adoption → measurable business value.
 - Continuous technical validation via the two dedicated validation agents.
-- Agency web application (public marketing site + client portal + internal ops dashboard).
+- Agency web application (public marketing site + client portal + internal ops dashboard) with live Customer Support Agent interaction.
 
 ## Target
 Sustainable **$100k monthly revenue** with high contribution margins through agent leverage + disciplined human oversight.
