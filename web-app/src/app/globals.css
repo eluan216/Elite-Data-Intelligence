@@ -4,8 +4,9 @@
 
 :root {
   --background: #000000;
-  --foreground: #ffffff;
-  --accent: #22d3ee; /* cyan to match the wireframe visuals */
+  --foreground: #f5f5f0;
+  --accent: #c8ff00;      /* lime */
+  --purple: #a855f7;
   --muted: #a1a1aa;
   --border: #27272a;
 }
@@ -52,7 +53,7 @@ body {
   }
 }
 
-/* Subtle glow utility for the wireframe images */
-.glow-cyan {
-  filter: drop-shadow(0 0 24px rgba(34, 211, 238, 0.35));
+/* Lime glow for key visuals */
+.glow-lime {
+  filter: drop-shadow(0 0 28px rgba(200, 255, 0, 0.35));
 }
