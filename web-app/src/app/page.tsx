@@ -26,20 +26,20 @@ export default function HomePage() {
           </nav>
           <Link
             href="#contact"
-            className="rounded-full bg-cyan-400 px-5 py-2 text-sm font-medium text-black transition-opacity hover:opacity-90"
+            className="rounded-full bg-lime px-5 py-2 text-sm font-medium text-black transition-opacity hover:opacity-90"
           >
             Book a Call
           </Link>
         </div>
       </header>
 
-      {/* Hero – wireframe head visual */}
+      {/* Hero */}
       <section className="relative flex min-h-screen items-center px-6 pt-24">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-cyan-950/20 via-black to-black" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-purple-950/30 via-black to-black" />
 
         <div className="relative mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-2">
           <div>
-            <p className="mb-6 text-sm font-medium uppercase tracking-widest text-cyan-400/80">
+            <p className="mb-6 text-sm font-medium uppercase tracking-widest text-lime">
               AI · Data Science · Advanced Analytics
             </p>
             <h1 className="display-2xl max-w-xl text-white">
@@ -54,7 +54,7 @@ export default function HomePage() {
             <div className="mt-12 flex flex-wrap gap-4">
               <Link
                 href="#contact"
-                className="rounded-full bg-cyan-400 px-8 py-3.5 text-sm font-semibold text-black transition-opacity hover:opacity-90"
+                className="rounded-full bg-lime px-8 py-3.5 text-sm font-semibold text-black transition-opacity hover:opacity-90"
               >
                 Book a Discovery Call
               </Link>
@@ -67,14 +67,14 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Hero visual – glowing wireframe head (GIF) */}
+          {/* Hero visual */}
           <div className="relative flex justify-center lg:justify-end">
             <div className="relative h-[420px] w-[420px] max-w-full">
               <Image
                 src="/images/wireframe-head.gif.GIF"
                 alt="AI neural wireframe"
                 fill
-                className="object-contain drop-shadow-[0_0_40px_rgba(34,211,238,0.25)]"
+                className="object-contain drop-shadow-[0_0_40px_rgba(200,255,0,0.25)]"
                 priority
                 unoptimized
               />
@@ -123,7 +123,7 @@ export default function HomePage() {
               { step: "05", title: "Value", desc: "Measured outcomes, not just models" },
             ].map((item) => (
               <div key={item.step}>
-                <span className="text-sm font-medium text-cyan-400">{item.step}</span>
+                <span className="text-sm font-medium text-lime">{item.step}</span>
                 <h3 className="mt-2 text-xl font-semibold text-white">{item.title}</h3>
                 <p className="mt-2 text-sm text-zinc-500">{item.desc}</p>
               </div>
@@ -132,7 +132,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Visual break – geometric lattice */}
+      {/* Visual break */}
       <section className="relative border-t border-white/10 px-6 py-24">
         <div className="mx-auto max-w-7xl">
           <div className="relative mx-auto h-[280px] w-full max-w-4xl overflow-hidden rounded-2xl border border-white/10">
@@ -145,7 +145,7 @@ export default function HomePage() {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
             <div className="absolute bottom-6 left-6">
-              <p className="text-sm font-medium text-cyan-400">Architecture</p>
+              <p className="text-sm font-medium text-lime">Architecture</p>
               <p className="text-lg text-white">Systems designed for production, not demos.</p>
             </div>
           </div>
@@ -190,26 +190,26 @@ export default function HomePage() {
             <input
               type="text"
               placeholder="Name"
-              className="w-full rounded-lg border border-white/15 bg-black px-4 py-3 text-sm text-white outline-none placeholder:text-zinc-600 focus:border-cyan-400"
+              className="w-full rounded-lg border border-white/15 bg-black px-4 py-3 text-sm text-white outline-none placeholder:text-zinc-600 focus:border-lime"
             />
             <input
               type="email"
               placeholder="Work email"
-              className="w-full rounded-lg border border-white/15 bg-black px-4 py-3 text-sm text-white outline-none placeholder:text-zinc-600 focus:border-cyan-400"
+              className="w-full rounded-lg border border-white/15 bg-black px-4 py-3 text-sm text-white outline-none placeholder:text-zinc-600 focus:border-lime"
             />
             <input
               type="text"
               placeholder="Company"
-              className="w-full rounded-lg border border-white/15 bg-black px-4 py-3 text-sm text-white outline-none placeholder:text-zinc-600 focus:border-cyan-400"
+              className="w-full rounded-lg border border-white/15 bg-black px-4 py-3 text-sm text-white outline-none placeholder:text-zinc-600 focus:border-lime"
             />
             <textarea
               placeholder="What are you trying to achieve?"
               rows={4}
-              className="w-full rounded-lg border border-white/15 bg-black px-4 py-3 text-sm text-white outline-none placeholder:text-zinc-600 focus:border-cyan-400"
+              className="w-full rounded-lg border border-white/15 bg-black px-4 py-3 text-sm text-white outline-none placeholder:text-zinc-600 focus:border-lime"
             />
             <button
               type="submit"
-              className="w-full rounded-full bg-cyan-400 py-3.5 text-sm font-semibold text-black transition-opacity hover:opacity-90"
+              className="w-full rounded-full bg-lime py-3.5 text-sm font-semibold text-black transition-opacity hover:opacity-90"
             >
               Request Discovery Call
             </button>
