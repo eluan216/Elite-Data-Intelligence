@@ -13,13 +13,23 @@ export default function HomePage() {
     setFormStatus("submitting");
 
     const form = e.currentTarget;
-    const data = new FormData(form);
+    const formData = new FormData(form);
 
-    // Placeholder – replace with real endpoint later
     try {
-      // Simulate submission
-      await new Promise((r) => setTimeout(r, 800));
-      console.log("Discovery call request:", Object.fromEntries(data));
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: formData.get("name"),
+          email: formData.get("email"),
+          project: formData.get("project"),
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error("Submission failed");
+      }
+
       setFormStatus("success");
       form.reset();
     } catch {
@@ -36,7 +46,6 @@ export default function HomePage() {
             Elite-Data-Intelligence
           </Link>
 
-          {/* Desktop nav */}
           <nav className="hidden items-center gap-8 text-sm text-muted md:flex">
             <Link href="#capabilities" className="hover:text-foreground transition-colors">
               Capabilities
@@ -60,7 +69,6 @@ export default function HomePage() {
               Book a Call
             </Link>
 
-            {/* Mobile menu button */}
             <button
               onClick={() => setMenuOpen(!menuOpen)}
               className="md:hidden flex flex-col gap-1.5 p-2"
@@ -73,7 +81,6 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Mobile menu */}
         {menuOpen && (
           <div className="border-t border-white/10 bg-background px-6 py-6 md:hidden">
             <nav className="flex flex-col gap-4 text-sm">
@@ -223,7 +230,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* About – Leadership & Trust */}
+      {/* About */}
       <section id="about" className="border-t border-white/10 bg-card px-6 py-32">
         <div className="mx-auto max-w-7xl">
           <h2 className="display-lg mb-6 text-foreground">About</h2>
@@ -261,7 +268,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Contact – Discovery Call */}
+      {/* Contact */}
       <section id="contact" className="border-t border-white/10 px-6 py-32">
         <div className="mx-auto max-w-7xl">
           <h2 className="display-lg mb-4 text-foreground">Tell us what you’re building</h2>
@@ -322,11 +329,21 @@ export default function HomePage() {
 
       {/* Footer */}
       <footer className="border-t border-white/10 px-6 py-12">
-        <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-4 md:flex-row md:items-center">
-          <span className="text-sm text-muted">
+        <div className="mx-auto flex max-w-7xl flex-col gap-8 md:flex-row md:items-center md:justify-between">
+          <div>
+            <p className="text-sm font-medium text-foreground">Elite-Data-Intelligence</p>
+            <p className="mt-1 text-sm text-muted">Measurable enterprise outcomes</p>
+          </div>
+          <nav className="flex flex-wrap gap-6 text-sm text-muted">
+            <Link href="#capabilities" className="hover:text-foreground">Capabilities</Link>
+            <Link href="#solutions" className="hover:text-foreground">Solutions</Link>
+            <Link href="#projects" className="hover:text-foreground">Research & Projects</Link>
+            <Link href="#about" className="hover:text-foreground">About</Link>
+            <Link href="#contact" className="hover:text-foreground">Contact</Link>
+          </nav>
+          <p className="text-sm text-muted">
             © {new Date().getFullYear()} Elite-Data-Intelligence
-          </span>
-          <span className="text-sm text-muted">Built for measurable enterprise outcomes</span>
+          </p>
         </div>
       </footer>
     </main>
