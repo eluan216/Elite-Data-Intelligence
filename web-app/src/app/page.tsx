@@ -71,7 +71,7 @@ export default function HomePage() {
           <div className="relative flex justify-center lg:justify-end">
             <div className="relative h-[420px] w-[420px] max-w-full">
               <Image
-                src="/images/wireframe-head.gif"
+                src="/images/wireframe-head.gif.GIF"
                 alt="AI neural wireframe"
                 fill
                 className="object-contain drop-shadow-[0_0_40px_rgba(34,211,238,0.25)]"
@@ -99,7 +99,7 @@ export default function HomePage() {
           <div className="relative flex justify-center">
             <div className="relative h-[340px] w-[340px]">
               <Image
-                src="/images/network-brain.gif"
+                src="/images/network-brain.gif.GIF"
                 alt="Neural network structure"
                 fill
                 className="object-contain opacity-90"
@@ -137,7 +137,7 @@ export default function HomePage() {
         <div className="mx-auto max-w-7xl">
           <div className="relative mx-auto h-[280px] w-full max-w-4xl overflow-hidden rounded-2xl border border-white/10">
             <Image
-              src="/images/data-lattice.gif"
+              src="/images/data-lattice.gif.GIF"
               alt="Data architecture lattice"
               fill
               className="object-cover opacity-80"
@@ -159,7 +159,7 @@ export default function HomePage() {
             <div className="relative order-2 lg:order-1">
               <div className="relative h-[300px] w-full overflow-hidden rounded-xl border border-white/10">
                 <Image
-                  src="/images/terminal-interface.gif"
+                  src="/images/terminal-interface.gif.GIF"
                   alt="Systems interface"
                   fill
                   className="object-cover"
