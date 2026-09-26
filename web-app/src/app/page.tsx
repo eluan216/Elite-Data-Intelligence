@@ -35,7 +35,6 @@ export default function HomePage() {
 
       {/* Hero – wireframe head visual */}
       <section className="relative flex min-h-screen items-center px-6 pt-24">
-        {/* subtle grid background */}
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-cyan-950/20 via-black to-black" />
 
         <div className="relative mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-2">
@@ -68,15 +67,16 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Hero visual – glowing wireframe head */}
+          {/* Hero visual – glowing wireframe head (GIF) */}
           <div className="relative flex justify-center lg:justify-end">
             <div className="relative h-[420px] w-[420px] max-w-full">
               <Image
-                src="/images/wireframe-head.png"
+                src="/images/wireframe-head.gif"
                 alt="AI neural wireframe"
                 fill
                 className="object-contain drop-shadow-[0_0_40px_rgba(34,211,238,0.25)]"
                 priority
+                unoptimized
               />
             </div>
           </div>
@@ -99,10 +99,11 @@ export default function HomePage() {
           <div className="relative flex justify-center">
             <div className="relative h-[340px] w-[340px]">
               <Image
-                src="/images/network-brain.png"
+                src="/images/network-brain.gif"
                 alt="Neural network structure"
                 fill
                 className="object-contain opacity-90"
+                unoptimized
               />
             </div>
           </div>
@@ -136,10 +137,11 @@ export default function HomePage() {
         <div className="mx-auto max-w-7xl">
           <div className="relative mx-auto h-[280px] w-full max-w-4xl overflow-hidden rounded-2xl border border-white/10">
             <Image
-              src="/images/data-lattice.png"
+              src="/images/data-lattice.gif"
               alt="Data architecture lattice"
               fill
               className="object-cover opacity-80"
+              unoptimized
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
             <div className="absolute bottom-6 left-6">
@@ -157,10 +159,11 @@ export default function HomePage() {
             <div className="relative order-2 lg:order-1">
               <div className="relative h-[300px] w-full overflow-hidden rounded-xl border border-white/10">
                 <Image
-                  src="/images/terminal-interface.png"
+                  src="/images/terminal-interface.gif"
                   alt="Systems interface"
                   fill
                   className="object-cover"
+                  unoptimized
                 />
               </div>
             </div>
