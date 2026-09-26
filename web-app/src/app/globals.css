@@ -5,7 +5,7 @@
 :root {
   --background: #000000;
   --foreground: #ffffff;
-  --accent: #facc15;
+  --accent: #22d3ee; /* cyan to match the wireframe visuals */
   --muted: #a1a1aa;
   --border: #27272a;
 }
@@ -50,4 +50,9 @@ body {
   .display-lg {
     font-size: 1.875rem;
   }
+}
+
+/* Subtle glow utility for the wireframe images */
+.glow-cyan {
+  filter: drop-shadow(0 0 24px rgba(34, 211, 238, 0.35));
 }
