@@ -1,7 +1,32 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
+import { useState } from "react";
 
 export default function HomePage() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [formStatus, setFormStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setFormStatus("submitting");
+
+    const form = e.currentTarget;
+    const data = new FormData(form);
+
+    // Placeholder – replace with real endpoint later
+    try {
+      // Simulate submission
+      await new Promise((r) => setTimeout(r, 800));
+      console.log("Discovery call request:", Object.fromEntries(data));
+      setFormStatus("success");
+      form.reset();
+    } catch {
+      setFormStatus("error");
+    }
+  }
+
   return (
     <main className="min-h-screen overflow-hidden bg-background text-foreground">
       {/* Navigation */}
@@ -10,27 +35,70 @@ export default function HomePage() {
           <Link href="/" className="text-sm font-semibold tracking-tight text-foreground">
             Elite-Data-Intelligence
           </Link>
+
+          {/* Desktop nav */}
           <nav className="hidden items-center gap-8 text-sm text-muted md:flex">
-            <Link href="#mission" className="hover:text-foreground transition-colors">
-              Mission
+            <Link href="#capabilities" className="hover:text-foreground transition-colors">
+              Capabilities
             </Link>
-            <Link href="#approach" className="hover:text-foreground transition-colors">
-              Approach
+            <Link href="#solutions" className="hover:text-foreground transition-colors">
+              Solutions
             </Link>
-            <Link href="#impact" className="hover:text-foreground transition-colors">
-              Impact
+            <Link href="#projects" className="hover:text-foreground transition-colors">
+              Research & Projects
             </Link>
-            <Link href="#contact" className="hover:text-foreground transition-colors">
-              Contact
+            <Link href="#about" className="hover:text-foreground transition-colors">
+              About
             </Link>
           </nav>
-          <Link
-            href="#contact"
-            className="rounded-full bg-lime px-5 py-2 text-sm font-medium text-lime-foreground transition-opacity hover:opacity-90"
-          >
-            Book a Call
-          </Link>
+
+          <div className="flex items-center gap-4">
+            <Link
+              href="#contact"
+              className="hidden rounded-full bg-lime px-5 py-2 text-sm font-medium text-lime-foreground transition-opacity hover:opacity-90 sm:inline-flex"
+            >
+              Book a Call
+            </Link>
+
+            {/* Mobile menu button */}
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="md:hidden flex flex-col gap-1.5 p-2"
+              aria-label="Toggle menu"
+            >
+              <span className={`block h-0.5 w-5 bg-foreground transition-transform ${menuOpen ? "translate-y-2 rotate-45" : ""}`} />
+              <span className={`block h-0.5 w-5 bg-foreground transition-opacity ${menuOpen ? "opacity-0" : ""}`} />
+              <span className={`block h-0.5 w-5 bg-foreground transition-transform ${menuOpen ? "-translate-y-2 -rotate-45" : ""}`} />
+            </button>
+          </div>
         </div>
+
+        {/* Mobile menu */}
+        {menuOpen && (
+          <div className="border-t border-white/10 bg-background px-6 py-6 md:hidden">
+            <nav className="flex flex-col gap-4 text-sm">
+              <Link href="#capabilities" onClick={() => setMenuOpen(false)} className="text-muted hover:text-foreground">
+                Capabilities
+              </Link>
+              <Link href="#solutions" onClick={() => setMenuOpen(false)} className="text-muted hover:text-foreground">
+                Solutions
+              </Link>
+              <Link href="#projects" onClick={() => setMenuOpen(false)} className="text-muted hover:text-foreground">
+                Research & Projects
+              </Link>
+              <Link href="#about" onClick={() => setMenuOpen(false)} className="text-muted hover:text-foreground">
+                About
+              </Link>
+              <Link
+                href="#contact"
+                onClick={() => setMenuOpen(false)}
+                className="mt-2 inline-flex w-fit rounded-full bg-lime px-5 py-2 text-sm font-medium text-lime-foreground"
+              >
+                Book a Call
+              </Link>
+            </nav>
+          </div>
+        )}
       </header>
 
       {/* Hero */}
@@ -59,15 +127,14 @@ export default function HomePage() {
                 Book a Discovery Call
               </Link>
               <Link
-                href="#approach"
+                href="#capabilities"
                 className="rounded-full border border-white/20 px-8 py-3.5 text-sm font-medium text-foreground transition-colors hover:bg-white/5"
               >
-                How We Work
+                View Capabilities
               </Link>
             </div>
           </div>
 
-          {/* Hero visual */}
           <div className="relative flex justify-center lg:justify-end">
             <div className="relative h-[420px] w-[420px] max-w-full">
               <Image
@@ -83,37 +150,35 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Mission */}
-      <section id="mission" className="relative border-t border-white/10 px-6 py-32">
-        <div className="mx-auto grid max-w-7xl items-center gap-16 lg:grid-cols-2">
-          <div>
-            <h2 className="display-lg mb-8 max-w-xl text-foreground">
-              Built to overcome the limitations that stop most AI programs.
-            </h2>
-            <p className="max-w-xl text-lg text-muted">
-              High failure rates, talent scarcity, weak production hand-off, compliance gaps, and
-              cash-flow pressure. I designed the operating model — senior human core plus specialized
-              agents — to address each of them systematically while delivering measurable business value.
-            </p>
-          </div>
-          <div className="relative flex justify-center">
-            <div className="relative h-[340px] w-[340px]">
-              <Image
-                src="/images/network-brain.gif.GIF"
-                alt="Neural network structure"
-                fill
-                className="object-contain opacity-90"
-                unoptimized
-              />
-            </div>
+      {/* Capabilities */}
+      <section id="capabilities" className="border-t border-white/10 px-6 py-32">
+        <div className="mx-auto max-w-7xl">
+          <h2 className="display-lg mb-6 text-foreground">Capabilities</h2>
+          <p className="mb-16 max-w-2xl text-lg text-muted">
+            End-to-end delivery from data readiness to production systems and measurable business value.
+          </p>
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+            {[
+              { title: "Decision Sciences", desc: "Frame high-stakes problems, design decision frameworks, and align models to real business outcomes." },
+              { title: "Machine Learning & Agents", desc: "Custom models and agentic systems built for production, not demos." },
+              { title: "MLOps & Platforms", desc: "Lakehouse architectures, monitoring, CI/CD for models, and reliable deployment." },
+              { title: "Data Engineering", desc: "Governed pipelines, quality frameworks, and reliable data foundations." },
+              { title: "Governance & Risk", desc: "EU AI Act readiness, model cards, audit trails, and human oversight." },
+              { title: "Change & Adoption", desc: "User uptake, process redesign, and sustained value after go-live." },
+            ].map((item) => (
+              <div key={item.title} className="rounded-xl border border-white/10 bg-card p-6">
+                <h3 className="mb-3 text-lg font-semibold text-foreground">{item.title}</h3>
+                <p className="text-sm text-muted">{item.desc}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Approach */}
-      <section id="approach" className="border-t border-white/10 bg-card px-6 py-32">
+      {/* Solutions / Approach */}
+      <section id="solutions" className="border-t border-white/10 bg-card px-6 py-32">
         <div className="mx-auto max-w-7xl">
-          <h2 className="display-lg mb-16 text-foreground">The path from data to value</h2>
+          <h2 className="display-lg mb-16 text-foreground">How we deliver</h2>
           <div className="grid gap-12 md:grid-cols-5">
             {[
               { step: "01", title: "Data", desc: "Readiness, quality, and governed access" },
@@ -132,91 +197,126 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Visual break */}
-      <section className="relative border-t border-white/10 px-6 py-24">
-        <div className="mx-auto max-w-7xl">
-          <div className="relative mx-auto h-[280px] w-full max-w-4xl overflow-hidden rounded-2xl border border-white/10">
-            <Image
-              src="/images/data-lattice.gif.GIF"
-              alt="Data architecture lattice"
-              fill
-              className="object-cover opacity-80"
-              unoptimized
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-transparent" />
-            <div className="absolute bottom-6 left-6">
-              <p className="text-sm font-medium text-lime">Architecture</p>
-              <p className="text-lg text-foreground">Systems designed for production, not demos.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Impact */}
-      <section id="impact" className="border-t border-white/10 px-6 py-32">
+      {/* Research & Projects */}
+      <section id="projects" className="border-t border-white/10 px-6 py-32">
         <div className="mx-auto max-w-7xl">
           <div className="grid items-center gap-16 lg:grid-cols-2">
-            <div className="relative order-2 lg:order-1">
-              <div className="relative h-[300px] w-full overflow-hidden rounded-xl border border-white/10">
-                <Image
-                  src="/images/terminal-interface.gif.GIF"
-                  alt="Systems interface"
-                  fill
-                  className="object-cover"
-                  unoptimized
-                />
-              </div>
-            </div>
-            <div className="order-1 lg:order-2">
-              <h2 className="display-lg mb-8 text-foreground">Impact</h2>
-              <p className="max-w-xl text-lg text-muted">
-                Outcome metrics and selected work will appear here as engagements close. Every project
-                is measured against the original business case.
+            <div>
+              <h2 className="display-lg mb-6 text-foreground">Research & Projects</h2>
+              <p className="mb-8 max-w-xl text-lg text-muted">
+                Technical demonstrations and delivery patterns. Real architecture, validation practices, and production thinking — not marketing slides.
               </p>
+              <p className="text-sm text-muted">
+                Detailed case studies and live demos will appear here as engagements close. Until then, the operating model, validation agents, and delivery process remain the primary proof points.
+              </p>
+            </div>
+            <div className="relative h-[300px] w-full overflow-hidden rounded-xl border border-white/10">
+              <Image
+                src="/images/data-lattice.gif.GIF"
+                alt="Data architecture"
+                fill
+                className="object-cover opacity-80"
+                unoptimized
+              />
             </div>
           </div>
         </div>
       </section>
 
-      {/* Contact */}
-      <section id="contact" className="border-t border-white/10 bg-card px-6 py-32">
+      {/* About – Leadership & Trust */}
+      <section id="about" className="border-t border-white/10 bg-card px-6 py-32">
         <div className="mx-auto max-w-7xl">
-          <h2 className="display-lg mb-6 text-foreground">Start a conversation</h2>
+          <h2 className="display-lg mb-6 text-foreground">About</h2>
+          <div className="grid gap-16 lg:grid-cols-2">
+            <div>
+              <h3 className="mb-4 text-xl font-semibold text-foreground">Leadership & Human Oversight</h3>
+              <p className="mb-6 text-muted">
+                Elite-Data-Intelligence is founder-led. I retain direct ownership of strategy, client relationships, final quality gates, and risk. A small senior human core works alongside 16 specialized agents that handle high-volume technical production, testing, and coordination.
+              </p>
+              <p className="text-muted">
+                Agents accelerate delivery. Humans remain accountable for outcomes, compliance, and the decisions that actually matter to the client.
+              </p>
+            </div>
+            <div>
+              <h3 className="mb-4 text-xl font-semibold text-foreground">Security & Responsible AI</h3>
+              <ul className="space-y-3 text-muted">
+                <li>• Human review required before any client-facing or production deliverable</li>
+                <li>• Continuous validation via dedicated test-execution and failure-analysis agents</li>
+                <li>• Clear escalation paths for commercial, legal, and high-risk decisions</li>
+                <li>• Version-controlled artifacts, model cards, and audit-ready documentation</li>
+                <li>• Only safeguards that are actually implemented are claimed</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="mt-16 relative h-[280px] w-full max-w-3xl overflow-hidden rounded-xl border border-white/10">
+            <Image
+              src="/images/network-brain.gif.GIF"
+              alt="Network structure"
+              fill
+              className="object-contain opacity-90"
+              unoptimized
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Contact – Discovery Call */}
+      <section id="contact" className="border-t border-white/10 px-6 py-32">
+        <div className="mx-auto max-w-7xl">
+          <h2 className="display-lg mb-4 text-foreground">Tell us what you’re building</h2>
           <p className="mb-12 max-w-xl text-lg text-muted">
-            Book a discovery call. The Customer Support Agent will capture the essentials and route
-            it to me and the delivery team.
+            Share a few details to help us understand your project. We’ll respond with next steps.
           </p>
-          <form className="max-w-md space-y-4">
-            <input
-              type="text"
-              placeholder="Name"
-              className="w-full rounded-lg border border-white/15 bg-background px-4 py-3 text-sm text-foreground outline-none placeholder:text-muted focus:border-lime"
-            />
-            <input
-              type="email"
-              placeholder="Work email"
-              className="w-full rounded-lg border border-white/15 bg-background px-4 py-3 text-sm text-foreground outline-none placeholder:text-muted focus:border-lime"
-            />
-            <input
-              type="text"
-              placeholder="Company"
-              className="w-full rounded-lg border border-white/15 bg-background px-4 py-3 text-sm text-foreground outline-none placeholder:text-muted focus:border-lime"
-            />
-            <textarea
-              placeholder="What are you trying to achieve?"
-              rows={4}
-              className="w-full rounded-lg border border-white/15 bg-background px-4 py-3 text-sm text-foreground outline-none placeholder:text-muted focus:border-lime"
-            />
+
+          <form onSubmit={handleSubmit} className="max-w-md space-y-4">
+            <div>
+              <label htmlFor="name" className="mb-1.5 block text-sm text-muted">Name</label>
+              <input
+                id="name"
+                name="name"
+                type="text"
+                required
+                className="w-full rounded-lg border border-white/15 bg-background px-4 py-3 text-sm text-foreground outline-none placeholder:text-muted focus:border-lime"
+              />
+            </div>
+            <div>
+              <label htmlFor="email" className="mb-1.5 block text-sm text-muted">Work email</label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                required
+                className="w-full rounded-lg border border-white/15 bg-background px-4 py-3 text-sm text-foreground outline-none placeholder:text-muted focus:border-lime"
+              />
+            </div>
+            <div>
+              <label htmlFor="project" className="mb-1.5 block text-sm text-muted">What do you need help with?</label>
+              <textarea
+                id="project"
+                name="project"
+                rows={4}
+                required
+                placeholder="Project overview, goals, timeline, or constraints…"
+                className="w-full rounded-lg border border-white/15 bg-background px-4 py-3 text-sm text-foreground outline-none placeholder:text-muted focus:border-lime"
+              />
+            </div>
+
             <button
               type="submit"
-              className="w-full rounded-full bg-lime py-3.5 text-sm font-semibold text-lime-foreground transition-opacity hover:opacity-90"
+              disabled={formStatus === "submitting"}
+              className="w-full rounded-full bg-lime py-3.5 text-sm font-semibold text-lime-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
             >
-              Request Discovery Call
+              {formStatus === "submitting" ? "Sending…" : "Request a discovery call"}
             </button>
+
+            {formStatus === "success" && (
+              <p className="text-sm text-lime">Thank you. Your request has been received. We’ll be in touch shortly.</p>
+            )}
+            {formStatus === "error" && (
+              <p className="text-sm text-red-400">Something went wrong. Please try again or email us directly.</p>
+            )}
           </form>
-          <p className="mt-8 text-sm text-muted">
-            Prefer chat? The support agent will be available here shortly.
-          </p>
         </div>
       </section>
 
