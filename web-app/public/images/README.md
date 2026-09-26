@@ -1,12 +1,12 @@
-# Website Visuals
+# Website Visuals (GIFs)
 
-Place the four design images here with these exact filenames:
+Place the four animated GIFs here with these exact filenames:
 
 | File | Description | Used on |
 |------|-------------|--------|
-| `wireframe-head.png` | Glowing cyan/purple polygonal head | Hero section (right side) |
-| `network-brain.png` | White wireframe brain with network lines | Mission section |
-| `data-lattice.png` | Complex geometric data lattice / tunnel | Visual break section |
-| `terminal-interface.png` | Green terminal / systems interface | Impact section |
+| `wireframe-head.gif` | Glowing cyan/purple polygonal head | Hero section (right side) |
+| `network-brain.gif` | White wireframe brain with network lines | Mission section |
+| `data-lattice.gif` | Complex geometric data lattice / tunnel | Visual break section |
+| `terminal-interface.gif` | Green terminal / systems interface | Impact section |
 
-After adding the files, the homepage will display them automatically.
+**Important:** Use the `.gif` extension only. Do not include `.png` in the filename.
