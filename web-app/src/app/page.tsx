@@ -114,7 +114,7 @@ export default function HomePage() {
         {/* Full-bleed background image */}
         <div className="absolute inset-0">
           <Image
-            src="/images/hero-background.jpg"
+            src="/images/hero-background.png.jpg"
             alt=""
             fill
             className="object-cover object-center"
