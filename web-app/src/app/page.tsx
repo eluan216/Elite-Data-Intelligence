@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
+import SupportChat from "@/components/SupportChat";
 
 export default function HomePage() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -346,6 +347,9 @@ export default function HomePage() {
           </p>
         </div>
       </footer>
+
+      {/* Customer Support Agent Chat */}
+      <SupportChat />
     </main>
   );
 }
