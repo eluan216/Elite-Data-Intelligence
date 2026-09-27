@@ -109,16 +109,29 @@ export default function HomePage() {
         )}
       </header>
 
-      {/* Hero */}
+      {/* Hero – full background collage image */}
       <section className="relative flex min-h-screen items-center px-6 pt-24">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-purple-950/20 via-background to-background" />
+        {/* Full-bleed background image */}
+        <div className="absolute inset-0">
+          <Image
+            src="/images/hero-background.jpg"
+            alt=""
+            fill
+            className="object-cover object-center"
+            priority
+            quality={90}
+          />
+          {/* Dark overlay so text stays readable */}
+          <div className="absolute inset-0 bg-background/75" />
+          <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-background/40" />
+        </div>
 
-        <div className="relative mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-2">
-          <div>
+        <div className="relative mx-auto max-w-7xl">
+          <div className="max-w-2xl">
             <p className="mb-6 text-sm font-medium uppercase tracking-widest text-lime">
               AI · Data Science · Advanced Analytics
             </p>
-            <h1 className="display-2xl max-w-xl text-foreground">
+            <h1 className="display-2xl text-foreground">
               Measurable outcomes.
               <br />
               <span className="text-muted">Disciplined delivery.</span>
@@ -140,19 +153,6 @@ export default function HomePage() {
               >
                 View Capabilities
               </Link>
-            </div>
-          </div>
-
-          <div className="relative flex justify-center lg:justify-end">
-            <div className="relative h-[420px] w-[420px] max-w-full">
-              <Image
-                src="/images/wireframe-head.gif.GIF"
-                alt="AI neural wireframe"
-                fill
-                className="object-contain drop-shadow-[0_0_40px_rgba(200,255,0,0.25)]"
-                priority
-                unoptimized
-              />
             </div>
           </div>
         </div>
@@ -348,7 +348,6 @@ export default function HomePage() {
         </div>
       </footer>
 
-      {/* Customer Support Agent Chat */}
       <SupportChat />
     </main>
   );
