@@ -1,4 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
+import { Resend } from "resend";
+
+const resend = process.env.RESEND_API_KEY
+  ? new Resend(process.env.RESEND_API_KEY)
+  : null;
+
+// Where discovery-call requests are delivered
+const TO_EMAIL = process.env.CONTACT_TO_EMAIL || "";
 
 export async function POST(request: NextRequest) {
   try {
@@ -12,7 +20,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Basic email format check
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return NextResponse.json(
@@ -21,7 +28,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Log the submission (replace with email service, CRM, or database later)
+    // Always log for debugging / Vercel logs
     console.log("=== Discovery Call Request ===");
     console.log("Name:", name);
     console.log("Email:", email);
@@ -29,9 +36,47 @@ export async function POST(request: NextRequest) {
     console.log("Timestamp:", new Date().toISOString());
     console.log("==============================");
 
-    // TODO: Integrate with email provider (Resend, SendGrid, etc.) or CRM
-    // Example:
-    // await resend.emails.send({ ... })
+    // Send email when Resend is configured
+    if (resend && TO_EMAIL) {
+      const { error } = await resend.emails.send({
+        from: "Elite-Data-Intelligence <onboarding@resend.dev>", // replace with your verified domain later
+        to: [TO_EMAIL],
+        replyTo: email,
+        subject: `Discovery Call Request — ${name}`,
+        text: [
+          "New discovery call request from the website.",
+          "",
+          `Name: ${name}`,
+          `Work email: ${email}`,
+          "",
+          "What they need help with:",
+          project,
+          "",
+          `Received: ${new Date().toISOString()}`,
+        ].join("\n"),
+        html: `
+          <h2>New Discovery Call Request</h2>
+          <p><strong>Name:</strong> ${name}</p>
+          <p><strong>Work email:</strong> <a href="mailto:${email}">${email}</a></p>
+          <p><strong>What they need help with:</strong></p>
+          <p style="white-space: pre-wrap;">${project.replace(/</g, "<")}</p>
+          <hr />
+          <p style="color:#666;font-size:12px;">Received ${new Date().toISOString()}</p>
+        `,
+      });
+
+      if (error) {
+        console.error("Resend error:", error);
+        return NextResponse.json(
+          { error: "Unable to deliver your request. Please try again." },
+          { status: 500 }
+        );
+      }
+    } else {
+      console.warn(
+        "Email not sent: set RESEND_API_KEY and CONTACT_TO_EMAIL in environment variables."
+      );
+    }
 
     return NextResponse.json(
       { success: true, message: "Request received. We will be in touch shortly." },
