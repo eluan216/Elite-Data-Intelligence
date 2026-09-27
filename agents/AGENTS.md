@@ -4,12 +4,12 @@ I run 16 specialized agents inside GitHub and on the agency website. This folder
 
 ## Agent Roster
 1. Founder / Managing Partner / Strategy Lead (me)
-2. Principal Decision Scientist / Senior AI Lead
-3. Lead Data Engineer / Lakehouse Architect
-4. Senior MLOps / Production & Platform Engineer
-5. AI Governance, Risk & Compliance Lead
+2. Principal Decision Scientist / Senior AI Lead ✅
+3. Lead Data Engineer / Lakehouse Architect ✅
+4. Senior MLOps / Production & Platform Engineer ✅
+5. AI Governance, Risk & Compliance Lead ✅
 6. Domain / Industry & Change Management Lead
-7. Engagement / Delivery Manager
+7. Engagement / Delivery Manager ✅
 8. Project Manager Agent ✅
 9. Applied ML / Agent Engineer
 10. Data Scientist / Decision Analyst
@@ -21,13 +21,23 @@ I run 16 specialized agents inside GitHub and on the agency website. This folder
 16. Customer Support & Client Interaction Agent ✅
 
 ## Completed Definitions (written from my perspective)
+- `principal-decision-scientist.md`
+- `lead-data-engineer.md`
+- `senior-mlops-engineer.md`
+- `ai-governance-risk-compliance.md`
+- `engagement-delivery-manager.md`
 - `project-manager-agent.md`
 - `validation-test-execution-agent.md`
 - `failure-analysis-improvement-agent.md`
 - `customer-support-agent.md`
 
-I will continue rewriting and completing the remaining definitions in the same first-person style so everything in this repository reflects how I actually run the agency.
+## Still Remaining
+- Domain / Industry & Change Management Lead
+- Applied ML / Agent Engineer
+- Data Scientist / Decision Analyst
+- Platform & Integration Specialist
+- Mid-level Data Engineer / Analytics Engineer
+- Business Development / Client Success & Operations Support
+- Founder operating notes (human role)
 
-The Project Manager Agent keeps delivery coordinated.  
-The Validation + Failure Analysis pair forms my continuous quality loop.  
-The Customer Support Agent is the public face on the website and client portal.
+I will continue completing the remaining definitions in the same first-person style.
