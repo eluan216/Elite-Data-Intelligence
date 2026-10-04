@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Website discovery form
+    url: https://web-app-flame-nu.vercel.app/#contact
+    about: External prospects should use the site form; this repo is for delivery operations.
