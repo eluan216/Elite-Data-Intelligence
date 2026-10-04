@@ -20,7 +20,28 @@ I run 16 specialized agents inside GitHub and on the agency website. This folder
 15. Failure Analysis & Improvement Agent ✅
 16. Customer Support & Client Interaction Agent ✅
 
-## All Definitions Complete (written from my perspective)
+## How agents are invoked (operational)
+
+Work is routed through **GitHub Issues** and **labels**. Issue templates live under `.github/ISSUE_TEMPLATE/`.
+
+| Label | Intent |
+|-------|--------|
+| `agent:project-manager` | Sequencing, status, dependencies |
+| `agent:validation` | Run quality checks against acceptance criteria |
+| `agent:failure-analysis` | Root-cause and improvement after a failure |
+| `agent:customer-support` | Client/inbound interaction (website + portal) |
+| `engagement` | Client delivery work |
+| `quality-gate` | Must pass validation (and human gate when required) before release |
+| `discovery` | Inbound lead / discovery call request |
+
+**Templates**
+- **New Engagement** → starts delivery under Project Manager
+- **Validation Request** → quality gate
+- **Failure Analysis** → continuous improvement loop
+
+Full lifecycle: see `docs/delivery-playbook.md`.
+
+## Definitions (all complete)
 - `founder-managing-partner.md`
 - `principal-decision-scientist.md`
 - `lead-data-engineer.md`
@@ -38,9 +59,9 @@ I run 16 specialized agents inside GitHub and on the agency website. This folder
 - `failure-analysis-improvement-agent.md`
 - `customer-support-agent.md`
 
-**16 of 16** detailed definitions are complete.
-
 The Project Manager Agent keeps delivery coordinated.  
 The Validation + Failure Analysis pair forms the continuous quality loop.  
 The Customer Support Agent is the public face on the website and client portal.  
 I remain the final authority on strategy, commercial decisions, quality gates, and risk.
+
+**Status:** Definitions + GitHub routing (labels + templates + playbook) are in place. Autonomous LLM workers that open/comment on issues are not yet automated — humans (or future Actions) execute the roles using these definitions.
