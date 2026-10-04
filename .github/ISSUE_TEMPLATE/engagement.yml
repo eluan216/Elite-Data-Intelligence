@@ -1,0 +1,49 @@
+name: New Engagement
+description: Start a client engagement (Project Manager owns sequencing)
+title: "[Engagement] "
+labels: ["engagement", "agent:project-manager"]
+body:
+  - type: input
+    id: client
+    attributes:
+      label: Client / prospect
+      description: Company or contact name
+    validations:
+      required: true
+  - type: textarea
+    id: decision
+    attributes:
+      label: Decision statement
+      description: What decision or outcome is this engagement meant to improve?
+      placeholder: "e.g. Reduce false positives in fraud review without increasing miss rate"
+    validations:
+      required: true
+  - type: textarea
+    id: success
+    attributes:
+      label: Success metrics
+      description: How we will know this worked (business + technical)
+    validations:
+      required: true
+  - type: dropdown
+    id: risk
+    attributes:
+      label: Risk classification
+      options:
+        - Low
+        - Medium
+        - High / regulated
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Initial scope
+      description: In-scope and explicitly out-of-scope
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes / constraints
+      description: Timeline, data access, stakeholders, commercial notes
