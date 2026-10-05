@@ -12,33 +12,30 @@ const INITIAL_MESSAGES: Message[] = [
   {
     id: 1,
     role: "agent",
-    text: "Hello. I’m the Elite-Data-Intelligence support agent. I can help with questions about our capabilities, delivery process, or how to start a discovery call. How can I assist you?",
+    text: "Hello. I’m the Elite-Data-Intelligence support agent. I can help with capabilities, delivery process, security, our team model, or how to start a discovery call. What do you need?",
   },
 ];
 
-const QUICK_REPLIES: Record<string, string> = {
-  capabilities:
-    "We focus on Decision Sciences, Machine Learning & Agents, MLOps & Platforms, Data Engineering, Governance & Risk, and Change & Adoption. Everything is delivered with senior human oversight and continuous validation.",
-  process:
-    "Our delivery path is: Data readiness → Models & Agents → Production → Adoption → Measured Value. Every stage has clear quality gates and human review before client-facing release.",
-  start:
-    "The best next step is a discovery call. Scroll to the contact form at the bottom of the page, or tell me a bit about what you’re building and I can guide you.",
-  security:
-    "We require human review before any production or client-facing deliverable. Validation agents continuously test work, and we maintain version-controlled artifacts and audit-ready documentation. We only claim safeguards that are actually implemented.",
-};
+const SUGGESTIONS = [
+  "What capabilities do you offer?",
+  "How does delivery work?",
+  "How do you handle security?",
+  "How do I start?",
+];
 
 export default function SupportChat() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>(INITIAL_MESSAGES);
   const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [messages, loading]);
 
-  function sendMessage(text: string) {
-    if (!text.trim()) return;
+  async function sendMessage(text: string) {
+    if (!text.trim() || loading) return;
 
     const userMsg: Message = {
       id: Date.now(),
@@ -48,27 +45,36 @@ export default function SupportChat() {
 
     setMessages((prev) => [...prev, userMsg]);
     setInput("");
+    setLoading(true);
 
-    // Simple rule-based responses (replace with real agent later)
-    setTimeout(() => {
-      const lower = text.toLowerCase();
-      let reply =
-        "Thank you. For detailed project discussions I recommend the discovery call form. You can also ask me about our capabilities, delivery process, or security practices.";
-
-      if (lower.includes("capabilit") || lower.includes("service") || lower.includes("what do you"))
-        reply = QUICK_REPLIES.capabilities;
-      else if (lower.includes("process") || lower.includes("how") || lower.includes("deliver"))
-        reply = QUICK_REPLIES.process;
-      else if (lower.includes("start") || lower.includes("call") || lower.includes("contact") || lower.includes("book"))
-        reply = QUICK_REPLIES.start;
-      else if (lower.includes("security") || lower.includes("privacy") || lower.includes("risk") || lower.includes("govern"))
-        reply = QUICK_REPLIES.security;
+    try {
+      const res = await fetch("/api/support-chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: text.trim() }),
+      });
+      const data = await res.json();
+      const replyText =
+        res.ok && data.reply
+          ? data.reply
+          : "I couldn’t process that just now. Please try again or use the discovery form on this page.";
 
       setMessages((prev) => [
         ...prev,
-        { id: Date.now() + 1, role: "agent", text: reply },
+        { id: Date.now() + 1, role: "agent", text: replyText },
       ]);
-    }, 600);
+    } catch {
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: Date.now() + 1,
+          role: "agent",
+          text: "Connection issue. Please use the discovery form at the bottom of the page and the founder will respond by email.",
+        },
+      ]);
+    } finally {
+      setLoading(false);
+    }
   }
 
   function handleSubmit(e: React.FormEvent) {
@@ -78,7 +84,6 @@ export default function SupportChat() {
 
   return (
     <>
-      {/* Chat toggle button */}
       <button
         onClick={() => setOpen(!open)}
         className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-lime text-lime-foreground shadow-lg transition-transform hover:scale-105"
@@ -91,13 +96,12 @@ export default function SupportChat() {
         )}
       </button>
 
-      {/* Chat panel */}
       {open && (
-        <div className="fixed bottom-24 right-6 z-50 flex h-[420px] w-[340px] max-w-[calc(100vw-3rem)] flex-col overflow-hidden rounded-2xl border border-white/10 bg-background shadow-2xl">
+        <div className="fixed bottom-24 right-6 z-50 flex h-[460px] w-[360px] max-w-[calc(100vw-3rem)] flex-col overflow-hidden rounded-2xl border border-white/10 bg-background shadow-2xl">
           <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
             <div>
               <p className="text-sm font-semibold text-foreground">Support Agent</p>
-              <p className="text-xs text-muted">Elite-Data-Intelligence</p>
+              <p className="text-xs text-muted">Customer Support · Elite-Data-Intelligence</p>
             </div>
             <button
               onClick={() => setOpen(false)}
@@ -115,16 +119,37 @@ export default function SupportChat() {
                 className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
               >
                 <div
-                  className={`max-w-[85%] rounded-2xl px-3.5 py-2 text-sm ${
+                  className={`max-w-[85%] rounded-2xl px-3.5 py-2 text-sm leading-relaxed ${
                     m.role === "user"
                       ? "bg-lime text-lime-foreground"
-                      : "bg-card text-foreground border border-white/10"
+                      : "border border-white/10 bg-card text-foreground"
                   }`}
                 >
                   {m.text}
                 </div>
               </div>
             ))}
+            {loading && (
+              <div className="flex justify-start">
+                <div className="rounded-2xl border border-white/10 bg-card px-3.5 py-2 text-sm text-muted">
+                  Thinking…
+                </div>
+              </div>
+            )}
+            {messages.length <= 1 && !loading && (
+              <div className="flex flex-wrap gap-2 pt-1">
+                {SUGGESTIONS.map((s) => (
+                  <button
+                    key={s}
+                    type="button"
+                    onClick={() => sendMessage(s)}
+                    className="rounded-full border border-white/15 px-3 py-1 text-xs text-muted transition hover:border-lime hover:text-foreground"
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
+            )}
             <div ref={bottomRef} />
           </div>
 
@@ -133,12 +158,14 @@ export default function SupportChat() {
               <input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="Ask about capabilities, process…"
-                className="flex-1 rounded-full border border-white/15 bg-background px-4 py-2 text-sm text-foreground outline-none placeholder:text-muted focus:border-lime"
+                placeholder="Ask about capabilities, process, security…"
+                disabled={loading}
+                className="flex-1 rounded-full border border-white/15 bg-background px-4 py-2 text-sm text-foreground outline-none placeholder:text-muted focus:border-lime disabled:opacity-60"
               />
               <button
                 type="submit"
-                className="rounded-full bg-lime px-4 py-2 text-sm font-medium text-lime-foreground"
+                disabled={loading}
+                className="rounded-full bg-lime px-4 py-2 text-sm font-medium text-lime-foreground disabled:opacity-60"
               >
                 Send
               </button>
