@@ -2,12 +2,15 @@ name: Validation Agent Checklist
 
 on:
   issues:
-    types: [labeled, opened]
+    types: [labeled]
+
+concurrency:
+  group: validation-checklist-${{ github.event.issue.number }}
+  cancel-in-progress: false
 
 jobs:
   post-checklist:
-    if: >
-      contains(join(github.event.issue.labels.*.name, ','), 'agent:validation')
+    if: github.event.label.name == 'agent:validation'
     runs-on: ubuntu-latest
     permissions:
       issues: write
