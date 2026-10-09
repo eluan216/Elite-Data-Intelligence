@@ -2,7 +2,7 @@
 
 ## Model details
 - **Name:** ops_priority_scorer_v0
-- **Type:** Logistic regression (scikit-learn)
+- **Type:** Ridge regression (scikit-learn) ranking scores from work-item features
 - **Version:** 0.1.0 (demonstration)
 - **Owner:** Elite-Data-Intelligence
 
@@ -18,7 +18,7 @@
 
 ## Evaluation (demo targets)
 - Spearman rank correlation vs impact on holdout ≥ 0.70
-- Top 20% by score capture ≥ 40% of total impact
+- Top 20% by score capture ≥ 0.40 of total impact
 - Deterministic scores for identical feature rows
 
 Run `python -m src.train_eval` for current numbers on a fresh synthetic draw.
