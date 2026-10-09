@@ -40,7 +40,6 @@ export default function HomePage() {
 
   return (
     <main className="min-h-screen overflow-hidden bg-background text-foreground">
-      {/* Navigation */}
       <header className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-background/90 backdrop-blur-md">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
           <Link href="/" className="text-sm font-semibold tracking-tight text-foreground">
@@ -181,7 +180,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Solutions — deeper */}
+      {/* Solutions */}
       <section id="solutions" className="border-t border-white/10 bg-card px-6 py-32">
         <div className="mx-auto max-w-7xl">
           <h2 className="display-lg mb-6 text-foreground">Solutions</h2>
@@ -241,16 +240,28 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Research & Projects — technical demo pattern */}
-      <section id="projects" className="border-t border-white/10 px-6 py-32">
-        <div className="mx-auto max-w-7xl">
+      {/* Research & Projects — data-lattice GIF as full section background */}
+      <section id="projects" className="relative border-t border-white/10 px-6 py-32">
+        <div className="absolute inset-0">
+          <Image
+            src="/images/data-lattice.gif.GIF"
+            alt=""
+            fill
+            className="object-cover object-center"
+            unoptimized
+          />
+          <div className="absolute inset-0 bg-background/80" />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/90 via-background/70 to-background/85" />
+        </div>
+
+        <div className="relative mx-auto max-w-7xl">
           <h2 className="display-lg mb-6 text-foreground">Research & Projects</h2>
           <p className="mb-16 max-w-2xl text-lg text-muted">
             Delivery patterns we actually use. Architecture and validation practice — not slideware.
           </p>
 
           <div className="grid gap-12 lg:grid-cols-2">
-            <div className="rounded-xl border border-white/10 bg-card p-8">
+            <div className="rounded-xl border border-white/10 bg-background/60 p-8 backdrop-blur-sm">
               <p className="mb-3 text-sm font-medium uppercase tracking-widest text-lime">Pattern · Production decision system</p>
               <h3 className="mb-4 text-2xl font-semibold text-foreground">From decision statement to monitored release</h3>
               <p className="mb-8 text-sm leading-relaxed text-muted">
@@ -285,44 +296,45 @@ export default function HomePage() {
               </p>
             </div>
 
-            <div className="flex flex-col gap-8">
-              <div className="relative h-[220px] w-full overflow-hidden rounded-xl border border-white/10">
-                <Image
-                  src="/images/data-lattice.gif.GIF"
-                  alt="Data architecture pattern"
-                  fill
-                  className="object-cover opacity-80"
-                  unoptimized
-                />
-              </div>
-              <div className="rounded-xl border border-white/10 bg-card p-8">
-                <h3 className="mb-3 text-lg font-semibold text-foreground">What we do not claim</h3>
-                <ul className="space-y-2 text-sm text-muted">
-                  <li>• Client case studies before engagements close and permission is granted</li>
-                  <li>• Safeguards that are not implemented in the operating model</li>
-                  <li>• Fixed package pricing without a decision and scope</li>
-                </ul>
-                <p className="mt-6 text-sm text-muted">
-                  Credibility comes from process you can inspect: validation agents, quality gates, and founder accountability — not from invented logos.
-                </p>
-                <Link
-                  href="#contact"
-                  className="mt-6 inline-flex text-sm font-medium text-lime hover:opacity-90"
-                >
-                  Discuss a decision system →
-                </Link>
-              </div>
+            <div className="rounded-xl border border-white/10 bg-background/60 p-8 backdrop-blur-sm">
+              <h3 className="mb-3 text-lg font-semibold text-foreground">What we do not claim</h3>
+              <ul className="space-y-2 text-sm text-muted">
+                <li>• Client case studies before engagements close and permission is granted</li>
+                <li>• Safeguards that are not implemented in the operating model</li>
+                <li>• Fixed package pricing without a decision and scope</li>
+              </ul>
+              <p className="mt-6 text-sm text-muted">
+                Credibility comes from process you can inspect: validation agents, quality gates, and founder accountability — not from invented logos.
+              </p>
+              <Link
+                href="#contact"
+                className="mt-6 inline-flex text-sm font-medium text-lime hover:opacity-90"
+              >
+                Discuss a decision system →
+              </Link>
             </div>
           </div>
         </div>
       </section>
 
-      {/* About */}
-      <section id="about" className="border-t border-white/10 bg-card px-6 py-32">
-        <div className="mx-auto max-w-7xl">
-          <h2 className="display-lg mb-6 text-foreground">About</h2>
+      {/* About — network-brain GIF as full section background */}
+      <section id="about" className="relative border-t border-white/10 px-6 py-32">
+        <div className="absolute inset-0">
+          <Image
+            src="/images/network-brain.gif.GIF"
+            alt=""
+            fill
+            className="object-cover object-center"
+            unoptimized
+          />
+          <div className="absolute inset-0 bg-background/80" />
+          <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/75 to-background/70" />
+        </div>
+
+        <div className="relative mx-auto max-w-7xl">
+          <h2 className="display-lg mb-10 text-foreground">About</h2>
           <div className="grid gap-16 lg:grid-cols-2">
-            <div>
+            <div className="rounded-xl border border-white/10 bg-background/50 p-8 backdrop-blur-sm">
               <h3 className="mb-4 text-xl font-semibold text-foreground">Leadership & Human Oversight</h3>
               <p className="mb-6 text-muted">
                 Elite-Data-Intelligence is founder-led. I retain direct ownership of strategy, client relationships, final quality gates, and risk. A small senior human core works alongside 16 specialized agents that handle high-volume technical production, testing, and coordination.
@@ -331,7 +343,7 @@ export default function HomePage() {
                 Agents accelerate delivery. Humans remain accountable for outcomes, compliance, and the decisions that actually matter to the client.
               </p>
             </div>
-            <div>
+            <div className="rounded-xl border border-white/10 bg-background/50 p-8 backdrop-blur-sm">
               <h3 className="mb-4 text-xl font-semibold text-foreground">Security & Responsible AI</h3>
               <ul className="space-y-3 text-muted">
                 <li>• Human review required before any client-facing or production deliverable</li>
@@ -341,16 +353,6 @@ export default function HomePage() {
                 <li>• Only safeguards that are actually implemented are claimed</li>
               </ul>
             </div>
-          </div>
-
-          <div className="mt-16 relative h-[280px] w-full max-w-3xl overflow-hidden rounded-xl border border-white/10">
-            <Image
-              src="/images/network-brain.gif.GIF"
-              alt="Network structure"
-              fill
-              className="object-contain opacity-90"
-              unoptimized
-            />
           </div>
         </div>
       </section>
