@@ -1,15 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
-
-const resend = process.env.RESEND_API_KEY
-  ? new Resend(process.env.RESEND_API_KEY)
-  : null;
-
-const TO_EMAIL = process.env.CONTACT_TO_EMAIL || "";
-
-const MAX_NAME = 120;
-const MAX_EMAIL = 254;
-const MAX_PROJECT = 4000;
+import {
+  escapeHtml,
+  parseContactBody,
+} from "@/lib/contact-helpers";
 
 /** Simple in-memory rate limit (per serverless instance). */
 const hits = new Map<string, { count: number; reset: number }>();
@@ -33,17 +27,10 @@ function rateLimited(ip: string): boolean {
   return row.count > RATE_LIMIT;
 }
 
-function escapeHtml(s: string): string {
-  return s
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
-}
-
-function isValidEmail(email: string): boolean {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && email.length <= MAX_EMAIL;
+/** Lazy so tests can set env before first send. */
+function getResend(): Resend | null {
+  const key = process.env.RESEND_API_KEY;
+  return key ? new Resend(key) : null;
 }
 
 export async function POST(request: NextRequest) {
@@ -63,33 +50,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Invalid request body." }, { status: 400 });
     }
 
-    const raw = body as Record<string, unknown>;
-    const name = typeof raw.name === "string" ? raw.name.trim() : "";
-    const email = typeof raw.email === "string" ? raw.email.trim() : "";
-    const project = typeof raw.project === "string" ? raw.project.trim() : "";
-
-    if (!name || !email || !project) {
-      return NextResponse.json(
-        { error: "Name, email, and project details are required." },
-        { status: 400 }
-      );
+    const parsed = parseContactBody(body);
+    if (!parsed.ok) {
+      return NextResponse.json({ error: parsed.error }, { status: parsed.status });
     }
+    const { name, email, project } = parsed;
 
-    if (name.length > MAX_NAME || project.length > MAX_PROJECT) {
-      return NextResponse.json(
-        { error: "One or more fields exceed the allowed length." },
-        { status: 400 }
-      );
-    }
-
-    if (!isValidEmail(email)) {
-      return NextResponse.json(
-        { error: "Please provide a valid work email." },
-        { status: 400 }
-      );
-    }
-
-    // Minimal log — no full message body (PII reduction)
     console.log(
       JSON.stringify({
         event: "discovery_request",
@@ -101,7 +67,10 @@ export async function POST(request: NextRequest) {
       })
     );
 
-    if (!resend || !TO_EMAIL) {
+    const resend = getResend();
+    const toEmail = process.env.CONTACT_TO_EMAIL || "";
+
+    if (!resend || !toEmail) {
       console.error("Contact misconfigured: RESEND_API_KEY or CONTACT_TO_EMAIL missing");
       return NextResponse.json(
         { error: "Unable to deliver your request right now. Please email us directly." },
@@ -115,7 +84,7 @@ export async function POST(request: NextRequest) {
 
     const { error } = await resend.emails.send({
       from: "Elite-Data-Intelligence <onboarding@resend.dev>",
-      to: [TO_EMAIL],
+      to: [toEmail],
       replyTo: email,
       subject: `Discovery Call Request — ${name.slice(0, 80)}`,
       text: [

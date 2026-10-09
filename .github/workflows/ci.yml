@@ -57,6 +57,9 @@ jobs:
       - name: Install
         run: npm install
 
+      - name: Unit tests
+        run: npm test
+
       - name: Production build
         run: npm run build
         env:
