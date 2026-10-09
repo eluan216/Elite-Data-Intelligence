@@ -1,0 +1,69 @@
+name: Failure Analysis Intake
+
+on:
+  issues:
+    types: [labeled]
+
+concurrency:
+  group: failure-analysis-${{ github.event.issue.number }}
+  cancel-in-progress: false
+
+jobs:
+  post-intake:
+    if: github.event.label.name == 'agent:failure-analysis'
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Post Failure Analysis template
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const marker = '<!-- failure-analysis-intake -->';
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            if (comments.some(c => c.body && c.body.includes(marker))) {
+              console.log('Failure analysis intake already present; skipping.');
+              return;
+            }
+            const body = [
+              marker,
+              '## Failure Analysis & Improvement Agent — intake',
+              '',
+              '_Auto-posted when `agent:failure-analysis` is applied._',
+              '',
+              '### 1. Symptom',
+              '- [ ] Observable failure described',
+              '- [ ] Expected behavior stated',
+              '- [ ] Severity set (Blocker / High / Medium / Low)',
+              '',
+              '### 2. Evidence',
+              '- [ ] Logs, metrics, or reproduction steps attached',
+              '- [ ] Source linked (validation issue, incident, client report)',
+              '',
+              '### 3. Analysis',
+              '- [ ] Root cause hypothesis',
+              '- [ ] Contributing factors',
+              '- [ ] Blast radius (what else is affected)',
+              '',
+              '### 4. Improvement',
+              '- [ ] Fix recommendation',
+              '- [ ] Prevention (test, process, or design change)',
+              '- [ ] Re-validation required? → open/update Validation issue',
+              '',
+              '### 5. Close criteria',
+              '- [ ] Fix verified or accepted risk documented',
+              '- [ ] Lessons captured for playbook if systemic',
+              '',
+              '---',
+              'Reference: `agents/failure-analysis-improvement-agent.md` · `docs/delivery-playbook.md`',
+            ].join('\n');
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body,
+            });
