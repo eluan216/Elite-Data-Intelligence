@@ -1,0 +1,64 @@
+name: Project Manager Intake
+
+on:
+  issues:
+    types: [labeled]
+
+concurrency:
+  group: pm-intake-${{ github.event.issue.number }}
+  cancel-in-progress: false
+
+jobs:
+  post-intake:
+    if: github.event.label.name == 'agent:project-manager'
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Post PM sequencing template
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const marker = '<!-- project-manager-intake -->';
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            if (comments.some(c => c.body && c.body.includes(marker))) {
+              console.log('PM intake already present; skipping.');
+              return;
+            }
+            const body = [
+              marker,
+              '## Project Manager Agent — intake',
+              '',
+              '_Auto-posted when `agent:project-manager` is applied._',
+              '',
+              '### Confirm',
+              '- [ ] Decision statement is clear',
+              '- [ ] Success metrics are measurable',
+              '- [ ] Risk class noted (Low / Medium / High)',
+              '- [ ] Scope in / out is explicit',
+              '',
+              '### Sequence (edit as needed)',
+              '1. [ ] Data readiness / access',
+              '2. [ ] Design bar (Principal Decision Scientist)',
+              '3. [ ] Build (ML / agents / pipelines)',
+              '4. [ ] Validation Request (`agent:validation`)',
+              '5. [ ] Production path (MLOps) if in scope',
+              '6. [ ] Adoption / hand-off',
+              '',
+              '### Links',
+              '- Validation issue: _#TBD_',
+              '- Blockers: _none yet_',
+              '',
+              '---',
+              'Reference: `agents/project-manager-agent.md` · `docs/delivery-playbook.md`',
+            ].join('\n');
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body,
+            });
