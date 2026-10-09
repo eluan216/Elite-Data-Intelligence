@@ -24,44 +24,35 @@ I run 16 specialized agents inside GitHub and on the agency website. This folder
 
 Work is routed through **GitHub Issues** and **labels**. Issue templates live under `.github/ISSUE_TEMPLATE/`.
 
-| Label | Intent |
-|-------|--------|
-| `agent:project-manager` | Sequencing, status, dependencies |
-| `agent:validation` | Run quality checks against acceptance criteria |
-| `agent:failure-analysis` | Root-cause and improvement after a failure |
-| `agent:customer-support` | Client/inbound interaction (website + portal) |
-| `engagement` | Client delivery work |
-| `quality-gate` | Must pass validation (and human gate when required) before release |
-| `discovery` | Inbound lead / discovery call request |
+| Label | Intent | Auto Action |
+|-------|--------|-------------|
+| `agent:project-manager` | Sequencing, status, dependencies | PM intake comment |
+| `agent:validation` | Quality checks vs acceptance criteria | Validation checklist |
+| `agent:failure-analysis` | Root-cause and improvement | Failure analysis intake |
+| `agent:customer-support` | Client/inbound interaction | Website chat + form |
+| `engagement` | Client delivery work | — |
+| `quality-gate` | Must pass before release | — |
+| `discovery` | Inbound lead | — |
 
 **Templates**
-- **New Engagement** → starts delivery under Project Manager
+- **New Engagement** → Project Manager
 - **Validation Request** → quality gate
-- **Failure Analysis** → continuous improvement loop
+- **Failure Analysis** → improvement loop
 
-Full lifecycle: see `docs/delivery-playbook.md`.
+**Workflows** (`.github/workflows/`)
+- `project-manager-intake.yml`
+- `validation-checklist.yml`
+- `failure-analysis-intake.yml`
+
+Full lifecycle: `docs/delivery-playbook.md`  
+Founder oversight: `docs/founder-metrics.md`
 
 ## Definitions (all complete)
-- `founder-managing-partner.md`
-- `principal-decision-scientist.md`
-- `lead-data-engineer.md`
-- `senior-mlops-engineer.md`
-- `ai-governance-risk-compliance.md`
-- `domain-change-management-lead.md`
-- `engagement-delivery-manager.md`
-- `project-manager-agent.md`
-- `applied-ml-agent-engineer.md`
-- `data-scientist-decision-analyst.md`
-- `platform-integration-specialist.md`
-- `mid-level-data-engineer.md`
-- `business-development-client-success.md`
-- `validation-test-execution-agent.md`
-- `failure-analysis-improvement-agent.md`
-- `customer-support-agent.md`
+See this folder for each role file written from my perspective as founder.
 
 The Project Manager Agent keeps delivery coordinated.  
 The Validation + Failure Analysis pair forms the continuous quality loop.  
-The Customer Support Agent is the public face on the website and client portal.  
+The Customer Support Agent is the public face on the website.  
 I remain the final authority on strategy, commercial decisions, quality gates, and risk.
 
-**Status:** Definitions + GitHub routing (labels + templates + playbook) are in place. Autonomous LLM workers that open/comment on issues are not yet automated — humans (or future Actions) execute the roles using these definitions.
+**Status:** Definitions, labels, templates, playbook, founder metrics, and auto-intake Actions are live. Dry-run #1/#2 verified the path. Autonomous LLM workers are not yet automated — humans execute roles using these definitions and Actions.
