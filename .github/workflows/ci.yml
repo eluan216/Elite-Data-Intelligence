@@ -31,9 +31,13 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run tests
+        env:
+          PYTHONPATH: .
         run: pytest -q
 
       - name: Train/eval smoke
+        env:
+          PYTHONPATH: .
         run: python -m src.train_eval
 
   web-app-build:
@@ -49,16 +53,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: npm
-          cache-dependency-path: web-app/package-lock.json
 
       - name: Install
-        run: |
-          if [ -f package-lock.json ]; then npm ci; else npm install; fi
+        run: npm install
 
       - name: Production build
         run: npm run build
         env:
-          # Build must succeed without real secrets
           RESEND_API_KEY: ""
           CONTACT_TO_EMAIL: ""
