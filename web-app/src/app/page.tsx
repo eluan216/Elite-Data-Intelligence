@@ -109,9 +109,8 @@ export default function HomePage() {
         )}
       </header>
 
-      {/* Hero – full background collage image */}
+      {/* Hero */}
       <section className="relative flex min-h-screen items-center px-6 pt-24">
-        {/* Full-bleed background image */}
         <div className="absolute inset-0">
           <Image
             src="/images/hero-background.png.jpg"
@@ -121,7 +120,6 @@ export default function HomePage() {
             priority
             quality={90}
           />
-          {/* Dark overlay so text stays readable */}
           <div className="absolute inset-0 bg-background/75" />
           <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-background/40" />
         </div>
@@ -148,10 +146,10 @@ export default function HomePage() {
                 Book a Discovery Call
               </Link>
               <Link
-                href="#capabilities"
+                href="#solutions"
                 className="rounded-full border border-white/20 px-8 py-3.5 text-sm font-medium text-foreground transition-colors hover:bg-white/5"
               >
-                View Capabilities
+                View Solutions
               </Link>
             </div>
           </div>
@@ -183,21 +181,59 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Solutions / Approach */}
+      {/* Solutions — deeper */}
       <section id="solutions" className="border-t border-white/10 bg-card px-6 py-32">
         <div className="mx-auto max-w-7xl">
-          <h2 className="display-lg mb-16 text-foreground">How we deliver</h2>
-          <div className="grid gap-12 md:grid-cols-5">
+          <h2 className="display-lg mb-6 text-foreground">Solutions</h2>
+          <p className="mb-16 max-w-2xl text-lg text-muted">
+            Engagement shapes designed around a decision, not a technology. Each path includes validation gates and human ownership.
+          </p>
+
+          <div className="mb-20 grid gap-8 lg:grid-cols-3">
             {[
-              { step: "01", title: "Data", desc: "Readiness, quality, and governed access" },
-              { step: "02", title: "Models & Agents", desc: "Purpose-built for the decision" },
+              {
+                title: "Decision systems",
+                body: "High-stakes choices where the cost of being wrong is real. We frame the decision, define success metrics, build the model or agent stack, and wire it into the process that already owns the outcome.",
+                outcomes: ["Clear decision statement", "Evaluated against business metrics", "Human review on critical paths"],
+              },
+              {
+                title: "Production ML & agents",
+                body: "Systems that must keep working after the pilot. Lakehouse foundations, CI/CD for models, monitoring, drift detection, and rollback — not notebook-only delivery.",
+                outcomes: ["Deployed with observability", "Documented runbooks", "Validation before go-live"],
+              },
+              {
+                title: "Data & governance foundations",
+                body: "When models fail because the data layer is ungoverned. Pipelines, quality contracts, lineage, access control, and the artifacts regulators and auditors actually ask for.",
+                outcomes: ["Tested data contracts", "Lineage you can trust", "Model cards and audit trail"],
+              },
+            ].map((s) => (
+              <div key={s.title} className="flex flex-col rounded-xl border border-white/10 bg-background p-8">
+                <h3 className="mb-4 text-xl font-semibold text-foreground">{s.title}</h3>
+                <p className="mb-6 flex-1 text-sm leading-relaxed text-muted">{s.body}</p>
+                <ul className="space-y-2 border-t border-white/10 pt-6">
+                  {s.outcomes.map((o) => (
+                    <li key={o} className="text-sm text-muted">
+                      <span className="mr-2 text-lime">→</span>
+                      {o}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+
+          <h3 className="mb-10 text-sm font-medium uppercase tracking-widest text-lime">How every engagement runs</h3>
+          <div className="grid gap-10 md:grid-cols-5">
+            {[
+              { step: "01", title: "Data", desc: "Readiness, quality, governed access" },
+              { step: "02", title: "Models & Agents", desc: "Built for the decision" },
               { step: "03", title: "Production", desc: "MLOps, monitoring, reliability" },
-              { step: "04", title: "Adoption", desc: "Change management and user uptake" },
-              { step: "05", title: "Value", desc: "Measured outcomes, not just models" },
+              { step: "04", title: "Adoption", desc: "Process fit and user uptake" },
+              { step: "05", title: "Value", desc: "Measured against the original case" },
             ].map((item) => (
               <div key={item.step}>
                 <span className="text-sm font-medium text-lime">{item.step}</span>
-                <h3 className="mt-2 text-xl font-semibold text-foreground">{item.title}</h3>
+                <h4 className="mt-2 text-lg font-semibold text-foreground">{item.title}</h4>
                 <p className="mt-2 text-sm text-muted">{item.desc}</p>
               </div>
             ))}
@@ -205,27 +241,77 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Research & Projects */}
+      {/* Research & Projects — technical demo pattern */}
       <section id="projects" className="border-t border-white/10 px-6 py-32">
         <div className="mx-auto max-w-7xl">
-          <div className="grid items-center gap-16 lg:grid-cols-2">
-            <div>
-              <h2 className="display-lg mb-6 text-foreground">Research & Projects</h2>
-              <p className="mb-8 max-w-xl text-lg text-muted">
-                Technical demonstrations and delivery patterns. Real architecture, validation practices, and production thinking — not marketing slides.
+          <h2 className="display-lg mb-6 text-foreground">Research & Projects</h2>
+          <p className="mb-16 max-w-2xl text-lg text-muted">
+            Delivery patterns we actually use. Architecture and validation practice — not slideware.
+          </p>
+
+          <div className="grid gap-12 lg:grid-cols-2">
+            <div className="rounded-xl border border-white/10 bg-card p-8">
+              <p className="mb-3 text-sm font-medium uppercase tracking-widest text-lime">Pattern · Production decision system</p>
+              <h3 className="mb-4 text-2xl font-semibold text-foreground">From decision statement to monitored release</h3>
+              <p className="mb-8 text-sm leading-relaxed text-muted">
+                A reference path for a single high-stakes decision (fraud, credit, ops prioritization, clinical triage-style workflows). The same skeleton scales to agentic systems when the decision needs multi-step tooling.
               </p>
-              <p className="text-sm text-muted">
-                Detailed case studies and live demos will appear here as engagements close. Until then, the operating model, validation agents, and delivery process remain the primary proof points.
+
+              <ol className="space-y-5 text-sm text-muted">
+                <li className="flex gap-3">
+                  <span className="font-mono text-lime">01</span>
+                  <span><strong className="text-foreground">Decision & metrics</strong> — who decides, cost of error, success metric tied to the business case.</span>
+                </li>
+                <li className="flex gap-3">
+                  <span className="font-mono text-lime">02</span>
+                  <span><strong className="text-foreground">Governed data path</strong> — contracted features, quality tests, lineage into the training and serving sets.</span>
+                </li>
+                <li className="flex gap-3">
+                  <span className="font-mono text-lime">03</span>
+                  <span><strong className="text-foreground">Model / agent</strong> — simplest method that hits the metric; explicit failure modes documented.</span>
+                </li>
+                <li className="flex gap-3">
+                  <span className="font-mono text-lime">04</span>
+                  <span><strong className="text-foreground">Validation gate</strong> — acceptance criteria issue, automated checklist, PASS/FAIL with evidence before release.</span>
+                </li>
+                <li className="flex gap-3">
+                  <span className="font-mono text-lime">05</span>
+                  <span><strong className="text-foreground">Production</strong> — versioned deploy, monitoring, drift alerts, rollback, model card and runbook.</span>
+                </li>
+              </ol>
+
+              <p className="mt-8 border-t border-white/10 pt-6 text-xs text-muted">
+                Operating artifacts live in our GitHub delivery model: engagement → validation → failure analysis. See the public playbook in-repo under <span className="text-foreground">docs/delivery-playbook.md</span>.
               </p>
             </div>
-            <div className="relative h-[300px] w-full overflow-hidden rounded-xl border border-white/10">
-              <Image
-                src="/images/data-lattice.gif.GIF"
-                alt="Data architecture"
-                fill
-                className="object-cover opacity-80"
-                unoptimized
-              />
+
+            <div className="flex flex-col gap-8">
+              <div className="relative h-[220px] w-full overflow-hidden rounded-xl border border-white/10">
+                <Image
+                  src="/images/data-lattice.gif.GIF"
+                  alt="Data architecture pattern"
+                  fill
+                  className="object-cover opacity-80"
+                  unoptimized
+                />
+              </div>
+              <div className="rounded-xl border border-white/10 bg-card p-8">
+                <h3 className="mb-3 text-lg font-semibold text-foreground">What we do not claim</h3>
+                <ul className="space-y-2 text-sm text-muted">
+                  <li>• Client case studies before engagements close and permission is granted</li>
+                  <li>• Safeguards that are not implemented in the operating model</li>
+                  <li>• Fixed package pricing without a decision and scope</li>
+                </ul>
+                <p className="mt-6 text-sm text-muted">
+                  Credibility comes from process you can inspect: validation agents, quality gates, and founder accountability — not from invented logos.
+                </p>
+                <Link
+                  href="#contact"
+                  className="mt-6 inline-flex text-sm font-medium text-lime hover:opacity-90"
+                >
+                  Discuss a decision system →
+                </Link>
+              </div>
             </div>
           </div>
         </div>
@@ -328,7 +414,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Footer */}
       <footer className="border-t border-white/10 px-6 py-12">
         <div className="mx-auto flex max-w-7xl flex-col gap-8 md:flex-row md:items-center md:justify-between">
           <div>
