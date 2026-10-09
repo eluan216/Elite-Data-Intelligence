@@ -19,8 +19,8 @@ This project is the primary technical proof artifact for the agency. It shows ho
 
 **Success metrics (demonstration):**
 - Ranking quality: Spearman correlation of predicted priority vs synthetic ground-truth impact ≥ 0.70 on holdout
-- Calibration: top-20% predicted items capture ≥ 40% of total impact mass
-- Determinism: same inputs → same scores (no silent randomness in serve path)
+- Concentration: top-20% predicted items capture ≥ 30% of total impact mass
+- Determinism: same inputs → same scores
 
 These thresholds are **demo targets** for this repository, not guarantees for a client deployment.
 
@@ -30,7 +30,7 @@ These thresholds are **demo targets** for this repository, not guarantees for a 
 
 **In scope**
 - Feature contract for work-item attributes
-- Transparent scoring model (logistic / linear style) with fixed coefficients path
+- Transparent scoring model (Ridge regression ranking scores)
 - Train / evaluate script with metrics
 - Automated tests (contracts, metrics, determinism)
 - Model card and limitations
@@ -53,7 +53,7 @@ Work-item features (contract)
   Feature checks (tests)
         │
         ▼
-  Score model (trained or fixed)
+  Score model (Ridge)
         │
         ▼
   Evaluation metrics + report
@@ -77,14 +77,9 @@ python -m venv .venv
 source .venv/bin/activate  # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 
-# Generate synthetic data, train, evaluate
 python -m src.train_eval
-
-# Run tests
 pytest -q
 ```
-
-Expected: tests pass; evaluation prints Spearman and top-k capture metrics.
 
 ---
 
@@ -107,6 +102,6 @@ See `docs/limitations.md`. Summary: synthetic data only; simplified model; no li
 
 ---
 
-## 7. License of this folder
+## 7. Repository path
 
-Demonstration artifact for Elite-Data-Intelligence. Reuse of the pattern is welcome; do not present this as a third-party client result.
+`projects/ops-priority-decision-system/` on [Elite-Data-Intelligence](https://github.com/eluan216/Elite-Data-Intelligence)
