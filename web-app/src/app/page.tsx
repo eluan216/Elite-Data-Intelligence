@@ -36,9 +36,7 @@ export default function HomePage() {
     <main className="min-h-screen overflow-hidden bg-background text-foreground">
       <header className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-background/90 backdrop-blur-md">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          <Link href="/" className="text-sm font-semibold tracking-tight text-foreground">
-            Elite-Data-Intelligence
-          </Link>
+          <Link href="/" className="text-sm font-semibold tracking-tight text-foreground">Elite-Data-Intelligence</Link>
           <nav className="hidden items-center gap-8 text-sm text-muted md:flex">
             <Link href="#problems" className="hover:text-foreground transition-colors">Problems</Link>
             <Link href="#approach" className="hover:text-foreground transition-colors">Approach</Link>
@@ -68,7 +66,6 @@ export default function HomePage() {
         )}
       </header>
 
-      {/* Hero — specific buyer + problem */}
       <section className="relative flex min-h-screen items-center px-6 pt-24">
         <div className="absolute inset-0">
           <Image src="/images/hero-background.png.jpg" alt="" fill className="object-cover object-center" priority quality={90} />
@@ -78,17 +75,9 @@ export default function HomePage() {
         <div className="relative mx-auto max-w-7xl">
           <div className="max-w-2xl">
             <p className="mb-6 text-sm font-medium uppercase tracking-widest text-lime">AI · Data · Engineering</p>
-            <h1 className="display-2xl text-foreground">
-              AI systems built around
-              <br />
-              <span className="text-muted">real business problems.</span>
-            </h1>
-            <p className="mt-8 max-w-xl text-lg text-muted">
-              I help operations and technology teams turn complex data into decisions and working systems — with documented testing, clear ownership, and human accountability on every release.
-            </p>
-            <p className="mt-4 max-w-xl text-sm text-muted">
-              Primary focus today: <span className="text-foreground">decision systems and production-ready ML workflows</span> for teams that cannot afford silent model failure.
-            </p>
+            <h1 className="display-2xl text-foreground">AI systems built around<br /><span className="text-muted">real business problems.</span></h1>
+            <p className="mt-8 max-w-xl text-lg text-muted">I help operations and technology teams turn complex data into decisions and working systems — with documented testing, clear ownership, and human accountability on every release.</p>
+            <p className="mt-4 max-w-xl text-sm text-muted">Primary focus today: <span className="text-foreground">decision systems and production-ready ML workflows</span> for teams that cannot afford silent model failure.</p>
             <div className="mt-12 flex flex-wrap gap-4">
               <Link href="#contact" className="rounded-full bg-lime px-8 py-3.5 text-sm font-semibold text-lime-foreground transition-opacity hover:opacity-90">Discuss a business problem</Link>
               <Link href="#projects" className="rounded-full border border-white/20 px-8 py-3.5 text-sm font-medium text-foreground transition-colors hover:bg-white/5">See how we work →</Link>
@@ -97,7 +86,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Problems we solve — buyer language */}
       <section id="problems" className="border-t border-white/10 px-6 py-32">
         <div className="mx-auto max-w-7xl">
           <h2 className="display-lg mb-6 text-foreground">Problems we solve</h2>
@@ -118,7 +106,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Approach — capabilities with business outcomes */}
       <section id="approach" className="border-t border-white/10 bg-card px-6 py-32">
         <div className="mx-auto max-w-7xl">
           <h2 className="display-lg mb-6 text-foreground">What we deliver</h2>
@@ -156,7 +143,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Work / evidence */}
       <section id="projects" className="relative border-t border-white/10 px-6 py-32">
         <div className="absolute inset-0">
           <Image src="/images/data-lattice.gif.GIF" alt="" fill className="object-cover object-center" unoptimized />
@@ -165,26 +151,29 @@ export default function HomePage() {
         </div>
         <div className="relative mx-auto max-w-7xl">
           <h2 className="display-lg mb-6 text-foreground">Selected work</h2>
-          <p className="mb-4 max-w-2xl text-lg text-muted">
-            What you can inspect today is our operating model — not client logos. Client case studies appear only with permission after engagements close.
-          </p>
-          <p className="mb-16 max-w-2xl text-sm text-muted">
-            Public artifacts: delivery playbook, agent role definitions, validation workflows, and the reference pattern below — all in the Elite-Data-Intelligence repository.
-          </p>
+          <p className="mb-4 max-w-2xl text-lg text-muted">Inspectable artifacts — not client logos. Case studies appear only with permission after engagements close.</p>
+          <p className="mb-16 max-w-2xl text-sm text-muted">Flagship internal project is public in the repository: code, tests, model card, and limitations.</p>
           <div className="grid gap-12 lg:grid-cols-2">
             <div className="rounded-xl border border-white/10 bg-background/80 p-8 backdrop-blur-md shadow-xl">
-              <p className="mb-3 text-sm font-medium uppercase tracking-widest text-lime">Reference pattern · Internal</p>
-              <h3 className="mb-4 text-2xl font-semibold text-foreground">Production decision system</h3>
-              <p className="mb-8 text-sm leading-relaxed text-muted">
-                Skeleton for a high-stakes decision (fraud, credit, ops prioritization). Not a client case study — a delivery pattern we execute against.
+              <p className="mb-3 text-sm font-medium uppercase tracking-widest text-lime">Flagship · Internal demonstration</p>
+              <h3 className="mb-4 text-2xl font-semibold text-foreground">Ops priority decision system</h3>
+              <p className="mb-6 text-sm leading-relaxed text-muted">
+                End-to-end demo of a triage ranking decision: feature contracts, Ridge scorer, evaluation metrics, pytest suite, and model card. Synthetic data only — honest about limits.
               </p>
-              <ol className="space-y-4 text-sm text-muted">
-                <li><span className="font-mono text-lime">01</span> Decision & metrics — who decides, cost of error</li>
-                <li><span className="font-mono text-lime">02</span> Governed data path — contracts, tests, lineage</li>
-                <li><span className="font-mono text-lime">03</span> Model / agent — simplest method that hits the metric</li>
-                <li><span className="font-mono text-lime">04</span> Validation gate — PASS/FAIL with evidence before release</li>
-                <li><span className="font-mono text-lime">05</span> Production — monitor, rollback, model card, runbook</li>
-              </ol>
+              <ul className="mb-8 space-y-2 text-sm text-muted">
+                <li>• Decision statement + cost of error defined</li>
+                <li>• Spearman ≥ 0.70 and top-20% capture ≥ 0.30 on holdout</li>
+                <li>• Automated tests for schema, metrics, determinism</li>
+                <li>• Model card and limitations documented</li>
+              </ul>
+              <a
+                href="https://github.com/eluan216/Elite-Data-Intelligence/tree/main/projects/ops-priority-decision-system"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex text-sm font-medium text-lime hover:opacity-90"
+              >
+                Open project on GitHub →
+              </a>
             </div>
             <div className="rounded-xl border border-white/10 bg-background/80 p-8 backdrop-blur-md shadow-xl">
               <h3 className="mb-3 text-lg font-semibold text-foreground">What is live in the operating model</h3>
@@ -192,8 +181,7 @@ export default function HomePage() {
                 <li>• GitHub engagement → validation → failure-analysis workflows</li>
                 <li>• Auto-posted checklists when quality labels are applied</li>
                 <li>• Founder-owned commercial and risk gates</li>
-                <li>• Website support agent (knowledge-based; LLM optional)</li>
-                <li>• Discovery form delivered to founder email</li>
+                <li>• Website support agent + discovery form to founder email</li>
               </ul>
               <h3 className="mb-3 text-lg font-semibold text-foreground">What we do not claim</h3>
               <ul className="space-y-2 text-sm text-muted">
@@ -208,7 +196,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* How we work — honest agents */}
       <section id="how-we-work" className="relative border-t border-white/10 px-6 py-32">
         <div className="absolute inset-0">
           <Image src="/images/network-brain.gif.GIF" alt="" fill className="object-cover object-center" unoptimized />
@@ -217,27 +204,17 @@ export default function HomePage() {
         </div>
         <div className="relative mx-auto max-w-7xl">
           <h2 className="display-lg mb-6 text-foreground">How we work</h2>
-          <p className="mb-16 max-w-2xl text-lg text-muted">
-            Founder-led. Specialized roles. Automation where it is implemented. Human authority where it matters.
-          </p>
+          <p className="mb-16 max-w-2xl text-lg text-muted">Founder-led. Specialized roles. Automation where it is implemented. Human authority where it matters.</p>
           <div className="grid gap-10 lg:grid-cols-2">
             <div className="rounded-xl border border-white/10 bg-background/50 p-8 backdrop-blur-sm">
               <h3 className="mb-4 text-xl font-semibold text-foreground">Leadership</h3>
-              <p className="mb-4 text-muted">
-                Elite-Data-Intelligence is founder-led. I own strategy, client relationships, final quality gates, and risk. Commercial terms and high-risk acceptance are not delegated.
-              </p>
-              <p className="text-sm text-muted">
-                Contact for discovery: the form below reaches my inbox directly.
-              </p>
+              <p className="mb-4 text-muted">Elite-Data-Intelligence is founder-led. I own strategy, client relationships, final quality gates, and risk. Commercial terms and high-risk acceptance are not delegated.</p>
+              <p className="text-sm text-muted">Contact for discovery: the form below reaches my inbox directly.</p>
             </div>
             <div className="rounded-xl border border-white/10 bg-background/50 p-8 backdrop-blur-sm">
               <h3 className="mb-4 text-xl font-semibold text-foreground">Operating model — 16 roles</h3>
-              <p className="mb-4 text-muted">
-                Sixteen specialized role definitions guide delivery (strategy through validation and client support). Some steps are automated in GitHub today: Project Manager intake, Validation checklists, Failure Analysis intake, and the website Support agent.
-              </p>
-              <p className="text-sm text-muted">
-                The rest are executed by the senior core using those definitions — not by unsupervised LLM agents. Autonomous workers are on the roadmap; they are not claimed as production workforce yet.
-              </p>
+              <p className="mb-4 text-muted">Sixteen specialized role definitions guide delivery. Some steps are automated in GitHub today: Project Manager intake, Validation checklists, Failure Analysis intake, and the website Support agent.</p>
+              <p className="text-sm text-muted">The rest are executed by the senior core using those definitions — not by unsupervised LLM agents.</p>
             </div>
             <div className="rounded-xl border border-white/10 bg-background/50 p-8 backdrop-blur-sm lg:col-span-2">
               <h3 className="mb-4 text-xl font-semibold text-foreground">Security & responsible delivery</h3>
@@ -254,27 +231,19 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Contact — trust + next steps */}
       <section id="contact" className="border-t border-white/10 px-6 py-32">
         <div className="mx-auto max-w-7xl">
           <div className="grid gap-16 lg:grid-cols-2">
             <div>
               <h2 className="display-lg mb-4 text-foreground">Discuss a business problem</h2>
-              <p className="mb-6 max-w-xl text-lg text-muted">
-                A short discovery conversation — free, no obligation. I respond personally.
-              </p>
+              <p className="mb-6 max-w-xl text-lg text-muted">A short discovery conversation — free, no obligation. I respond personally.</p>
               <ul className="mb-8 space-y-3 text-sm text-muted">
                 <li><span className="text-lime">1.</span> Submit the form with a work email and a short description of the problem.</li>
                 <li><span className="text-lime">2.</span> I reply within <span className="text-foreground">one business day</span> with next steps or clarifying questions.</li>
                 <li><span className="text-lime">3.</span> If it is a fit, we schedule a discovery call to define decision, risk, and scope.</li>
               </ul>
-              <p className="text-sm text-muted">
-                Prefer email? Write directly to{" "}
-                <a href="mailto:ogumaeluan@gmail.com" className="text-lime hover:opacity-90">ogumaeluan@gmail.com</a>.
-              </p>
-              <p className="mt-4 text-xs text-muted">
-                We use your details only to respond to this inquiry. No marketing list, no sharing with third parties for advertising.
-              </p>
+              <p className="text-sm text-muted">Prefer email? Write directly to <a href="mailto:ogumaeluan@gmail.com" className="text-lime hover:opacity-90">ogumaeluan@gmail.com</a>.</p>
+              <p className="mt-4 text-xs text-muted">We use your details only to respond to this inquiry. No marketing list, no sharing with third parties for advertising.</p>
             </div>
             <form onSubmit={handleSubmit} className="max-w-md space-y-4">
               <div>
@@ -292,12 +261,8 @@ export default function HomePage() {
               <button type="submit" disabled={formStatus === "submitting"} className="w-full rounded-full bg-lime py-3.5 text-sm font-semibold text-lime-foreground transition-opacity hover:opacity-90 disabled:opacity-60">
                 {formStatus === "submitting" ? "Sending…" : "Request a discovery call"}
               </button>
-              {formStatus === "success" && (
-                <p className="text-sm text-lime">Received. I will respond within one business day.</p>
-              )}
-              {formStatus === "error" && (
-                <p className="text-sm text-red-400">Something went wrong. Email ogumaeluan@gmail.com directly.</p>
-              )}
+              {formStatus === "success" && <p className="text-sm text-lime">Received. I will respond within one business day.</p>}
+              {formStatus === "error" && <p className="text-sm text-red-400">Something went wrong. Email ogumaeluan@gmail.com directly.</p>}
             </form>
           </div>
         </div>
