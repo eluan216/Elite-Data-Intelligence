@@ -1,9 +1,8 @@
-import numpy as np
+from scipy.stats import spearmanr
 
 from src.data import generate_items
 from src.model import PriorityScorer
 from src.train_eval import top_k_capture
-from scipy.stats import spearmanr
 
 
 def test_fit_and_score_range():
