@@ -5,13 +5,68 @@ const resend = process.env.RESEND_API_KEY
   ? new Resend(process.env.RESEND_API_KEY)
   : null;
 
-// Where discovery-call requests are delivered
 const TO_EMAIL = process.env.CONTACT_TO_EMAIL || "";
+
+const MAX_NAME = 120;
+const MAX_EMAIL = 254;
+const MAX_PROJECT = 4000;
+
+/** Simple in-memory rate limit (per serverless instance). */
+const hits = new Map<string, { count: number; reset: number }>();
+const RATE_LIMIT = 8;
+const RATE_WINDOW_MS = 15 * 60 * 1000;
+
+function clientIp(request: NextRequest): string {
+  const xf = request.headers.get("x-forwarded-for");
+  if (xf) return xf.split(",")[0]?.trim() || "unknown";
+  return request.headers.get("x-real-ip") || "unknown";
+}
+
+function rateLimited(ip: string): boolean {
+  const now = Date.now();
+  const row = hits.get(ip);
+  if (!row || now > row.reset) {
+    hits.set(ip, { count: 1, reset: now + RATE_WINDOW_MS });
+    return false;
+  }
+  row.count += 1;
+  return row.count > RATE_LIMIT;
+}
+
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function isValidEmail(email: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && email.length <= MAX_EMAIL;
+}
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { name, email, project } = body;
+    const ip = clientIp(request);
+    if (rateLimited(ip)) {
+      return NextResponse.json(
+        { error: "Too many requests. Please try again later." },
+        { status: 429 }
+      );
+    }
+
+    let body: unknown;
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json({ error: "Invalid request body." }, { status: 400 });
+    }
+
+    const raw = body as Record<string, unknown>;
+    const name = typeof raw.name === "string" ? raw.name.trim() : "";
+    const email = typeof raw.email === "string" ? raw.email.trim() : "";
+    const project = typeof raw.project === "string" ? raw.project.trim() : "";
 
     if (!name || !email || !project) {
       return NextResponse.json(
@@ -20,61 +75,76 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
+    if (name.length > MAX_NAME || project.length > MAX_PROJECT) {
+      return NextResponse.json(
+        { error: "One or more fields exceed the allowed length." },
+        { status: 400 }
+      );
+    }
+
+    if (!isValidEmail(email)) {
       return NextResponse.json(
         { error: "Please provide a valid work email." },
         { status: 400 }
       );
     }
 
-    // Always log for debugging / Vercel logs
-    console.log("=== Discovery Call Request ===");
-    console.log("Name:", name);
-    console.log("Email:", email);
-    console.log("Project:", project);
-    console.log("Timestamp:", new Date().toISOString());
-    console.log("==============================");
+    // Minimal log — no full message body (PII reduction)
+    console.log(
+      JSON.stringify({
+        event: "discovery_request",
+        at: new Date().toISOString(),
+        ip,
+        emailDomain: email.includes("@") ? email.split("@")[1] : null,
+        nameLen: name.length,
+        projectLen: project.length,
+      })
+    );
 
-    // Send email when Resend is configured
-    if (resend && TO_EMAIL) {
-      const { error } = await resend.emails.send({
-        from: "Elite-Data-Intelligence <onboarding@resend.dev>", // replace with your verified domain later
-        to: [TO_EMAIL],
-        replyTo: email,
-        subject: `Discovery Call Request — ${name}`,
-        text: [
-          "New discovery call request from the website.",
-          "",
-          `Name: ${name}`,
-          `Work email: ${email}`,
-          "",
-          "What they need help with:",
-          project,
-          "",
-          `Received: ${new Date().toISOString()}`,
-        ].join("\n"),
-        html: `
-          <h2>New Discovery Call Request</h2>
-          <p><strong>Name:</strong> ${name}</p>
-          <p><strong>Work email:</strong> <a href="mailto:${email}">${email}</a></p>
-          <p><strong>What they need help with:</strong></p>
-          <p style="white-space: pre-wrap;">${project.replace(/</g, "<")}</p>
-          <hr />
-          <p style="color:#666;font-size:12px;">Received ${new Date().toISOString()}</p>
-        `,
-      });
+    if (!resend || !TO_EMAIL) {
+      console.error("Contact misconfigured: RESEND_API_KEY or CONTACT_TO_EMAIL missing");
+      return NextResponse.json(
+        { error: "Unable to deliver your request right now. Please email us directly." },
+        { status: 503 }
+      );
+    }
 
-      if (error) {
-        console.error("Resend error:", error);
-        return NextResponse.json(
-          { error: "Unable to deliver your request. Please try again." },
-          { status: 500 }
-        );
-      }
-    } else {
-      console.warn(
-        "Email not sent: set RESEND_API_KEY and CONTACT_TO_EMAIL in environment variables."
+    const safeName = escapeHtml(name);
+    const safeEmail = escapeHtml(email);
+    const safeProject = escapeHtml(project);
+
+    const { error } = await resend.emails.send({
+      from: "Elite-Data-Intelligence <onboarding@resend.dev>",
+      to: [TO_EMAIL],
+      replyTo: email,
+      subject: `Discovery Call Request — ${name.slice(0, 80)}`,
+      text: [
+        "New discovery call request from the website.",
+        "",
+        `Name: ${name}`,
+        `Work email: ${email}`,
+        "",
+        "What they need help with:",
+        project,
+        "",
+        `Received: ${new Date().toISOString()}`,
+      ].join("\n"),
+      html: `
+        <h2>New Discovery Call Request</h2>
+        <p><strong>Name:</strong> ${safeName}</p>
+        <p><strong>Work email:</strong> <a href="mailto:${safeEmail}">${safeEmail}</a></p>
+        <p><strong>What they need help with:</strong></p>
+        <p style="white-space: pre-wrap;">${safeProject}</p>
+        <hr />
+        <p style="color:#666;font-size:12px;">Received ${new Date().toISOString()}</p>
+      `,
+    });
+
+    if (error) {
+      console.error("Resend error:", error);
+      return NextResponse.json(
+        { error: "Unable to deliver your request. Please try again or email us directly." },
+        { status: 500 }
       );
     }
 
@@ -83,7 +153,7 @@ export async function POST(request: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
-    console.error("Contact form error:", error);
+    console.error("Contact form error:", error instanceof Error ? error.message : "unknown");
     return NextResponse.json(
       { error: "Unable to process your request. Please try again." },
       { status: 500 }

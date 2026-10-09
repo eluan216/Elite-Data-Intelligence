@@ -1,30 +1,27 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Ops — Elite-Data-Intelligence",
+  robots: { index: false, follow: false },
+};
+
+/**
+ * Placeholder only. No auth yet — do not put secrets, client data, or metrics here
+ * until authentication and authorization are implemented (Phase 4).
+ */
 export default function OpsPage() {
   return (
     <main className="min-h-screen bg-background px-6 py-24 text-foreground">
       <div className="mx-auto max-w-5xl">
-        <h1 className="display-lg mb-4">Internal Ops Dashboard</h1>
-        <p className="mb-12 max-w-xl text-muted">
-          Restricted view for pipeline health, credit spend, agent status, and risk register.
-          Access will be limited to the founder and designated senior core.
+        <h1 className="display-lg mb-4">Internal Ops</h1>
+        <p className="mb-6 max-w-xl text-muted">
+          This route is a shell only. It is not authenticated. No live pipeline data, credentials,
+          or client information is loaded here.
         </p>
-        <div className="grid gap-6 md:grid-cols-2">
-          <div className="rounded-xl border border-border bg-card p-6">
-            <h2 className="mb-2 text-sm font-medium text-muted">Pipeline</h2>
-            <p className="text-2xl font-semibold">—</p>
-          </div>
-          <div className="rounded-xl border border-border bg-card p-6">
-            <h2 className="mb-2 text-sm font-medium text-muted">Credit Spend</h2>
-            <p className="text-2xl font-semibold">—</p>
-          </div>
-          <div className="rounded-xl border border-border bg-card p-6">
-            <h2 className="mb-2 text-sm font-medium text-muted">Agent Health</h2>
-            <p className="text-2xl font-semibold">—</p>
-          </div>
-          <div className="rounded-xl border border-border bg-card p-6">
-            <h2 className="mb-2 text-sm font-medium text-muted">Open Risks</h2>
-            <p className="text-2xl font-semibold">—</p>
-          </div>
-        </div>
+        <p className="text-sm text-muted">
+          Access control and real metrics land in a later phase. Until then, treat this page as
+          non-operational.
+        </p>
       </div>
     </main>
   );
