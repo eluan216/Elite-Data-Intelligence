@@ -1,6 +1,6 @@
 # Agent runtime v0
 
-Based on the functional-agent review: three working agents on a shared runtime — not 16 autonomous apps.
+Three working agents on a shared runtime — not 16 autonomous apps.
 
 ## Agents
 
@@ -22,26 +22,50 @@ Content-Type: application/json
 }
 ```
 
-Returns task `id`, `status`, `brief`, `research`, `validation`, `steps`, `mode`.
+Returns task `id`, `status`, `mode`, `brief`, `research`, `validation`, `steps`, `persistence`.
 
 ```http
 GET /api/agents/tasks/:id
 ```
 
-**Note:** Task store is **in-memory per server instance**. On Vercel, prefer the POST response body. Replace with Postgres (Supabase) before multi-instance production.
+Rate limit: ~10 requests / 15 minutes / IP (per instance).
+
+## Persistence
+
+| Setup | Behavior |
+|-------|----------|
+| Default | In-memory only (POST response is source of truth on Vercel) |
+| `GITHUB_TOKEN` set on Vercel | Terminal tasks create a GitHub issue (label `agent:runtime`) |
+
+Optional: `GITHUB_REPO` (default `eluan216/Elite-Data-Intelligence`).
+
+Token needs `issues: write` on the repo. Never commit the token.
+
+Response field:
+
+```json
+"persistence": {
+  "kind": "github_issue",
+  "url": "https://github.com/.../issues/N"
+}
+```
+
+or `{ "kind": "memory", "error": "…" }` when no token / create failed.
+
+Postgres/Supabase remains the longer-term multi-instance store; GitHub issues are the audit trail that fits the current operating model without a new database.
 
 ## Modes
 
 | Mode | When |
 |------|------|
-| `mock` | No `OPENAI_API_KEY` — deterministic structured outputs (CI + local) |
-| `llm` | `OPENAI_API_KEY` set (server-side only). Optional `OPENAI_MODEL` (default `gpt-4o-mini`) |
+| `mock` | No OpenAI key — deterministic outputs (CI + local) |
+| `llm` | `OPENAI_API_KEY` or `OPEN_AI_KEY` set server-side. Optional `OPENAI_MODEL` |
 
-Never put API keys in the browser or the git repo.
+Requires OpenAI **credits** for successful LLM runs. Without credits you get `mode: llm` but step errors (HTTP 429).
 
 ## Permissions (v0)
 
-Agents **cannot**: run shell commands, deploy, access private client systems, browse the open web, or make commercial commitments.
+Agents **cannot**: run shell, deploy, access private client systems, open-web browse, or make commercial commitments.
 
 ## Tests
 
@@ -49,12 +73,11 @@ Agents **cannot**: run shell commands, deploy, access private client systems, br
 cd web-app && npm test
 ```
 
-Includes `runtime.test.ts` end-to-end mock pipeline.
+## Roadmap after this slice
 
-## Next (not in v0)
-
-- Supabase (or similar) for durable task state and audit log
-- Background worker for long jobs
-- GitHub tool (issues/PRs) behind explicit allow-list
-- Founder approval UI
-- Expand roles only after this vertical slice is reliable
+1. ~~Secure contact + CI~~
+2. ~~Runtime + three agents~~
+3. ~~GitHub issue persistence (when token set)~~
+4. Background worker for long jobs
+5. Founder approval UI on `/ops`
+6. Expand roles only after this path is reliable with credits

@@ -1,5 +1,6 @@
 import { randomUUID } from "crypto";
 import { getLlmMode } from "./llm";
+import { persistTerminalTask } from "./persist";
 import { runIntake } from "./roles/intake";
 import { runResearch } from "./roles/research";
 import { runValidation } from "./roles/validation";
@@ -12,6 +13,7 @@ const MAX_EVIDENCE = 20000;
 /**
  * Orchestrator v0: sequential Intake → Research → Validation.
  * Narrow permissions: no shell, no deploy, no commercial commits, no private data access.
+ * Terminal tasks dual-write to GitHub Issues when GITHUB_TOKEN is configured.
  */
 export async function createAndRunTask(input: CreateTaskInput): Promise<AgentTask> {
   const request = (input.request || "").trim();
@@ -37,7 +39,6 @@ export async function createAndRunTask(input: CreateTaskInput): Promise<AgentTas
   saveTask(task);
 
   try {
-    // 1 Intake
     task.steps[0].status = "running";
     task.steps[0].startedAt = new Date().toISOString();
     saveTask(task);
@@ -48,7 +49,6 @@ export async function createAndRunTask(input: CreateTaskInput): Promise<AgentTas
     task.updatedAt = new Date().toISOString();
     saveTask(task);
 
-    // 2 Research
     task.steps[1].status = "running";
     task.steps[1].startedAt = new Date().toISOString();
     saveTask(task);
@@ -59,13 +59,11 @@ export async function createAndRunTask(input: CreateTaskInput): Promise<AgentTas
     task.updatedAt = new Date().toISOString();
     saveTask(task);
 
-    // 3 Validation
     task.steps[2].status = "running";
     task.steps[2].startedAt = new Date().toISOString();
     saveTask(task);
     task.validation = await runValidation(task);
-    task.steps[2].status =
-      task.validation.outcome === "fail" ? "failed" : "passed";
+    task.steps[2].status = task.validation.outcome === "fail" ? "failed" : "passed";
     task.steps[2].finishedAt = new Date().toISOString();
     task.steps[2].output = task.validation;
     task.updatedAt = new Date().toISOString();
@@ -77,6 +75,9 @@ export async function createAndRunTask(input: CreateTaskInput): Promise<AgentTas
     } else {
       task.status = "completed";
     }
+
+    task.persistence = await persistTerminalTask(task);
+    task.updatedAt = new Date().toISOString();
     saveTask(task);
     return task;
   } catch (e) {
@@ -89,6 +90,8 @@ export async function createAndRunTask(input: CreateTaskInput): Promise<AgentTas
       running.error = task.error;
       running.finishedAt = task.updatedAt;
     }
+    task.persistence = await persistTerminalTask(task);
+    task.updatedAt = new Date().toISOString();
     saveTask(task);
     return task;
   }

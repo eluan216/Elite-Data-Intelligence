@@ -28,6 +28,13 @@ export interface AgentStep {
   finishedAt?: string;
 }
 
+export interface TaskPersistence {
+  kind: "memory" | "github_issue";
+  /** GitHub issue URL when dual-written */
+  url?: string;
+  error?: string;
+}
+
 export interface AgentTask {
   id: string;
   createdAt: string;
@@ -62,6 +69,8 @@ export interface AgentTask {
   mode: "mock" | "llm";
   error?: string;
   estimatedCostUsd?: number;
+  /** Where the terminal record was stored */
+  persistence?: TaskPersistence;
 }
 
 export interface CreateTaskInput {
