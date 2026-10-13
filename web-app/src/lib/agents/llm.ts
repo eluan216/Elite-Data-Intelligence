@@ -1,12 +1,19 @@
 /**
- * Model access: OpenAI when OPENAI_API_KEY is set, otherwise structured mock.
+ * Model access: OpenAI when a key is set, otherwise structured mock.
+ * Accepts OPENAI_API_KEY (preferred) or OPEN_AI_KEY (Vercel naming variant).
  * Never hardcode keys. Browser never sees the key.
  */
 
 export type LlmMode = "mock" | "llm";
 
+export function getOpenAiKey(): string | undefined {
+  const key =
+    process.env.OPENAI_API_KEY?.trim() || process.env.OPEN_AI_KEY?.trim();
+  return key || undefined;
+}
+
 export function getLlmMode(): LlmMode {
-  return process.env.OPENAI_API_KEY ? "llm" : "mock";
+  return getOpenAiKey() ? "llm" : "mock";
 }
 
 export async function completeJson<T>(params: {
@@ -14,7 +21,7 @@ export async function completeJson<T>(params: {
   user: string;
   mock: T;
 }): Promise<{ data: T; mode: LlmMode; usageTokens?: number }> {
-  const key = process.env.OPENAI_API_KEY;
+  const key = getOpenAiKey();
   if (!key) {
     return { data: params.mock, mode: "mock" };
   }

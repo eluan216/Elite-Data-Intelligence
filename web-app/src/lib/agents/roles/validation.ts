@@ -1,4 +1,4 @@
-import { completeJson } from "../llm";
+import { completeJson, getOpenAiKey } from "../llm";
 import type { AgentTask } from "../types";
 
 const SYSTEM = `You are the Validation and Quality agent for Elite-Data-Intelligence.
@@ -12,7 +12,6 @@ export async function runValidation(task: AgentTask): Promise<NonNullable<AgentT
   const hasLimitations = (task.research?.limitations?.length ?? 0) > 0;
   const hasFindings = (task.research?.findings?.length ?? 0) > 0;
 
-  // Deterministic mock checks against AC ids
   const checks = criteria.map((c) => {
     if (c.id === "AC1") {
       const ok = Boolean(task.brief?.problem && task.brief.problem.length > 10);
@@ -60,7 +59,7 @@ export async function runValidation(task: AgentTask): Promise<NonNullable<AgentT
           : "Some criteria could not be fully verified; human review required.",
   };
 
-  if (!process.env.OPENAI_API_KEY) {
+  if (!getOpenAiKey()) {
     return mock;
   }
 
