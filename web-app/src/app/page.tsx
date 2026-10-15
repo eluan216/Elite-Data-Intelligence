@@ -42,6 +42,7 @@ export default function HomePage() {
             <Link href="#problems" className="hover:text-foreground transition-colors">Problems</Link>
             <Link href="#approach" className="hover:text-foreground transition-colors">Approach</Link>
             <Link href="#projects" className="hover:text-foreground transition-colors">Work</Link>
+            <Link href="/analyze" className="hover:text-foreground transition-colors">Analyze</Link>
             <Link href="#how-we-work" className="hover:text-foreground transition-colors">How we work</Link>
             <Link href="#contact" className="hover:text-foreground transition-colors">Contact</Link>
           </nav>
@@ -60,6 +61,7 @@ export default function HomePage() {
               <Link href="#problems" onClick={() => setMenuOpen(false)} className="text-muted hover:text-foreground">Problems</Link>
               <Link href="#approach" onClick={() => setMenuOpen(false)} className="text-muted hover:text-foreground">Approach</Link>
               <Link href="#projects" onClick={() => setMenuOpen(false)} className="text-muted hover:text-foreground">Work</Link>
+              <Link href="/analyze" onClick={() => setMenuOpen(false)} className="text-muted hover:text-foreground">Analyze</Link>
               <Link href="#how-we-work" onClick={() => setMenuOpen(false)} className="text-muted hover:text-foreground">How we work</Link>
               <Link href="#contact" onClick={() => setMenuOpen(false)} className="mt-2 inline-flex w-fit rounded-full bg-lime px-5 py-2 text-sm font-medium text-lime-foreground">Book a Call</Link>
             </nav>
@@ -81,7 +83,7 @@ export default function HomePage() {
             <p className="mt-4 max-w-xl text-sm text-muted">Primary focus today: <span className="text-foreground">decision systems and production-ready ML workflows</span> for teams that cannot afford silent model failure.</p>
             <div className="mt-12 flex flex-wrap gap-4">
               <Link href="#contact" className="rounded-full bg-lime px-8 py-3.5 text-sm font-semibold text-lime-foreground transition-opacity hover:opacity-90">Discuss a business problem</Link>
-              <Link href="#projects" className="rounded-full border border-white/20 px-8 py-3.5 text-sm font-medium text-foreground transition-colors hover:bg-white/5">See how we work →</Link>
+              <Link href="/analyze" className="rounded-full border border-white/20 px-8 py-3.5 text-sm font-medium text-foreground transition-colors hover:bg-white/5">Try CSV analyze →</Link>
             </div>
           </div>
         </div>
@@ -228,6 +230,7 @@ export default function HomePage() {
             <Link href="#problems" className="hover:text-foreground">Problems</Link>
             <Link href="#approach" className="hover:text-foreground">Approach</Link>
             <Link href="#projects" className="hover:text-foreground">Work</Link>
+            <Link href="/analyze" className="hover:text-foreground">Analyze</Link>
             <Link href="#how-we-work" className="hover:text-foreground">How we work</Link>
             <Link href="#contact" className="hover:text-foreground">Contact</Link>
             <Link href="/privacy" className="hover:text-foreground">Privacy</Link>
