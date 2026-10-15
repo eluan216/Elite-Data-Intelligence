@@ -45,8 +45,7 @@ function profileColumn(table: DataTable, index: number, name: string): ColumnPro
     if (nums.length) {
       const sorted = [...nums].sort((a, b) => a - b);
       const mean = nums.reduce((s, n) => s + n, 0) / nums.length;
-      const variance =
-        nums.reduce((s, n) => s + (n - mean) ** 2, 0) / nums.length;
+      const variance = nums.reduce((s, n) => s + (n - mean) ** 2, 0) / nums.length;
       base.mean = mean;
       base.median = percentile(sorted, 0.5);
       base.min = sorted[0];
@@ -77,26 +76,19 @@ function percentile(sorted: number[], p: number): number {
 }
 
 export function pearsonCorrelations(table: DataTable, maxPairs = 12): CorrelationPair[] {
-  const numericIdx = table.headers
-    .map((_, i) => i)
-    .filter((i) => isNumericColumn(table, i));
+  const numericIdx = table.headers.map((_, i) => i).filter((i) => isNumericColumn(table, i));
   const pairs: CorrelationPair[] = [];
   for (let i = 0; i < numericIdx.length; i++) {
     for (let j = i + 1; j < numericIdx.length; j++) {
       const a = numericIdx[i];
       const b = numericIdx[j];
-      const r = pearson(
-        columnValues(table, a),
-        columnValues(table, b)
-      );
+      const r = pearson(columnValues(table, a), columnValues(table, b));
       if (r !== null) {
         pairs.push({ a: table.headers[a], b: table.headers[b], r });
       }
     }
   }
-  return pairs
-    .sort((x, y) => Math.abs(y.r) - Math.abs(x.r))
-    .slice(0, maxPairs);
+  return pairs.sort((x, y) => Math.abs(y.r) - Math.abs(x.r)).slice(0, maxPairs);
 }
 
 function pearson(xs: CellValue[], ys: CellValue[]): number | null {
@@ -129,9 +121,7 @@ export function histogram(
   colIndex: number,
   bins = 10
 ): { label: string; count: number }[] {
-  const nums = columnValues(table, colIndex).filter(
-    (v): v is number => typeof v === "number"
-  );
+  const nums = columnValues(table, colIndex).filter((v): v is number => typeof v === "number");
   if (!nums.length) return [];
   const min = Math.min(...nums);
   const max = Math.max(...nums);
@@ -146,10 +136,7 @@ export function histogram(
   return counts.map((count, i) => {
     const lo = min + i * width;
     const hi = lo + width;
-    return {
-      label: `${lo.toFixed(1)}–${hi.toFixed(1)}`,
-      count,
-    };
+    return { label: `${lo.toFixed(1)}–${hi.toFixed(1)}`, count };
   });
 }
 
@@ -173,7 +160,9 @@ export function categoryCounts(
 export function summaryText(table: DataTable, profiles: ColumnProfile[]): string {
   const lines = [
     `Dataset: ${table.fileName}`,
-    `Rows: ${table.rowCount} · Columns: ${table.colCount}`,
+    `Source rows: ${table.sourceRowCount}`,
+    `Analyzed rows: ${table.rowCount}${table.truncated ? " (truncated)" : ""}`,
+    `Columns: ${table.colCount}`,
     "",
     "Column profiles:",
   ];
@@ -188,6 +177,14 @@ export function summaryText(table: DataTable, profiles: ColumnProfile[]): string
       );
     }
   }
+  if (table.warnings.length) {
+    lines.push("", "Warnings:");
+    for (const w of table.warnings) lines.push(`- ${w.message}`);
+  }
+  lines.push(
+    "",
+    "Method note: descriptive statistics only. Correlations are not causation. Outlier hints use 1.5×IQR when available."
+  );
   return lines.join("\n");
 }
 

@@ -1,25 +1,30 @@
-# Data analysis workbench (`/analyze`)
+# Data analysis workbench (`/analyze`) — v2
 
 Public utility on the agency site — separate from the marketing homepage.
 
-## v0 features
+## Features
 
 | Feature | Status |
 |---------|--------|
-| CSV upload + validation | Yes (browser, max 2 MB, 5k rows displayed) |
-| Data explorer | Yes (first 100 rows preview) |
-| Column profiles, missing %, means | Yes |
-| Correlations (numeric) | Yes |
-| Charts (histogram / top categories) | Yes |
-| Export summary + CSV | Yes |
-| History | Local only (`localStorage`) |
-| User accounts / private cloud reports | Not yet |
+| CSV upload + validation | Yes (browser, max 2 MB) |
+| Source vs analyzed row counts | Yes (truncation labeled) |
+| Duplicate headers / ragged rows | Warned + padded |
+| Data explorer | Yes |
+| Column profiles | Yes |
+| Correlations | Yes (Pearson; not causation) |
+| Charts | Histogram / top categories |
+| Data quality report | Missing, duplicates, constants, IQR outlier hints |
+| Export summary + CSV | Yes (newline/quote-safe fields) |
+| Sample dataset | Yes |
+| History | Local summaries only + clear action |
+| User accounts | Not yet |
+| AI narrative insights | Not yet |
 
 ## Design rules
 
-- Does not alter the homepage layout beyond a nav link.
-- Files are **not** uploaded to Elite-Data-Intelligence servers in v0.
-- Honest copy: local processing; accounts later.
+- Files are **not** uploaded to Elite-Data-Intelligence servers in v0/v2.
+- Trustworthy calculations before AI explanations.
+- Honest limits in UI copy.
 
 ## Code
 
