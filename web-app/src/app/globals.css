@@ -305,3 +305,10 @@ button, a { -webkit-tap-highlight-color: transparent; }
   .edi-chat-launcher, .edi-chat-panel { right: 16px; }
   .edi-chat-panel input { font-size: 16px; }
 }
+
+.edi-chat-glyph { display: none; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+@media (max-width: 640px) {
+  .edi-chat-launcher { display: flex; align-items: center; justify-content: center; width: 52px; height: 52px; padding: 0; border-radius: 50%; }
+  .edi-chat-launcher .edi-chat-label { display: none; }
+  .edi-chat-glyph { display: block; }
+}

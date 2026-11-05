@@ -32,8 +32,8 @@ const config: Config = {
         card: "#141e17",
       },
       fontFamily: {
-        sans: ["var(--font-geist-sans)", "system-ui", "sans-serif"],
-        display: ["var(--font-geist-sans)", "system-ui", "sans-serif"],
+        sans: ["Arial", "Helvetica", "sans-serif"],
+        display: ["Arial", "Helvetica", "sans-serif"],
       },
       fontSize: {
         "display-2xl": ["4.5rem", { lineHeight: "1.05", letterSpacing: "-0.02em" }],
