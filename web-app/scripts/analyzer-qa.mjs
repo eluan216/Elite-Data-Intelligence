@@ -41,13 +41,14 @@ await tab("Local history").click();
 await expect(page.getByText("A clean slate.", { exact: true })).toBeVisible();
 await tab("Overview").click();
 await accessibility("empty");
-await page.screenshot({ path: "design-artifacts/analyzer-empty.jpg", type: "jpeg", quality: 65, fullPage: true });
+const emptyShot = await page.screenshot({ path: "design-artifacts/analyzer-empty.jpg", type: "jpeg", quality: 60, fullPage: true });
+console.log("EDI_ANALYZER_EMPTY=" + emptyShot.toString("base64"));
 await upload("notes.txt", "a,b\n1,2", "text/plain");
-await expect(page.getByRole("alert")).toContainText(".csv extension");
+await expect(page.locator(".aw-feedback").getByRole("alert")).toContainText(".csv extension");
 await csvInput.setInputFiles({ name: "large.csv", mimeType: "text/csv", buffer: Buffer.alloc(2 * 1024 * 1024 + 1, 97) });
-await expect(page.getByRole("alert")).toContainText("2 MB");
+await expect(page.locator(".aw-feedback").getByRole("alert")).toContainText("2 MB");
 await upload("empty.csv", "");
-await expect(page.getByRole("alert")).toContainText("empty");
+await expect(page.locator(".aw-feedback").getByRole("alert")).toContainText("empty");
 
 await sampleButton.click();
 await expect(page.getByText("Loaded 10 rows · 5 columns.", { exact: true })).toBeVisible();
