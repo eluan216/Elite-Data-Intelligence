@@ -1,0 +1,42 @@
+[
+  {
+    "path": "web-app/public/images/optimized/hero-collage.webp",
+    "bytes": 86552,
+    "width": 680,
+    "height": 828,
+    "source": "hero-background.png.jpg",
+    "sourceBytes": 182682
+  },
+  {
+    "path": "web-app/public/images/optimized/wireframe-head-poster.webp",
+    "bytes": 27178,
+    "width": 800,
+    "height": 600,
+    "source": "wireframe-head.gif.GIF",
+    "sourceBytes": 5391406
+  },
+  {
+    "path": "web-app/public/images/optimized/network-brain-poster.webp",
+    "bytes": 11144,
+    "width": 540,
+    "height": 540,
+    "source": "network-brain.gif.GIF",
+    "sourceBytes": 3075566
+  },
+  {
+    "path": "web-app/public/images/optimized/data-lattice-poster.webp",
+    "bytes": 21668,
+    "width": 540,
+    "height": 309,
+    "source": "data-lattice.gif.GIF",
+    "sourceBytes": 3098677
+  },
+  {
+    "path": "web-app/public/images/optimized/terminal-interface-poster.webp",
+    "bytes": 32132,
+    "width": 500,
+    "height": 500,
+    "source": "terminal-interface.gif.GIF",
+    "sourceBytes": 2644965
+  }
+]

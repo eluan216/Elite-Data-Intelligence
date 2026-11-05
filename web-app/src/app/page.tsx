@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { Arrow, BrandMark } from "@/components/BrandIcons";
-import DecisionVisual from "@/components/DecisionVisual";
+import RepositoryVisual from "@/components/RepositoryVisual";
 import SelectedWork from "@/components/SelectedWork";
 import SupportChat from "@/components/SupportChat";
 import { MAX_EMAIL, MAX_NAME, MAX_PROJECT } from "@/lib/contact-helpers";
@@ -18,18 +18,30 @@ const LINKS = [
 const CAPABILITIES = [
   {
     number: "01",
+    poster: "/images/optimized/wireframe-head-poster.webp",
+    animation: "/images/wireframe-head.gif.GIF",
+    visualAlt: "Blue and violet wireframe head against a black background.",
+    visualCaption: "Conceptual intelligence",
     title: "Decision intelligence",
     body: "Give a business decision a clear objective, the right evidence, and a system people can act on.",
     details: ["Prioritization & ranking", "Decision support", "Applied analytics"],
   },
   {
     number: "02",
+    poster: "/images/optimized/terminal-interface-poster.webp",
+    animation: "/images/terminal-interface.gif.GIF",
+    visualAlt: "Abstract white data points forming a deep geometric tunnel.",
+    visualCaption: "Connected data",
     title: "Data foundations",
     body: "Build a dependable path from scattered source data to information your team can trust.",
     details: ["Data pipelines", "Quality contracts", "Analytics engineering"],
   },
   {
     number: "03",
+    poster: "/images/optimized/data-lattice-poster.webp",
+    animation: "/images/data-lattice.gif.GIF",
+    visualAlt: "Green terminal-style interface and data readouts on a dark field.",
+    visualCaption: "Systems in motion",
     title: "ML built to operate",
     body: "Take models and agent workflows through validation, monitoring, and a practical handover.",
     details: ["ML & agent workflows", "Evaluation & monitoring", "Governance & ownership"],
@@ -131,7 +143,16 @@ export default function HomePage() {
             </div>
             <div className="edi-hero-note"><span className="edi-note-line" /> Founder-led. Evidence-driven. Built for everyday use.</div>
           </div>
-          <div className="edi-hero-visual"><DecisionVisual /></div>
+          <div className="edi-hero-visual">
+            <RepositoryVisual
+              poster="/images/optimized/hero-collage.webp"
+              alt="Monochrome collage of a human head assembled from technical pages and interface fragments."
+              caption="Many signals. A clearer perspective."
+              className="edi-hero-art"
+              priority
+            />
+            <span className="edi-art-index edi-mono" aria-hidden="true">01 / Intelligence, by design</span>
+          </div>
           <div className="edi-hero-footer">
             <span>Strategy meets engineering.</span>
             <a href="#approach">Explore what’s possible<span aria-hidden="true">↓</span></a>
@@ -153,8 +174,11 @@ export default function HomePage() {
                 <article key={item.number} className="edi-capability">
                   <span className="edi-mono">{item.number}</span>
                   <h3>{item.title}</h3>
-                  <p>{item.body}</p>
-                  <ul>{item.details.map((detail) => <li key={detail}>{detail}</li>)}</ul>
+                  <div className="edi-capability-copy">
+                    <p>{item.body}</p>
+                    <ul>{item.details.map((detail) => <li key={detail}>{detail}</li>)}</ul>
+                  </div>
+                  <RepositoryVisual poster={item.poster} animation={item.animation} alt={item.visualAlt} caption={item.visualCaption} className="edi-service-visual" />
                 </article>
               ))}
             </div>

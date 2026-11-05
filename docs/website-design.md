@@ -11,8 +11,13 @@ and Vercel.
 - Arial/Helvetica for navigation and body; Georgia italic for display emphasis.
   System fonts avoid a font-download dependency.
 - Oversized type, generous section spacing, thin dividers, restrained corner radii.
-- Original SVG workflow illustration replaces the multi-megabyte animated backgrounds.
-  Its caption identifies it as an illustration rather than live monitoring.
+- The repository's monochrome collage portrait anchors the hero. The wireframe head,
+  abstract data tunnel, and terminal visual support the three capabilities.
+- Compact WebP posters load by default. Original GIFs load only after a visitor selects
+  Animate; Pause returns to the static poster. No motion plays automatically, including
+  for visitors who prefer reduced motion.
+- Abstract images are illustrative, not client screenshots or live monitoring. Captions
+  remain outside the images so text stays readable. Original files are preserved.
 - Portfolio demonstrations are identified as such. Metrics, logos, and client claims
   must be backed by evidence before being added.
 
@@ -31,6 +36,6 @@ and responsive input sizes are part of the design. Homepage rules use the
 
 `Website design QA` builds the production app, checks layouts at 320, 390, 768,
 and 1440 pixels, runs axe WCAG 2 A/AA checks on the homepage and open chat, tests
-keyboard navigation and a mocked contact flow, and smoke-tests the CSV workbench.
+keyboard navigation and a mocked contact flow, tests image loading and opt-in animation/pause, and smoke-tests the CSV workbench.
 No email or live agent call is made by those browser checks. Screenshots are saved
 as `website-design-screenshots` workflow artifacts.

@@ -28,12 +28,24 @@ async function checkLayout(width) {
 }
 
 await checkLayout(1440);
+await expect(page.locator(".edi-repository-visual")).toHaveCount(4);
+await expect.poll(() => page.locator(".edi-hero-art img").evaluate((image) => image.complete && image.naturalWidth > 0)).toBe(true);
+expect(await page.evaluate(() => performance.getEntriesByType("resource").filter((entry) => /\.gif(?:\?|$)/i.test(entry.name)).length)).toBe(0);
 await page.screenshot({ path: "design-artifacts/desktop-full.jpg", type: "jpeg", quality: 65, fullPage: true });
 const desktop = await page.screenshot({ path: "design-artifacts/desktop-hero.jpg", type: "jpeg", quality: 60 });
 console.log("EDI_DESKTOP_JPEG=" + desktop.toString("base64"));
 const desktopA11y = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa"]).analyze();
 console.log("DESKTOP_A11Y=" + JSON.stringify(desktopA11y.violations.map(({ id, impact, nodes }) => ({ id, impact, targets: nodes.map((node) => node.target) }))));
 accessibilityViolations.push(...desktopA11y.violations);
+
+const visual = page.locator(".edi-service-visual").first();
+await visual.getByRole("button", { name: "Play conceptual intelligence animation", exact: true }).click();
+await expect(visual.locator("img")).toHaveAttribute("src", /wireframe-head\.gif\.GIF/);
+await expect.poll(() => visual.locator("img").evaluate((image) => image.complete && image.naturalWidth > 0)).toBe(true);
+await visual.getByRole("button", { name: "Pause conceptual intelligence animation", exact: true }).click();
+await expect(visual.locator("img")).toHaveAttribute("src", /wireframe-head-poster\.webp/);
+await page.goto(baseURL, { waitUntil: "networkidle" });
+console.log("REPOSITORY_VISUALS_PASSED: four imagery placements; no GIF requests by default; play/pause restores the static preview.");
 
 let submissions = 0;
 await page.route("**/api/contact", (route) => {

@@ -312,3 +312,56 @@ button, a { -webkit-tap-highlight-color: transparent; }
   .edi-chat-launcher .edi-chat-label { display: none; }
   .edi-chat-glyph { display: block; }
 }
+
+/* Repository imagery: static previews by default; original animation is opt-in. */
+.edi-repository-visual { min-width: 0; overflow: hidden; border: 1px solid #344137; border-radius: 7px; background: #080b09; }
+.edi-visual-canvas { position: relative; width: 100%; aspect-ratio: 4 / 3; background: #050705; }
+.edi-repository-image { object-fit: contain; }
+.edi-repository-visual figcaption { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 45px; padding: 0 14px; border-top: 1px solid #344137; color: #c0cbbc; background: #111a14; font-size: 9px; line-height: 1.6; }
+.edi-repository-visual figcaption > span { padding-block: 10px; }
+.edi-repository-visual figcaption button { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; gap: 8px; color: var(--accent); font-size: 10px; flex-shrink: 0; }
+.edi-repository-visual figcaption button:hover { color: #f3f4e9; }
+.edi-hero-visual { position: relative; padding: 0 10px 54px; }
+.edi-hero-art { transform: rotate(1.4deg); border-color: #eff0e5; box-shadow: 0 30px 80px #0004; }
+.edi-hero-art .edi-visual-canvas { aspect-ratio: 1 / 1.04; background: #f4f4f1; }
+.edi-hero-art .edi-repository-image { object-fit: cover; object-position: center 40%; }
+.edi-hero-art figcaption { min-height: 44px; justify-content: center; background: #eff0e5; color: #34432e; border: 0; font-size: 9px; letter-spacing: .04em; }
+.edi-art-index { display: block; text-align: right; margin-top: 22px; color: #b0bda9; font-size: 9px; }
+.edi-capability { grid-template-columns: 32px 1.05fr 1.7fr 200px; gap: 30px; padding-block: 34px; align-items: center; }
+.edi-capability > .edi-mono { align-self: start; margin-top: 4px; }
+.edi-capability h3 { align-self: start; margin-top: 4px; }
+.edi-capability-copy > p { max-width: 340px; color: #53604f; font-size: 13px; line-height: 1.9; }
+.edi-capability-copy ul { display: flex; flex-wrap: wrap; gap: 0 15px; margin-top: 14px; font-size: 10px; line-height: 2; }
+.edi-service-visual { width: 200px; border-color: #66715e; }
+.edi-service-visual .edi-visual-canvas { aspect-ratio: 1.7 / 1; }
+.edi-service-visual figcaption { padding-inline: 10px; gap: 6px; font-size: 8px; }
+.edi-service-visual figcaption button { font-size: 9px; gap: 5px; }
+
+@media (max-width: 1100px) {
+  .edi-capability { grid-template-columns: 26px 1fr 1.3fr 165px; gap: 20px; }
+  .edi-service-visual { width: 165px; }
+  .edi-service-visual figcaption > span { font-size: 8px; }
+}
+@media (max-width: 900px) {
+  .edi-hero-visual { padding-inline: 0; }
+  .edi-hero-art { transform: none; }
+  .edi-capability { grid-template-columns: 24px 1fr 1.35fr; gap: 20px; }
+  .edi-service-visual { grid-column: 2; width: 100%; }
+  .edi-capability-copy { grid-column: 3; grid-row: span 2; align-self: center; }
+  .edi-capability-copy ul { display: block; }
+}
+@media (max-width: 640px) {
+  .edi-hero-visual { max-width: 420px; margin-inline: auto; padding-bottom: 28px; }
+  .edi-art-index { text-align: left; margin-top: 15px; font-size: 8px; }
+  .edi-hero-art .edi-visual-canvas { aspect-ratio: 1 / 1.06; }
+  .edi-capability { grid-template-columns: 22px 1fr; gap: 14px 13px; padding-block: 28px; }
+  .edi-capability-copy { grid-column: 2; grid-row: auto; }
+  .edi-capability-copy ul { margin-top: 12px; }
+  .edi-service-visual { grid-column: 2; width: 100%; margin-top: 10px; }
+  .edi-service-visual .edi-visual-canvas { aspect-ratio: 1.65 / 1; }
+  .edi-service-visual figcaption { padding-inline: 12px; font-size: 10px; }
+  .edi-service-visual figcaption > span { font-size: 10px; }
+  .edi-service-visual figcaption button { font-size: 10px; gap: 10px; }
+}
+
+.edi-service-visual :focus-visible { outline-color: var(--accent); }
