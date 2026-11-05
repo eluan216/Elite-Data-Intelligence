@@ -199,5 +199,6 @@ export function summaryText(table: DataTable, profiles: ColumnProfile[]): string
 
 function fmt(n?: number): string {
   if (n === undefined || Number.isNaN(n)) return "—";
+  if (n !== 0 && Math.abs(n) < 0.001) return n.toExponential(3);
   return Number.isInteger(n) ? String(n) : n.toFixed(3);
 }

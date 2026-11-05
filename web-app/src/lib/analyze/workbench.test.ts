@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { parseCsv } from "./csv";
 import { buildQualityReport } from "./quality";
-import { histogram, profileTable } from "./stats";
+import { histogram, profileTable, summaryText } from "./stats";
 
 describe("workbench chart and quality contracts", () => {
   it("uses distinguishable boundaries for small decimal distributions", () => {
@@ -10,6 +10,10 @@ describe("workbench chart and quality contracts", () => {
     expect(new Set(bins.map((bin) => bin.label)).size).toBe(3);
     expect(bins.every((bin) => bin.label !== "0.0–0.0")).toBe(true);
     expect(bins.reduce((total, bin) => total + bin.count, 0)).toBe(4);
+  });
+  it("keeps small nonzero values visible in exported summaries", () => {
+    const table = parseCsv("value\n0.000001\n0.000002");
+    expect(summaryText(table, profileTable(table))).toContain("mean=1.500e-6");
   });
   it.each([0, -1, 1.5, NaN, Infinity])("rejects invalid histogram bin counts: %s", (bins) => {
     expect(() => histogram(parseCsv("value\n1\n2"), 0, bins)).toThrow(/positive integer/);

@@ -244,7 +244,9 @@ function Chart({ data, numeric, compact = false }: { data: { label: string; coun
 }
 
 function formatNumber(value?: number) {
-  return value === undefined ? "—" : value.toLocaleString(undefined, { maximumFractionDigits: 3 });
+  if (value === undefined) return "—";
+  if (value !== 0 && Math.abs(value) < 0.001) return value.toExponential(3);
+  return value.toLocaleString(undefined, { maximumFractionDigits: 3 });
 }
 
 function downloadText(text: string, name: string, type = "text/plain") {
