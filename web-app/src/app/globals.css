@@ -3,57 +3,305 @@
 @tailwind utilities;
 
 :root {
-  --background: #1A202C;   /* Graphite */
-  --foreground: #F5F2EB;   /* Ivory */
-  --accent: #c8ff00;       /* Lime */
+  --background: #0d1410;
+  --foreground: #f3f4e9;
+  --accent: #d6fa60;
   --purple: #a855f7;
-  --muted: #a1a1aa;
-  --border: #2d3748;
+  --muted: #a8b1a9;
+  --border: #2c3930;
+}
+html { scroll-behavior: smooth; scroll-padding-top: 100px; }
+body { color: var(--foreground); background: var(--background); font-family: Arial, Helvetica, sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+::selection { color: #14200e; background: #d6fa60; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 5px; }
+button, input, textarea, select { font: inherit; }
+button, a { -webkit-tap-highlight-color: transparent; }
+.display-2xl { font-size: clamp(2.75rem, 6vw, 4.5rem); line-height: 1.05; letter-spacing: -.04em; font-weight: 700; }
+.display-xl { font-size: clamp(2.25rem, 5vw, 3.75rem); line-height: 1.1; letter-spacing: -.04em; font-weight: 700; }
+.display-lg { font-size: clamp(1.875rem, 4vw, 3rem); line-height: 1.15; letter-spacing: -.03em; font-weight: 700; }
+.glow-lime { filter: drop-shadow(0 0 28px rgb(214 250 96 / .2)); }
+.edi-home { --edi-paper: #eff0e5; --edi-ink: #18251c; overflow-x: clip; }
+.edi-frame { width: 100%; max-width: 1360px; margin-inline: auto; padding-inline: 40px; }
+.edi-section { padding-block: 112px; scroll-margin-top: 20px; }
+.edi-home p { text-wrap: pretty; }
+.edi-home h1, .edi-home h2, .edi-home h3 { font-weight: 500; }
+.edi-home h2 { margin: 0; font-size: clamp(2.5rem, 4.6vw, 4.1rem); line-height: 1.06; letter-spacing: -.055em; }
+.edi-home h2 em, .edi-home h1 em { font-family: Georgia, "Times New Roman", serif; font-weight: 400; letter-spacing: -.055em; }
+.edi-home .edi-eyebrow { display: flex; align-items: center; gap: 10px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .15em; line-height: 1.7; }
+.edi-mono { font-family: "Courier New", monospace; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; }
+.edi-dot { display: inline-block; flex: 0 0 6px; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+.edi-arrow { flex-shrink: 0; }
+.edi-arrow path { stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.edi-skip-link { position: fixed; z-index: 100; top: 10px; left: 15px; padding: 12px 20px; color: #14200e; background: var(--accent); transform: translateY(-160%); }
+.edi-skip-link:focus { transform: translateY(0); }
+.edi-header { position: sticky; top: 0; z-index: 40; border-bottom: 1px solid rgb(243 244 233 / .1); background: rgb(13 20 16 / .96); backdrop-filter: blur(16px); }
+.edi-header-row { display: flex; align-items: center; justify-content: space-between; gap: 24px; min-height: 84px; }
+.edi-brand { display: inline-flex; align-items: center; gap: 12px; flex-shrink: 0; }
+.edi-brand > svg { color: var(--accent); width: 26px; height: 26px; }
+.edi-brand > span { font-size: 10px; font-weight: 700; line-height: 1.6; letter-spacing: .17em; }
+.edi-brand > span > span { display: block; }
+.edi-desktop-nav { display: flex; gap: 28px; align-items: center; }
+.edi-desktop-nav a { display: inline-flex; align-items: center; min-height: 44px; font-size: 12px; color: #b8c0b9; transition: color .2s; }
+.edi-desktop-nav a:hover { color: var(--accent); }
+.edi-header-actions { display: flex; align-items: center; gap: 16px; }
+.edi-header-cta { display: inline-flex; min-height: 44px; align-items: center; gap: 24px; font-size: 12px; border-bottom: 1px solid var(--accent); }
+.edi-header-cta .edi-arrow { color: var(--accent); }
+.edi-menu-toggle { display: none; width: 44px; height: 44px; align-items: center; justify-content: center; flex-direction: column; gap: 6px; border: 1px solid #354338; border-radius: 50%; }
+.edi-menu-toggle span { width: 16px; height: 1px; background: var(--foreground); transition: transform .2s; }
+.edi-menu-toggle span.is-open:first-child { transform: translateY(3.5px) rotate(45deg); }
+.edi-menu-toggle span.is-open:last-child { transform: translateY(-3.5px) rotate(-45deg); }
+.edi-mobile-nav { display: none; }
+.edi-button { display: inline-flex; min-height: 52px; padding: 15px 22px; align-items: center; justify-content: space-between; gap: 28px; border: 1px solid transparent; border-radius: 4px; font-size: 12px; font-weight: 600; line-height: 1.4; transition: background .2s, transform .2s; }
+.edi-button:hover { transform: translateY(-2px); }
+.edi-button-primary { background: var(--accent); color: #14200e; }
+.edi-button-primary:hover { background: #e2ff8c; }
+.edi-button-dark { background: var(--edi-ink); color: var(--edi-paper); }
+.edi-button-dark:hover { background: #2c4031; }
+.edi-text-link { display: inline-flex; align-items: center; gap: 18px; min-height: 44px; font-size: 12px; font-weight: 500; }
+.edi-text-link:hover { color: var(--accent); }
+.edi-hero { display: grid; grid-template-columns: 1.15fr .9fr; column-gap: 50px; align-items: center; min-height: calc(100svh - 84px); padding-top: 72px; }
+.edi-hero-copy { padding-bottom: 60px; }
+.edi-hero-copy > .edi-eyebrow { color: #c6cec6; margin-bottom: 28px; }
+.edi-hero h1 { font-size: clamp(3.3rem, 6.1vw, 6.1rem); line-height: .99; letter-spacing: -.065em; margin: 0; }
+.edi-hero h1 em { color: var(--accent); }
+.edi-hero-description { max-width: 400px; font-size: 16px; line-height: 1.75; color: var(--muted); margin: 28px 0 0; }
+.edi-hero-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 24px; margin-top: 32px; }
+.edi-hero-note { display: flex; align-items: center; gap: 12px; font-size: 10px; color: #a8b1a9; margin-top: 34px; line-height: 1.7; }
+.edi-note-line { width: 22px; height: 1px; background: #779047; flex-shrink: 0; }
+.edi-hero-visual { padding-bottom: 44px; min-width: 0; }
+.edi-blueprint { border: 1px solid #344137; background: #111a14; border-radius: 10px; overflow: hidden; box-shadow: 0 25px 80px rgb(0 0 0 / .15); transform: rotate(1.5deg); }
+.edi-blueprint-heading { display: flex; align-items: center; gap: 9px; padding: 19px 20px; border-bottom: 1px solid #2c3930; font-size: 11px; }
+.edi-blueprint-heading .edi-mono { margin-left: auto; color: #a9b5ac; font-size: 9px; }
+.edi-system-map { display: block; width: 100%; height: auto; font-family: Arial, Helvetica, sans-serif; }
+.edi-blueprint-caption { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; padding: 17px 20px; font-size: 9px; color: #a9b5ac; border-top: 1px solid #2c3930; }
+.edi-blueprint-caption span:last-child { font-family: "Courier New", monospace; font-size: 8px; text-transform: uppercase; letter-spacing: .06em; }
+.edi-hero-footer { display: flex; align-items: center; justify-content: space-between; grid-column: 1 / -1; gap: 20px; min-height: 76px; border-top: 1px solid #2c3930; font-size: 10px; color: #a9b5ac; }
+.edi-hero-footer a { display: flex; align-items: center; gap: 18px; min-height: 44px; color: #d8ded5; }
+.edi-hero-footer a span { color: var(--accent); font-size: 18px; }
+.edi-capabilities { background: var(--edi-paper); color: var(--edi-ink); }
+.edi-capabilities :focus-visible { outline-color: #416715; }
+.edi-section-heading { display: grid; grid-template-columns: 1fr 2.1fr; gap: 48px; margin-bottom: 64px; }
+.edi-section-heading > .edi-eyebrow { align-self: start; margin-top: 8px; color: #b2beb4; }
+.edi-section-heading > div > p { max-width: 480px; font-size: 14px; line-height: 1.85; margin-top: 22px; color: var(--muted); }
+.edi-capabilities .edi-section-heading > .edi-eyebrow { color: #52644e; }
+.edi-capabilities .edi-section-heading > div > p { color: #53604f; }
+.edi-capability { display: grid; grid-template-columns: 50px 1.2fr 1.35fr 1fr; align-items: start; gap: 30px; border-top: 1px solid #c5cbbf; padding: 30px 0; }
+.edi-capability > .edi-mono { color: #65735d; padding-top: 7px; }
+.edi-capability h3 { font-size: 25px; line-height: 1.15; letter-spacing: -.04em; padding-top: 2px; }
+.edi-capability > p { max-width: 310px; font-size: 13px; line-height: 1.9; color: #53604f; }
+.edi-capability ul { font-size: 10px; line-height: 2.1; color: #465640; }
+.edi-capability ul li::before { content: "↗"; display: inline-block; margin-right: 8px; color: #576b43; }
+.edi-workbench-callout { display: flex; align-items: center; justify-content: space-between; gap: 32px; padding: 34px 38px; margin-top: 32px; background: #dfe4d4; border-radius: 6px; }
+.edi-workbench-callout .edi-mono { color: #516047; font-size: 9px; }
+.edi-workbench-callout h3 { font-size: 25px; letter-spacing: -.04em; margin-top: 8px; }
+.edi-workbench-callout p { font-size: 12px; line-height: 1.8; color: #53604f; margin-top: 8px; max-width: 500px; }
+.edi-workbench-callout .edi-button { flex-shrink: 0; }
+.edi-work { background: #111a14; }
+.edi-featured-work { display: grid; grid-template-columns: 1.12fr 1fr; gap: 64px; border: 1px solid #3e4e36; border-radius: 8px; padding: 48px; background: #1a261b; }
+.edi-project-label { display: inline-flex; align-items: center; gap: 8px; color: #d5e8b7; font-size: 9px; letter-spacing: .12em; text-transform: uppercase; }
+.edi-featured-copy h3 { font-size: clamp(2rem, 3vw, 2.6rem); letter-spacing: -.05em; line-height: 1.08; margin-top: 24px; }
+.edi-featured-copy > p { font-size: 13px; color: #b0bcac; line-height: 1.9; max-width: 400px; margin-top: 20px; }
+.edi-tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 24px; }
+.edi-tags li { font-size: 9px; line-height: 1.5; border: 1px solid #44513c; border-radius: 3px; padding: 4px 8px; color: #c1cbb7; }
+.edi-featured-copy .edi-text-link { color: var(--accent); margin-top: 25px; }
+.edi-case-visual { align-self: center; min-width: 0; background: #101a12; border: 1px solid #3a4930; border-radius: 6px; padding: 24px; }
+.edi-case-visual > .edi-mono { display: block; margin-bottom: 24px; color: #a5b593; font-size: 9px; }
+.edi-case-step { display: flex; align-items: center; gap: 14px; padding-block: 17px; border-top: 1px solid #34432d; }
+.edi-case-step > span:first-child { font-family: "Courier New", monospace; color: #a5b593; font-size: 10px; }
+.edi-case-step > div { flex: 1; }
+.edi-case-step strong { font-size: 12px; font-weight: 500; }
+.edi-case-step p { font-size: 10px; color: #a9b5a0; margin-top: 5px; line-height: 1.6; }
+.edi-case-step > svg, .edi-case-step > span:last-child { color: var(--accent); }
+.edi-case-disclaimer { font-size: 9px; line-height: 1.7; color: #a9b5a0; border-top: 1px solid #34432d; padding-top: 17px; }
+.edi-project-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 30px; border-top: 1px solid #344137; border-left: 1px solid #344137; }
+.edi-project-card { display: flex; flex-direction: column; padding: 30px; min-width: 0; border-right: 1px solid #344137; border-bottom: 1px solid #344137; transition: background .2s; }
+.edi-project-card:hover { background: #18241b; }
+.edi-project-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; color: #a9b5ac; font-size: 9px; }
+.edi-project-card h3 { margin-block: 28px 14px; font-size: 20px; letter-spacing: -.035em; line-height: 1.25; }
+.edi-project-card h3 a { display: flex; align-items: start; justify-content: space-between; gap: 18px; }
+.edi-project-card h3 a:hover { color: var(--accent); }
+.edi-project-card h3 .edi-arrow { width: 14px; margin-top: 3px; color: var(--accent); }
+.edi-project-card > p { font-size: 12px; color: #a9b5ac; line-height: 1.85; padding-bottom: 24px; }
+.edi-project-card .edi-tags { margin-top: auto; }
+.edi-work-footer { display: flex; justify-content: space-between; align-items: center; gap: 24px; margin-top: 28px; }
+.edi-work-footer > p { max-width: 560px; font-size: 10px; line-height: 1.8; color: #a9b5ac; }
+.edi-work-footer > a { flex-shrink: 0; }
+.edi-process { background: var(--background); }
+.edi-process-steps { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 32px; }
+.edi-process-steps li { position: relative; border-top: 1px solid #43513b; padding-top: 22px; }
+.edi-process-steps li::before { content: ""; position: absolute; top: -3px; left: 0; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
+.edi-process-steps .edi-mono { color: #b3c2a0; }
+.edi-process-steps h3 { font-size: 20px; letter-spacing: -.035em; margin-top: 22px; }
+.edi-process-steps p { color: #a9b5ac; font-size: 12px; line-height: 1.9; margin-top: 12px; }
+.edi-founder { display: grid; grid-template-columns: 1fr 2.1fr; gap: 48px; margin-top: 90px; padding-top: 60px; border-top: 1px solid #344137; }
+.edi-founder-monogram { align-self: start; width: 155px; height: 170px; display: flex; flex-direction: column; justify-content: center; align-items: center; border: 1px solid #425236; color: var(--accent); background: repeating-linear-gradient(135deg, transparent, transparent 10px, #18251a 10px, #18251a 11px); font-family: Georgia, serif; font-size: 56px; letter-spacing: -.08em; }
+.edi-founder-monogram span { margin-top: 12px; font-family: Arial, sans-serif; font-size: 8px; letter-spacing: .04em; color: #b4c1a8; }
+.edi-founder h3 { font-size: 32px; line-height: 1.1; letter-spacing: -.04em; margin-top: 18px; }
+.edi-founder > div > p:not(.edi-eyebrow) { max-width: 570px; color: #a9b5ac; font-size: 13px; line-height: 1.9; margin-top: 22px; }
+.edi-founder .edi-text-link { margin-top: 14px; color: var(--accent); }
+.edi-contact { background: #1b281c; border-top: 1px solid #3b4a31; }
+.edi-contact-grid { display: grid; grid-template-columns: 1fr .9fr; gap: 100px; }
+.edi-contact h2 { font-size: clamp(2.4rem, 4.3vw, 3.8rem); margin-top: 28px; }
+.edi-contact h2 em { color: #d9e6c9; }
+.edi-contact-intro { color: #b8c3ae; font-size: 14px; line-height: 1.9; max-width: 400px; margin-top: 28px; }
+.edi-contact-email { display: inline-flex; align-items: center; gap: 24px; border-bottom: 1px solid #81985d; padding-block: 10px; font-size: 15px; margin-top: 24px; }
+.edi-contact-email .edi-arrow { color: var(--accent); }
+.edi-contact-note { font-size: 10px; line-height: 2; color: #d6e0ca; margin-top: 32px; }
+.edi-contact-note .edi-dot { width: 5px; height: 5px; margin-right: 6px; }
+.edi-contact-note > span:last-child { color: #b3c0a8; padding-left: 14px; }
+.edi-contact-form { align-self: center; }
+.edi-contact-form > .edi-mono { color: #c0cdb1; margin-bottom: 30px; font-size: 9px; }
+.edi-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-bottom: 26px; }
+.edi-contact-form label { display: block; font-size: 11px; margin-bottom: 10px; color: #e0e8d5; }
+.edi-contact-form input, .edi-contact-form textarea { display: block; width: 100%; min-width: 0; border: 1px solid #667555; border-radius: 4px; background: #152015; color: #f3f4e9; padding: 13px 14px; font-size: 13px; line-height: 1.6; resize: vertical; }
+.edi-contact-form input::placeholder, .edi-contact-form textarea::placeholder { color: #a7b49b; }
+.edi-contact-form input:focus-visible, .edi-contact-form textarea:focus-visible { outline-offset: 3px; }
+.edi-contact-form .edi-button { width: 100%; margin-top: 22px; }
+.edi-contact-form .edi-button:disabled { cursor: wait; opacity: .65; transform: none; }
+.edi-form-privacy { font-size: 9px; line-height: 1.9; color: #b6c3aa; margin-top: 18px; }
+.edi-form-privacy a { text-decoration: underline; text-underline-offset: 3px; }
+.edi-form-feedback { min-height: 28px; padding-top: 14px; font-size: 12px; line-height: 1.8; }
+.edi-success { color: #d6fa60; }
+.edi-error { color: #ffccc2; }
+.edi-error a { text-decoration: underline; }
+.edi-footer { padding-block: 58px 26px; background: #0a100c; }
+.edi-footer-top { display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: start; gap: 40px; padding-bottom: 44px; }
+.edi-footer-top > p { font-size: 20px; letter-spacing: -.03em; line-height: 1.4; }
+.edi-footer nav { display: flex; justify-content: end; flex-wrap: wrap; gap: 10px 24px; color: #a9b5ac; }
+.edi-footer nav a { display: inline-flex; align-items: center; min-height: 44px; gap: 5px; font-size: 10px; }
+.edi-footer nav svg { width: 12px; }
+.edi-footer nav a:hover { color: var(--accent); }
+.edi-footer-bottom { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 16px; border-top: 1px solid #2c3930; padding-top: 24px; color: #a9b5ac; font-size: 9px; }
+.edi-footer-bottom a { padding-right: 80px; }
+
+@media (min-width: 1600px) { .edi-hero { min-height: 800px; } }
+@media (max-width: 1100px) {
+  .edi-frame { padding-inline: 28px; }
+  .edi-desktop-nav { gap: 18px; }
+  .edi-desktop-nav a { font-size: 11px; }
+  .edi-hero { gap: 30px; }
+  .edi-capability { gap: 20px; grid-template-columns: 30px 1fr 1.2fr 1fr; }
+  .edi-featured-work { gap: 32px; padding: 32px; }
+  .edi-contact-grid { gap: 54px; }
+}
+@media (max-width: 900px) {
+  .edi-section { padding-block: 80px; }
+  .edi-header-row { min-height: 76px; }
+  .edi-desktop-nav { display: none; }
+  .edi-menu-toggle { display: flex; }
+  .edi-mobile-nav:not([hidden]) { display: flex; flex-direction: column; padding-block: 12px 24px; border-top: 1px solid #2c3930; }
+  .edi-mobile-nav a { display: flex; align-items: center; justify-content: space-between; min-height: 48px; font-size: 14px; border-bottom: 1px solid #26342a; }
+  .edi-mobile-nav a:last-child { color: var(--accent); }
+  .edi-hero { min-height: auto; grid-template-columns: 1fr 1fr; padding-top: 60px; }
+  .edi-hero h1 { font-size: clamp(3rem, 6.3vw, 4.5rem); }
+  .edi-hero-description { font-size: 14px; }
+  .edi-hero-actions { gap: 14px; }
+  .edi-hero .edi-button { padding-inline: 16px; gap: 14px; }
+  .edi-hero-note { font-size: 9px; }
+  .edi-blueprint { transform: none; }
+  .edi-blueprint-heading { flex-wrap: wrap; font-size: 10px; padding-inline: 12px; }
+  .edi-blueprint-heading .edi-mono { font-size: 8px; }
+  .edi-blueprint-caption { padding-inline: 12px; }
+  .edi-hero-footer > .edi-mono { display: none; }
+  .edi-section-heading { grid-template-columns: 1fr 2fr; gap: 28px; }
+  .edi-capability { grid-template-columns: 30px 1fr 1.3fr; }
+  .edi-capability ul { grid-column: 2 / -1; display: flex; flex-wrap: wrap; gap: 5px 18px; }
+  .edi-workbench-callout { padding: 28px; flex-wrap: wrap; }
+  .edi-project-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .edi-project-card { padding: 26px; }
+  .edi-process-steps { gap: 20px; }
+  .edi-process-steps p { font-size: 11px; }
+  .edi-process-steps h3 { font-size: 17px; }
+  .edi-contact-grid { grid-template-columns: 1fr 1fr; gap: 34px; }
+  .edi-form-row { grid-template-columns: 1fr; }
+  .edi-footer-top { grid-template-columns: 1fr 1fr; }
+  .edi-footer nav { grid-column: 1 / -1; justify-content: start; }
+}
+@media (max-width: 640px) {
+  html { scroll-padding-top: 88px; }
+  .edi-frame { padding-inline: 24px; }
+  .edi-section { padding-block: 64px; }
+  .edi-header-row { min-height: 74px; gap: 12px; }
+  .edi-brand { gap: 10px; }
+  .edi-brand > span { font-size: 8px; }
+  .edi-brand > svg { width: 23px; height: 23px; }
+  .edi-header-actions { gap: 14px; }
+  .edi-header-cta { font-size: 11px; gap: 12px; }
+  .edi-header-cta svg { width: 14px; }
+  .edi-menu-toggle { width: 42px; height: 42px; }
+  .edi-home .edi-eyebrow { font-size: 9px; letter-spacing: .12em; }
+  .edi-hero { display: block; padding-top: 48px; }
+  .edi-hero-copy { padding-bottom: 40px; }
+  .edi-hero h1 { font-size: clamp(2.9rem, 12vw, 4.6rem); }
+  .edi-hero-copy > .edi-eyebrow { margin-bottom: 22px; }
+  .edi-hero-description { font-size: 15px; line-height: 1.8; max-width: 350px; margin-top: 24px; }
+  .edi-hero-actions { gap: 12px 22px; margin-top: 24px; }
+  .edi-hero .edi-button { padding-inline: 17px; font-size: 11px; gap: 22px; }
+  .edi-hero .edi-text-link { font-size: 11px; gap: 10px; }
+  .edi-hero-note { font-size: 9px; margin-top: 24px; }
+  .edi-hero-visual { padding-bottom: 30px; }
+  .edi-blueprint { max-width: 420px; margin-inline: auto; }
+  .edi-hero-footer { min-height: 68px; font-size: 9px; gap: 12px; }
+  .edi-hero-footer a { font-size: 9px; gap: 10px; }
+  .edi-home h2 { font-size: clamp(2.2rem, 9vw, 3.1rem); }
+  .edi-section-heading { display: block; margin-bottom: 38px; }
+  .edi-section-heading > .edi-eyebrow { margin-bottom: 24px; }
+  .edi-section-heading > div > p { font-size: 13px; margin-top: 18px; }
+  .edi-capability { grid-template-columns: 22px 1fr; gap: 13px; padding-block: 26px; }
+  .edi-capability h3 { font-size: 24px; }
+  .edi-capability > p, .edi-capability ul { grid-column: 2; max-width: none; }
+  .edi-capability > p { font-size: 13px; }
+  .edi-capability ul { display: block; font-size: 10px; line-height: 2.3; }
+  .edi-workbench-callout { padding: 24px; margin-top: 24px; gap: 22px; }
+  .edi-workbench-callout h3 { font-size: 25px; }
+  .edi-workbench-callout .edi-button { width: 100%; font-size: 11px; padding-inline: 16px; gap: 14px; }
+  .edi-featured-work { grid-template-columns: 1fr; padding: 26px 22px; gap: 30px; }
+  .edi-featured-copy h3 { font-size: 32px; }
+  .edi-featured-copy > p { font-size: 13px; }
+  .edi-case-visual { padding: 20px 16px; }
+  .edi-project-grid { grid-template-columns: 1fr; margin-top: 24px; }
+  .edi-project-card { padding: 26px 24px; }
+  .edi-project-card h3 { margin-top: 22px; font-size: 22px; }
+  .edi-project-card > p { font-size: 13px; }
+  .edi-project-card .edi-tags { margin-top: 0; }
+  .edi-work-footer { align-items: start; flex-direction: column; gap: 8px; margin-top: 24px; }
+  .edi-process-steps { grid-template-columns: 1fr; gap: 0; }
+  .edi-process-steps li { display: grid; grid-template-columns: 30px 1fr; gap: 10px 18px; padding: 22px 0; }
+  .edi-process-steps li::before { display: none; }
+  .edi-process-steps .edi-mono { padding-top: 3px; }
+  .edi-process-steps h3 { margin: 0; font-size: 22px; }
+  .edi-process-steps p { grid-column: 2; margin: 0; font-size: 13px; }
+  .edi-founder { display: block; margin-top: 44px; padding-top: 34px; }
+  .edi-founder-monogram { width: 106px; height: 112px; margin-bottom: 30px; font-size: 40px; }
+  .edi-founder-monogram span { font-size: 7px; margin-top: 5px; }
+  .edi-founder h3 { font-size: 30px; }
+  .edi-contact-grid { grid-template-columns: 1fr; gap: 44px; }
+  .edi-contact h2 { font-size: 38px; margin-top: 24px; }
+  .edi-contact-intro { font-size: 14px; margin-top: 22px; }
+  .edi-contact-email { font-size: 15px; gap: 20px; }
+  .edi-contact-note { margin-top: 22px; }
+  .edi-contact-form > .edi-mono { margin-bottom: 24px; }
+  .edi-form-row { gap: 24px; margin-bottom: 24px; }
+  .edi-contact-form input, .edi-contact-form textarea { font-size: 16px; }
+  .edi-contact-form label { font-size: 12px; }
+  .edi-form-privacy { font-size: 10px; }
+  .edi-footer { padding-block: 40px 82px; }
+  .edi-footer-top { gap: 30px 20px; padding-bottom: 24px; }
+  .edi-footer-top > p { font-size: 17px; }
+  .edi-footer nav { gap: 8px 28px; }
+  .edi-footer-bottom { font-size: 9px; flex-direction: column; gap: 13px; padding-top: 22px; }
+  .edi-footer-bottom a { padding-right: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-/* Editorial display utilities */
-.display-2xl {
-  font-size: 4.5rem;
-  line-height: 1.05;
-  letter-spacing: -0.02em;
-  font-weight: 700;
-}
-
-.display-xl {
-  font-size: 3.75rem;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
-  font-weight: 700;
-}
-
-.display-lg {
-  font-size: 3rem;
-  line-height: 1.15;
-  letter-spacing: -0.01em;
-  font-weight: 700;
-}
-
-@media (max-width: 768px) {
-  .display-2xl {
-    font-size: 2.75rem;
-  }
-  .display-xl {
-    font-size: 2.25rem;
-  }
-  .display-lg {
-    font-size: 1.875rem;
-  }
-}
-
-/* Lime glow for key visuals */
-.glow-lime {
-  filter: drop-shadow(0 0 28px rgba(200, 255, 0, 0.35));
+.edi-chat-launcher { position: fixed; right: 24px; bottom: max(20px, env(safe-area-inset-bottom)); z-index: 50; min-height: 48px; min-width: 48px; padding: 13px 21px; border: 1px solid #d6fa60; border-radius: 5px; background: #d6fa60; color: #14200e; box-shadow: 0 8px 30px #0004; font-size: 12px; font-weight: 600; }
+.edi-chat-launcher > span { display: inline-flex; align-items: center; gap: 24px; }
+.edi-chat-panel { position: fixed; right: 24px; bottom: calc(86px + env(safe-area-inset-bottom)); z-index: 50; display: flex; flex-direction: column; width: 370px; max-width: calc(100vw - 32px); height: min(500px, calc(100dvh - 120px)); border: 1px solid #42543a; border-radius: 10px; background: #0d1410; box-shadow: 0 25px 80px #0008; overflow: hidden; }
+.edi-home #support-chat-title { font-size: 14px; line-height: 1.4; letter-spacing: -.02em; }
+@media (max-width: 640px) {
+  .edi-chat-launcher, .edi-chat-panel { right: 16px; }
+  .edi-chat-panel input { font-size: 16px; }
 }

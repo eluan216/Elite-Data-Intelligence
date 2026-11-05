@@ -1,0 +1,51 @@
+name: Website design QA
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "web-app/**"
+      - ".github/workflows/design-qa.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  browser-review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: web-app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install app and browser tools
+        run: |
+          npm install
+          npm install --no-save @playwright/test @axe-core/playwright
+          npx playwright install --with-deps chromium
+      - name: Build production app
+        run: npm run build
+        env:
+          RESEND_API_KEY: ""
+          CONTACT_TO_EMAIL: ""
+      - name: Browser and accessibility review
+        run: |
+          npm run start > /tmp/edi-design-server.log 2>&1 &
+          for attempt in $(seq 1 30); do
+            if curl --silent --fail http://127.0.0.1:3000 > /dev/null; then break; fi
+            sleep 1
+          done
+          node scripts/design-qa.mjs
+      - name: Save desktop and mobile screenshots
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: website-design-screenshots
+          path: web-app/design-artifacts/
+          if-no-files-found: warn
+          retention-days: 30

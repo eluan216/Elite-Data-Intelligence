@@ -29,10 +29,27 @@ export default function SupportChat() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const launcherRef = useRef<HTMLButtonElement>(null);
+
+  function closeChat() {
+    setOpen(false);
+    launcherRef.current?.focus();
+  }
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, loading]);
+    if (!open) return;
+    inputRef.current?.focus();
+    function onEscape(event: KeyboardEvent) {
+      if (event.key === "Escape") closeChat();
+    }
+    document.addEventListener("keydown", onEscape);
+    return () => document.removeEventListener("keydown", onEscape);
+  }, [open]);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "auto", block: "nearest" });
+  }, [messages, loading, open]);
 
   async function sendMessage(text: string) {
     if (!text.trim() || loading) return;
@@ -85,34 +102,38 @@ export default function SupportChat() {
   return (
     <>
       <button
-        onClick={() => setOpen(!open)}
-        className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-lime text-lime-foreground shadow-lg transition-transform hover:scale-105"
+        ref={launcherRef}
+        type="button"
+        onClick={() => open ? closeChat() : setOpen(true)}
+        aria-expanded={open}
+        aria-controls={open ? "support-chat" : undefined}
+        className="edi-chat-launcher"
         aria-label={open ? "Close support chat" : "Open support chat"}
       >
         {open ? (
           <span className="text-xl font-bold">×</span>
         ) : (
-          <span className="text-sm font-semibold">Chat</span>
+          <span>Let’s talk <span aria-hidden="true">↗</span></span>
         )}
       </button>
 
       {open && (
-        <div className="fixed bottom-24 right-6 z-50 flex h-[460px] w-[360px] max-w-[calc(100vw-3rem)] flex-col overflow-hidden rounded-2xl border border-white/10 bg-background shadow-2xl">
+        <section id="support-chat" role="dialog" aria-labelledby="support-chat-title" className="edi-chat-panel">
           <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
             <div>
-              <p className="text-sm font-semibold text-foreground">Support Agent</p>
+              <h2 id="support-chat-title" className="text-sm font-semibold text-foreground">A little guidance?</h2>
               <p className="text-xs text-muted">Customer Support · Elite-Data-Intelligence</p>
             </div>
             <button
-              onClick={() => setOpen(false)}
-              className="text-muted hover:text-foreground"
+              onClick={closeChat}
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 text-muted hover:text-foreground"
               aria-label="Close chat"
             >
               ×
             </button>
           </div>
 
-          <div className="flex-1 space-y-3 overflow-y-auto p-4">
+          <div role="log" tabIndex={0} aria-live="polite" aria-label="Support conversation" aria-busy={loading} className="min-h-0 flex-1 space-y-3 overflow-y-auto p-4">
             {messages.map((m) => (
               <div
                 key={m.id}
@@ -153,25 +174,28 @@ export default function SupportChat() {
             <div ref={bottomRef} />
           </div>
 
-          <form onSubmit={handleSubmit} className="border-t border-white/10 p-3">
+          <form aria-label="Support message" onSubmit={handleSubmit} className="border-t border-white/10 p-3">
             <div className="flex gap-2">
+              <label htmlFor="support-message" className="sr-only">Your message</label>
               <input
+                ref={inputRef}
+                id="support-message"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Ask about capabilities, process, security…"
                 disabled={loading}
-                className="flex-1 rounded-full border border-white/15 bg-background px-4 py-2 text-sm text-foreground outline-none placeholder:text-muted focus:border-lime disabled:opacity-60"
+                className="min-w-0 flex-1 rounded-full border border-white/15 bg-background px-4 py-2 text-sm text-foreground outline-none placeholder:text-muted focus:border-lime disabled:opacity-60"
               />
               <button
                 type="submit"
-                disabled={loading}
+                disabled={loading || !input.trim()}
                 className="rounded-full bg-lime px-4 py-2 text-sm font-medium text-lime-foreground disabled:opacity-60"
               >
                 Send
               </button>
             </div>
           </form>
-        </div>
+        </section>
       )}
     </>
   );
