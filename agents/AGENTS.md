@@ -40,7 +40,7 @@ Store: in-memory (replace with Postgres before multi-instance production).
 13. Business Development / Client Success & Operations Support
 14. Validation / Test Execution Agent — GitHub checklist + runtime Validation
 15. Failure Analysis & Improvement Agent — GitHub intake
-16. Customer Support & Client Interaction Agent — website FAQ (knowledge mode)
+16. Customer Support & Client Interaction Agent — website project discovery (contextual guided flow + optional LLM)
 
 ## GitHub invocation (Level 2)
 

@@ -23,6 +23,22 @@ export default function PrivacyPage() {
             problem description you submit. Delivery is by email to the founder.
           </p>
           <p>
+            <strong className="text-foreground">Project chat:</strong> recent messages are sent to our
+            server to provide contextual guidance. When AI support is configured, OpenAI processes
+            those messages under the configured account settings and provider terms. Otherwise, a
+            guided discovery flow runs on our server. Please avoid credentials, personal client
+            records, and confidential project data.
+          </p>
+          <p>
+            <strong className="text-foreground">Chat history:</strong> the current conversation stays
+            in this page’s memory. Reloading the page or starting a new chat clears that browser
+            context. Our application does not write chat bodies to its logs or save a transcript in
+            a database. Hosting and model-provider processing remain subject to their settings and
+            terms. A chat brief is emailed only if you transfer it to the inquiry form and submit it.
+            The separate CSV workbench processes files in your browser; the assistant cannot read
+            an uploaded CSV unless you explicitly paste information into chat.
+          </p>
+          <p>
             <strong className="text-foreground">Retention:</strong> inquiry email is kept as long as
             needed to respond and, if relevant, to run an engagement. You may ask for deletion of
             inquiry records that are not required for an active contract or legal obligation.

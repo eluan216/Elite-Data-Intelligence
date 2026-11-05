@@ -34,6 +34,9 @@ jobs:
           RESEND_API_KEY: ""
           CONTACT_TO_EMAIL: ""
       - name: Browser and accessibility review
+        env:
+          OPENAI_API_KEY: ""
+          OPEN_AI_KEY: ""
         run: |
           npm run start > /tmp/edi-design-server.log 2>&1 &
           for attempt in $(seq 1 30); do

@@ -47,6 +47,7 @@ const PROCESS = [
 export default function HomePage() {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuButton = useRef<HTMLButtonElement>(null);
+  const projectField = useRef<HTMLTextAreaElement>(null);
   const [formStatus, setFormStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
 
   useEffect(() => {
@@ -204,7 +205,7 @@ export default function HomePage() {
                 <div><label htmlFor="name">Your name</label><input id="name" name="name" autoComplete="name" maxLength={MAX_NAME} placeholder="Ada Lovelace" required /></div>
                 <div><label htmlFor="email">Work email</label><input id="email" name="email" type="email" autoComplete="email" maxLength={MAX_EMAIL} placeholder="ada@company.com" required /></div>
               </div>
-              <div><label htmlFor="project">What are you trying to solve?</label><textarea id="project" name="project" rows={5} maxLength={MAX_PROJECT} placeholder="Your goal, your team, and any constraints or timeline…" required /></div>
+              <div><label htmlFor="project">What are you trying to solve?</label><textarea ref={projectField} id="project" name="project" rows={5} maxLength={MAX_PROJECT} placeholder="Your goal, your team, and any constraints or timeline…" required /></div>
               <button type="submit" disabled={formStatus === "submitting"} className="edi-button edi-button-primary">{formStatus === "submitting" ? "Sending your inquiry…" : "Let’s start a conversation"}<Arrow diagonal /></button>
               <p className="edi-form-privacy">Your details are used to respond to this inquiry. Read our <Link href="/privacy">privacy policy</Link>.</p>
               <div aria-live="polite" aria-atomic="true" className="edi-form-feedback">
@@ -226,7 +227,14 @@ export default function HomePage() {
           <div className="edi-footer-bottom"><span>© {new Date().getFullYear()} Elite Data Intelligence</span><span>AI · Data science · Engineering</span><a href="#hero-title">Back to top ↑</a></div>
         </div>
       </footer>
-      <SupportChat />
+      <SupportChat onUseBrief={(brief) => {
+        if (projectField.current) {
+          projectField.current.value = brief;
+          setFormStatus("idle");
+          document.getElementById("contact")?.scrollIntoView({ behavior: "auto", block: "start" });
+          projectField.current.focus({ preventScroll: true });
+        }
+      }} />
     </div>
   );
 }

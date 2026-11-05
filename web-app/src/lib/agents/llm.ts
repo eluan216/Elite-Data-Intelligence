@@ -20,6 +20,7 @@ export async function completeJson<T>(params: {
   system: string;
   user: string;
   mock: T;
+  timeoutMs?: number;
 }): Promise<{ data: T; mode: LlmMode; usageTokens?: number }> {
   const key = getOpenAiKey();
   if (!key) {
@@ -29,6 +30,7 @@ export async function completeJson<T>(params: {
   const model = process.env.OPENAI_MODEL || "gpt-4o-mini";
   const res = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
+    signal: params.timeoutMs ? AbortSignal.timeout(params.timeoutMs) : undefined,
     headers: {
       Authorization: `Bearer ${key}`,
       "Content-Type": "application/json",

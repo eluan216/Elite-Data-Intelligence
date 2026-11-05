@@ -1,33 +1,39 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { MAX_CHAT_MESSAGES, MAX_CHAT_MESSAGE_LENGTH, type ChatLink, type SupportReply } from "@/lib/support/types";
 
 type Message = {
   id: number;
   role: "user" | "agent";
   text: string;
+  links?: ChatLink[];
+  brief?: string;
 };
 
 const INITIAL_MESSAGES: Message[] = [
   {
     id: 1,
     role: "agent",
-    text: "Hello. I’m the Elite-Data-Intelligence support agent. I can help with capabilities, delivery process, security, our team model, or how to start a discovery call. What do you need?",
+    text: "Hi — I’m Elite Data Intelligence’s project assistant. Tell me what your team is trying to improve. I’ll help connect the problem to a useful starting point, relevant public work, and a focused inquiry for Oguma, our founder.",
   },
 ];
 
 const SUGGESTIONS = [
-  "What capabilities do you offer?",
-  "How does delivery work?",
-  "How do you handle security?",
-  "How do I start?",
+  "We need to prioritize support tickets",
+  "Our data quality is unreliable",
+  "We want to evaluate an ML workflow",
 ];
 
-export default function SupportChat() {
+export default function SupportChat({ onUseBrief }: { onUseBrief?: (brief: string) => void }) {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>(INITIAL_MESSAGES);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [quickReplies, setQuickReplies] = useState<string[]>(SUGGESTIONS);
+  const [mode, setMode] = useState<SupportReply["mode"] | null>(null);
+  const nextId = useRef(2);
+  const latest = messages[messages.length - 1];
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const launcherRef = useRef<HTMLButtonElement>(null);
@@ -52,10 +58,10 @@ export default function SupportChat() {
   }, [messages, loading, open]);
 
   async function sendMessage(text: string) {
-    if (!text.trim() || loading) return;
+    if (!text.trim() || text.length > MAX_CHAT_MESSAGE_LENGTH || loading) return;
 
     const userMsg: Message = {
-      id: Date.now(),
+      id: nextId.current++,
       role: "user",
       text: text.trim(),
     };
@@ -63,28 +69,36 @@ export default function SupportChat() {
     setMessages((prev) => [...prev, userMsg]);
     setInput("");
     setLoading(true);
+    setQuickReplies([]);
 
     try {
       const res = await fetch("/api/support-chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: text.trim() }),
+        body: JSON.stringify({
+          messages: [...messages, userMsg].slice(-MAX_CHAT_MESSAGES).map((message) => ({
+            role: message.role === "agent" ? "assistant" : "user",
+            content: message.text,
+          })),
+        }),
       });
-      const data = await res.json();
+      const data = await res.json() as Partial<SupportReply> & { error?: string };
       const replyText =
-        res.ok && data.reply
+        res.ok && typeof data.reply === "string"
           ? data.reply
-          : "I couldn’t process that just now. Please try again or use the discovery form on this page.";
+          : data.error || "I couldn’t process that just now. Please try again or use the inquiry form.";
+      setQuickReplies(res.ok && Array.isArray(data.quickReplies) ? data.quickReplies : []);
+      setMode(data.mode === "llm" ? "llm" : data.mode === "guided" ? "guided" : null);
 
       setMessages((prev) => [
         ...prev,
-        { id: Date.now() + 1, role: "agent", text: replyText },
+        { id: nextId.current++, role: "agent", text: replyText, links: res.ok ? data.links : undefined, brief: res.ok ? data.brief : undefined },
       ]);
     } catch {
       setMessages((prev) => [
         ...prev,
         {
-          id: Date.now() + 1,
+          id: nextId.current++,
           role: "agent",
           text: "Connection issue. Please use the discovery form at the bottom of the page and the founder will respond by email.",
         },
@@ -121,10 +135,24 @@ export default function SupportChat() {
         <section id="support-chat" role="dialog" aria-labelledby="support-chat-title" className="edi-chat-panel">
           <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
             <div>
-              <h2 id="support-chat-title" className="text-sm font-semibold text-foreground">A little guidance?</h2>
-              <p className="text-xs text-muted">Customer Support · Elite-Data-Intelligence</p>
+              <h2 id="support-chat-title" className="text-sm font-semibold text-foreground">Project discovery assistant</h2>
+              <p className="text-xs text-muted">{mode === "llm" ? "AI project support" : mode === "guided" ? "Guided discovery" : "Elite Data Intelligence"}</p>
             </div>
             <button
+              type="button"
+              disabled={loading}
+              onClick={() => {
+                setMessages(INITIAL_MESSAGES);
+                setQuickReplies(SUGGESTIONS);
+                setMode(null);
+                nextId.current = 2;
+                inputRef.current?.focus();
+              }}
+              className="min-h-10 px-2 text-[10px] text-muted hover:text-foreground disabled:opacity-50"
+              aria-label="Start a new chat"
+            >New chat</button>
+            <button
+              type="button"
               onClick={closeChat}
               className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 text-muted hover:text-foreground"
               aria-label="Close chat"
@@ -146,7 +174,12 @@ export default function SupportChat() {
                       : "border border-white/10 bg-card text-foreground"
                   }`}
                 >
-                  {m.text}
+                  <span className="whitespace-pre-wrap break-words">{m.text}</span>
+                  {m.links && m.links.length > 0 && (
+                    <ul className="mt-3 space-y-2 border-t border-white/15 pt-2 text-xs">
+                      {m.links.map((link) => <li key={link.href}><a href={link.href} onClick={() => { if (link.href.startsWith("#")) closeChat(); }} className="inline-flex min-h-8 items-center text-lime underline underline-offset-4" {...(link.href.startsWith("https://") ? { target: "_blank", rel: "noopener noreferrer" } : {})}>{link.label} ↗</a></li>)}
+                    </ul>
+                  )}
                 </div>
               </div>
             ))}
@@ -157,9 +190,9 @@ export default function SupportChat() {
                 </div>
               </div>
             )}
-            {messages.length <= 1 && !loading && (
+            {quickReplies.length > 0 && !loading && (
               <div className="flex flex-wrap gap-2 pt-1">
-                {SUGGESTIONS.map((s) => (
+                {quickReplies.map((s) => (
                   <button
                     key={s}
                     type="button"
@@ -171,6 +204,16 @@ export default function SupportChat() {
                 ))}
               </div>
             )}
+            {latest.role === "agent" && latest.brief && !loading && (
+              <div className="rounded-xl border border-lime/30 bg-card p-3">
+                <details>
+                  <summary className="cursor-pointer text-xs font-medium text-foreground">Review inquiry brief</summary>
+                  <p className="mt-2 whitespace-pre-wrap break-words text-xs leading-relaxed text-muted">{latest.brief}</p>
+                </details>
+                {onUseBrief && <button type="button" className="mt-3 min-h-11 w-full rounded-lg bg-lime px-3 py-2 text-xs font-medium text-lime-foreground" onClick={() => { closeChat(); onUseBrief(latest.brief!); }}>Use this brief in the inquiry form</button>}
+                <p className="mt-2 text-[10px] leading-relaxed text-muted">You can edit it before submitting. Nothing has been emailed or booked.</p>
+              </div>
+            )}
             <div ref={bottomRef} />
           </div>
 
@@ -180,9 +223,10 @@ export default function SupportChat() {
               <input
                 ref={inputRef}
                 id="support-message"
+                maxLength={MAX_CHAT_MESSAGE_LENGTH}
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="Ask about capabilities, process, security…"
+                placeholder="Tell us about your project…"
                 disabled={loading}
                 className="min-w-0 flex-1 rounded-full border border-white/15 bg-background px-4 py-2 text-sm text-foreground outline-none placeholder:text-muted focus:border-lime disabled:opacity-60"
               />
@@ -195,6 +239,7 @@ export default function SupportChat() {
               </button>
             </div>
           </form>
+          <p className="px-4 pb-3 text-[10px] leading-relaxed text-muted">Use a non-sensitive description. <a href="/privacy" className="underline underline-offset-2">Chat privacy</a> · <a href="#contact" onClick={closeChat} className="underline underline-offset-2">Contact the founder</a></p>
         </section>
       )}
     </>
