@@ -8,6 +8,7 @@ const browser = await chromium.launch();
 const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, reducedMotion: "reduce" });
 const page = await context.newPage();
 const errors = [];
+const accessibilityViolations = [];
 page.on("pageerror", (error) => errors.push(error.message));
 
 async function checkLayout(width) {
@@ -32,7 +33,7 @@ const desktop = await page.screenshot({ path: "design-artifacts/desktop-hero.jpg
 console.log("EDI_DESKTOP_JPEG=" + desktop.toString("base64"));
 const desktopA11y = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa"]).analyze();
 console.log("DESKTOP_A11Y=" + JSON.stringify(desktopA11y.violations.map(({ id, impact, nodes }) => ({ id, impact, targets: nodes.map((node) => node.target) }))));
-expect(desktopA11y.violations).toEqual([]);
+accessibilityViolations.push(...desktopA11y.violations);
 
 let submissions = 0;
 await page.route("**/api/contact", (route) => {
@@ -68,7 +69,7 @@ await page.getByRole("button", { name: "Open support chat" }).click();
 await expect(page.getByLabel("Your message")).toBeFocused();
 const chatA11y = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa"]).analyze();
 console.log("MOBILE_CHAT_A11Y=" + JSON.stringify(chatA11y.violations.map(({ id, impact, nodes }) => ({ id, impact, targets: nodes.map((node) => node.target) }))));
-expect(chatA11y.violations).toEqual([]);
+accessibilityViolations.push(...chatA11y.violations);
 await page.keyboard.press("Escape");
 await expect(page.getByRole("button", { name: "Open support chat" })).toBeFocused();
 
@@ -79,5 +80,6 @@ await page.goto(baseURL + "/analyze", { waitUntil: "networkidle" });
 await page.getByRole("button", { name: "Load sample sales dataset" }).click();
 await expect(page.getByText("Loaded 10 rows · 5 columns.")).toBeVisible();
 expect(errors).toEqual([]);
+expect(accessibilityViolations).toEqual([]);
 console.log("DESIGN_QA_PASSED: 4 viewport widths, accessibility, navigation, mocked contact flow, chat focus, and workbench smoke.");
 await browser.close();

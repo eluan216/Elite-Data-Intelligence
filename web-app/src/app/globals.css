@@ -86,7 +86,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .edi-capabilities .edi-section-heading > .edi-eyebrow { color: #52644e; }
 .edi-capabilities .edi-section-heading > div > p { color: #53604f; }
 .edi-capability { display: grid; grid-template-columns: 50px 1.2fr 1.35fr 1fr; align-items: start; gap: 30px; border-top: 1px solid #c5cbbf; padding: 30px 0; }
-.edi-capability > .edi-mono { color: #65735d; padding-top: 7px; }
+.edi-capability > .edi-mono { color: #5b6a52; padding-top: 7px; }
 .edi-capability h3 { font-size: 25px; line-height: 1.15; letter-spacing: -.04em; padding-top: 2px; }
 .edi-capability > p { max-width: 310px; font-size: 13px; line-height: 1.9; color: #53604f; }
 .edi-capability ul { font-size: 10px; line-height: 2.1; color: #465640; }
