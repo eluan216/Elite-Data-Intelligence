@@ -1,39 +1,30 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Arrow, BrandMark } from "@/components/BrandIcons";
 import AnalyzeWorkbench from "@/components/AnalyzeWorkbench";
+import "./analyze.css";
 
 export const metadata: Metadata = {
-  title: "Data analysis workbench",
-  description:
-    "Upload a CSV and explore structure, metrics, charts, and exports in the browser. Local-only processing.",
+  title: "Data workbench",
+  description: "Explore CSV data with browser-local profiles, quality checks, charts, and exports.",
 };
 
 export default function AnalyzePage() {
   return (
-    <main className="min-h-screen bg-background text-foreground">
-      <header className="border-b border-white/10 bg-background/90 backdrop-blur-md">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <Link href="/" className="text-sm font-semibold tracking-tight text-foreground">
-            Elite-Data-Intelligence
-          </Link>
-          <nav className="flex items-center gap-6 text-sm text-muted">
-            <Link href="/" className="hover:text-foreground">
-              Home
-            </Link>
-            <Link href="/#contact" className="hover:text-foreground">
-              Contact
-            </Link>
-            <span className="text-lime">Analyze</span>
+    <div className="aw-app">
+      <a className="edi-skip-link" href="#analyze-content">Skip to workbench</a>
+      <header className="edi-header">
+        <div className="edi-frame edi-header-row">
+          <Link href="/" className="edi-brand" aria-label="Elite Data Intelligence home"><BrandMark /><span>ELITE DATA<span>INTELLIGENCE</span></span></Link>
+          <nav className="aw-top-nav" aria-label="Workbench navigation">
+            <span aria-current="page">Data workbench</span>
+            <Link href="/">Home</Link>
+            <Link href="/#contact" aria-label="Discuss a project">Discuss a project<Arrow diagonal /></Link>
           </nav>
         </div>
       </header>
-      <AnalyzeWorkbench />
-      <footer className="border-t border-white/10 px-6 py-8 text-center text-xs text-muted">
-        Browser-side analysis only. Not a substitute for engagement-grade decision systems.{" "}
-        <Link href="/privacy" className="text-lime hover:opacity-90">
-          Privacy
-        </Link>
-      </footer>
-    </main>
+      <main id="analyze-content" tabIndex={-1}><AnalyzeWorkbench /></main>
+      <footer className="aw-footer edi-frame"><span>Elite Data Intelligence / Data workbench</span><span>Descriptive analysis · Processed on your device</span><Link href="/privacy">Privacy<Arrow diagonal /></Link></footer>
+    </div>
   );
 }

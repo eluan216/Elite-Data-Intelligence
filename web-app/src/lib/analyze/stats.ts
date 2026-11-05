@@ -121,6 +121,9 @@ export function histogram(
   colIndex: number,
   bins = 10
 ): { label: string; count: number }[] {
+  if (!Number.isInteger(bins) || bins < 1) {
+    throw new RangeError("Histogram bins must be a positive integer.");
+  }
   const nums = columnValues(table, colIndex).filter((v): v is number => typeof v === "number");
   if (!nums.length) return [];
   const min = Math.min(...nums);
@@ -136,8 +139,14 @@ export function histogram(
   return counts.map((count, i) => {
     const lo = min + i * width;
     const hi = lo + width;
-    return { label: `${lo.toFixed(1)}–${hi.toFixed(1)}`, count };
+    return { label: `${histogramBoundary(lo, width)}–${histogramBoundary(hi, width)}`, count };
   });
+}
+
+function histogramBoundary(value: number, width: number): string {
+  const decimals = Math.max(0, Math.ceil(-Math.log10(Math.abs(width))) + 1);
+  if (decimals > 8 || Math.abs(value) >= 1e12) return Number(value.toPrecision(15)).toString();
+  return value.toFixed(decimals);
 }
 
 export function categoryCounts(

@@ -44,6 +44,7 @@ jobs:
             sleep 1
           done
           node scripts/design-qa.mjs
+          node scripts/analyzer-qa.mjs
       - name: Save desktop and mobile screenshots
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
