@@ -98,7 +98,12 @@ function intent(text: string): string | undefined {
 }
 
 function visitorBrief(messages: ChatTurn[]): string | undefined {
-  const turns = messages.filter((turn) => turn.role === "user" && !intent(turn.content));
+  const turns = messages.filter((turn) => {
+    if (turn.role !== "user") return false;
+    const kind = intent(turn.content);
+    if (kind === "identity" || kind === "brief") return false;
+    return !kind || /\b(we|our|need|want|trying|problem|struggling)\b/i.test(turn.content);
+  });
   const hasProblem = turns.some((turn) => turn.content.length > 20 && (DOMAINS.some((domain) => domain.match.test(turn.content)) || /\b(we|our|need|help|want|trying|problem|struggling)\b/i.test(turn.content)));
   if (!hasProblem) return undefined;
   return "Website discovery conversation — visitor-provided details\nReview and edit these excerpts before sending.\n\n" +
@@ -109,7 +114,10 @@ export function guidedReply(messages: ChatTurn[]): SupportReply {
   const latest = messages[messages.length - 1].content;
   const users = messages.filter((turn) => turn.role === "user");
   const context = users.map((turn) => turn.content).join("\n");
-  const currentIntent = intent(latest);
+  const detectedIntent = intent(latest);
+  const projectStatement = /\b(we|our|i)\b.*\b(need|want|trying|struggling|unreliable|broken)\b/i.test(latest);
+  const currentIntent = projectStatement && ["security", "services", "process", "team"].includes(detectedIntent || "")
+    ? undefined : detectedIntent;
   const brief = visitorBrief(messages);
   const base = { mode: "guided" as const, brief };
   const answer = (reply: string, quickReplies: string[], links: ChatLink[] = []): SupportReply => ({ ...base, reply, quickReplies, links });

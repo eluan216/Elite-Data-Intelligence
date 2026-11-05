@@ -72,6 +72,12 @@ describe("support conversation contract", () => {
     expect(response.brief).toContain("support ticket backlog");
   });
 
+  it("keeps project details that also mention governance requirements", () => {
+    const response = guidedReply([{ role: "user", content: "We need to improve data quality under GDPR governance." }]);
+    expect(response.reply).toContain("data contract");
+    expect(response.brief).toContain("GDPR governance");
+  });
+
   it("keeps ECG accuracy together with minority-class limitations", () => {
     const response = guidedReply([{ role: "user", content: "Show the ECG example" }]);
     expect(response.reply).toContain("94.79%");
