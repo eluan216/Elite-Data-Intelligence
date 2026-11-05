@@ -1,0 +1,36 @@
+name: Prepare repository visuals
+
+on:
+  push:
+    branches: ["codex/editorial-website-redesign"]
+    paths:
+      - "web-app/scripts/prepare-visual-assets.mjs"
+      - ".github/workflows/visual-assets.yml"
+      - "web-app/public/images/*.GIF"
+      - "web-app/public/images/*.jpg"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  optimize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: web-app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install image tooling
+        run: npm install --no-save sharp
+      - name: Inspect and optimize existing visuals
+        run: node scripts/prepare-visual-assets.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: optimized-repository-visuals
+          path: web-app/public/images/optimized/
+          retention-days: 30
