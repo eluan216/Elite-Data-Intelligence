@@ -27,7 +27,9 @@ Mixed numeric/text columns are labeled, flagged, and use category counts rather
 than statistics that silently omit text. Duplicate display headers receive
 unique internal keys and numbered choices.
 
-Correlations use pairwise-complete observations and are not causal. IQR flags are
+The overview correlation scan uses the first 20 numeric columns to bound browser work;
+a notice appears for wider datasets. It reports up to six pairs. Correlations use
+pairwise-complete observations and are not causal. IQR flags are
 exploratory hints rather than definitive anomaly labels. No claim of general
 fitness follows from an absence of flags.
 

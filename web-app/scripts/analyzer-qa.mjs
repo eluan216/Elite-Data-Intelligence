@@ -4,7 +4,7 @@ import AxeBuilder from "@axe-core/playwright";
 
 const baseURL = process.env.DESIGN_QA_URL || "http://127.0.0.1:3000";
 await mkdir("design-artifacts", { recursive: true });
-const browser = await chromium.launch();
+const browser = await chromium.launch({ channel: process.env.DESIGN_QA_CHANNEL || undefined });
 const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, reducedMotion: "reduce", acceptDownloads: true });
 const page = await context.newPage();
 const errors = [];

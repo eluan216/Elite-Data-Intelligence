@@ -11,9 +11,13 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: website-design-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   browser-review:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     defaults:
       run:
@@ -27,7 +31,7 @@ jobs:
         run: |
           npm install
           npm install --no-save @playwright/test @axe-core/playwright
-          npx playwright install --with-deps chromium
+          google-chrome --version
       - name: Build production app
         run: npm run build
         env:
@@ -35,6 +39,7 @@ jobs:
           CONTACT_TO_EMAIL: ""
       - name: Browser and accessibility review
         env:
+          DESIGN_QA_CHANNEL: "chrome"
           OPENAI_API_KEY: ""
           OPEN_AI_KEY: ""
         run: |

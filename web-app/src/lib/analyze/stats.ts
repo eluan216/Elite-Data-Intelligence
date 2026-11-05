@@ -75,8 +75,8 @@ function percentile(sorted: number[], p: number): number {
   return sorted[lo] * (hi - idx) + sorted[hi] * (idx - lo);
 }
 
-export function pearsonCorrelations(table: DataTable, maxPairs = 12): CorrelationPair[] {
-  const numericIdx = table.headers.map((_, i) => i).filter((i) => isNumericColumn(table, i));
+export function pearsonCorrelations(table: DataTable, maxPairs = 12, maxColumns = Infinity): CorrelationPair[] {
+  const numericIdx = table.headers.map((_, i) => i).filter((i) => isNumericColumn(table, i)).slice(0, maxColumns);
   const pairs: CorrelationPair[] = [];
   for (let i = 0; i < numericIdx.length; i++) {
     for (let j = i + 1; j < numericIdx.length; j++) {
