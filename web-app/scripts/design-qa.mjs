@@ -77,6 +77,7 @@ await expect(page.getByRole("button", { name: "A database", exact: true })).toBe
 await page.getByLabel("Your message").fill("Zendesk");
 await page.getByRole("form", { name: "Support message" }).getByRole("button", { name: "Send", exact: true }).click();
 await expect(page.getByRole("button", { name: "I own the decision", exact: true })).toBeVisible();
+await expect(page.getByLabel("Your message")).toBeFocused();
 const inquiry = page.getByRole("button", { name: "Use this brief in the inquiry form", exact: true });
 await expect(inquiry).toBeVisible();
 const conversationShot = await page.screenshot({ path: "design-artifacts/project-chat.jpg", type: "jpeg", quality: 60 });

@@ -105,6 +105,7 @@ export default function SupportChat({ onUseBrief }: { onUseBrief?: (brief: strin
       ]);
     } finally {
       setLoading(false);
+      inputRef.current?.focus();
     }
   }
 
@@ -143,6 +144,7 @@ export default function SupportChat({ onUseBrief }: { onUseBrief?: (brief: strin
               disabled={loading}
               onClick={() => {
                 setMessages(INITIAL_MESSAGES);
+                setInput("");
                 setQuickReplies(SUGGESTIONS);
                 setMode(null);
                 nextId.current = 2;
@@ -227,7 +229,7 @@ export default function SupportChat({ onUseBrief }: { onUseBrief?: (brief: strin
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Tell us about your project…"
-                disabled={loading}
+                readOnly={loading}
                 className="min-w-0 flex-1 rounded-full border border-white/15 bg-background px-4 py-2 text-sm text-foreground outline-none placeholder:text-muted focus:border-lime disabled:opacity-60"
               />
               <button
