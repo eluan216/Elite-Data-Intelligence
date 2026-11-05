@@ -28,6 +28,11 @@ Returns task `id`, `status`, `mode`, `brief`, `research`, `validation`, `steps`,
 GET /api/agents/tasks/:id
 ```
 
+Invalid JSON or field types return HTTP 400. The trimmed request must contain
+1–8,000 characters; optional evidence must be a string of at most 20,000 trimmed
+characters. Oversized evidence is rejected rather than silently truncated.
+Validation occurs before agent execution and is shared with direct runtime calls.
+
 Rate limit: ~10 requests / 15 minutes / IP (per instance).
 
 ## Persistence

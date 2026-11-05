@@ -31,6 +31,9 @@ export function parseCsv(
   options?: { maxRows?: number }
 ): DataTable {
   const maxRows = options?.maxRows ?? MAX_ROWS_DEFAULT;
+  if (!Number.isSafeInteger(maxRows) || maxRows < 1) {
+    throw new Error("maxRows must be a positive safe integer.");
+  }
   const warnings: ParseWarning[] = [];
 
   if (!text || !text.trim()) {
@@ -64,28 +67,33 @@ export function parseCsv(
     }
   }
 
-  const allRows: CellValue[][] = [];
+  const rows: CellValue[][] = [];
+  let sourceRowCount = 0;
+  let raggedCount = 0;
   for (let i = 1; i < lines.length; i++) {
     if (!lines[i].trim()) continue;
     const cells = parseCsvLine(lines[i]);
     if (cells.length !== headers.length) {
-      warnings.push({
-        code: "ragged_row",
-        message: `Row ${i + 1} has ${cells.length} fields; expected ${headers.length}. Missing cells filled with empty values.`,
-        row: i + 1,
-      });
+      raggedCount++;
+      if (raggedCount <= 5) {
+        warnings.push({
+          code: "ragged_row",
+          message: `Row ${i + 1} has ${cells.length} fields; expected ${headers.length}. Missing cells are empty; extra fields are discarded.`,
+          row: i + 1,
+        });
+      }
     }
-    const row: CellValue[] = headers.map((_, j) => coerce(cells[j] ?? ""));
-    allRows.push(row);
+    sourceRowCount++;
+    if (rows.length < maxRows) {
+      rows.push(headers.map((_, j) => coerce(cells[j] ?? "")));
+    }
   }
 
-  if (allRows.length === 0) {
+  if (sourceRowCount === 0) {
     throw new Error("No data rows found after the header.");
   }
 
-  const sourceRowCount = allRows.length;
   const truncated = sourceRowCount > maxRows;
-  const rows = truncated ? allRows.slice(0, maxRows) : allRows;
 
   if (truncated) {
     warnings.push({
@@ -94,20 +102,12 @@ export function parseCsv(
     });
   }
 
-  // Cap ragged-row warnings listed (keep first few)
-  const ragged = warnings.filter((w) => w.code === "ragged_row");
-  const other = warnings.filter((w) => w.code !== "ragged_row");
-  const capped =
-    ragged.length > 5
-      ? [
-          ...other,
-          ...ragged.slice(0, 5),
-          {
-            code: "ragged_row" as const,
-            message: `…and ${ragged.length - 5} more rows with inconsistent field counts.`,
-          },
-        ]
-      : warnings;
+  if (raggedCount > 5) {
+    warnings.push({
+      code: "ragged_row",
+      message: `…and ${raggedCount - 5} more rows with inconsistent field counts.`,
+    });
+  }
 
   return {
     headers,
@@ -118,16 +118,23 @@ export function parseCsv(
     fileName,
     sourceRowCount,
     truncated,
-    warnings: capped,
+    warnings,
   };
 }
 
 function uniqueHeaderKeys(headers: string[]): string[] {
-  const counts = new Map<string, number>();
-  return headers.map((h) => {
-    const n = (counts.get(h) || 0) + 1;
-    counts.set(h, n);
-    return n === 1 ? h : `${h}__${n}`;
+  const reserved = new Set(headers);
+  const used = new Set<string>();
+  return headers.map((header) => {
+    let key = header;
+    let suffix = 2;
+    if (used.has(key)) {
+      do {
+        key = `${header}__${suffix++}`;
+      } while (used.has(key) || reserved.has(key));
+    }
+    used.add(key);
+    return key;
   });
 }
 
@@ -179,9 +186,13 @@ function parseCsvLine(line: string): string[] {
 function coerce(raw: string): CellValue {
   const s = raw.trim();
   if (s === "") return null;
-  const cleaned = s.replace(/,/g, "");
-  const n = Number(cleaned);
-  if (!Number.isNaN(n) && /^-?\d/.test(cleaned)) return n;
+  // Keep identifiers with leading zeroes and unsafe integers as text.
+  if (/^[+-]?0\d/.test(s)) return s;
+  const numeric = /^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?$/;
+  const grouped = /^[+-]?\d{1,3}(?:,\d{3})+(?:\.\d*)?(?:[eE][+-]?\d+)?$/;
+  if (!numeric.test(s) && !grouped.test(s)) return s;
+  const n = Number(s.replace(/,/g, ""));
+  if (Number.isFinite(n) && (!Number.isInteger(n) || Number.isSafeInteger(n))) return n;
   return s;
 }
 
@@ -218,7 +229,7 @@ export function isNumericColumn(table: DataTable, colIndex: number): boolean {
     nonNull++;
     if (typeof v === "number") nums++;
   }
-  return nonNull > 0 && nums / nonNull >= 0.8;
+  return nonNull > 0 && nums === nonNull;
 }
 
 /** Built-in sample for first-time users (not uploaded to a server). */

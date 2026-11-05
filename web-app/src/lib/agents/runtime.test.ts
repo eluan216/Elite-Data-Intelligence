@@ -1,11 +1,15 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createAndRunTask } from "./runtime";
 import { clearTasksForTests } from "./store";
 
 beforeEach(() => {
   clearTasksForTests();
-  delete process.env.OPENAI_API_KEY;
+  for (const key of ["OPENAI_API_KEY", "OPEN_AI_KEY", "GITHUB_TOKEN", "GH_TOKEN"]) {
+    vi.stubEnv(key, "");
+  }
 });
+
+afterEach(() => vi.unstubAllEnvs());
 
 describe("agent runtime v0 (mock mode)", () => {
   it("runs intake → research → validation and returns a task id", async () => {
@@ -27,6 +31,12 @@ describe("agent runtime v0 (mock mode)", () => {
 
   it("rejects empty request", async () => {
     await expect(createAndRunTask({ request: "   " })).rejects.toThrow(/required/i);
+  });
+
+  it("rejects oversized evidence instead of truncating it", async () => {
+    await expect(
+      createAndRunTask({ request: "Test request", evidence: "x".repeat(20001) })
+    ).rejects.toThrow(/20000/);
   });
 
   it("validator can fail when limitations would be missing path is simulated via thin request still passes AC structure", async () => {
