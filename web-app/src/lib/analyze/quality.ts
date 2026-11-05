@@ -106,7 +106,7 @@ export function buildQualityReport(
 function countDuplicateRows(table: DataTable): number {
   const seen = new Map<string, number>();
   for (const row of table.rows) {
-    const key = row.map((c) => (c === null ? "" : String(c))).join("\u0001");
+    const key = JSON.stringify(row);
     seen.set(key, (seen.get(key) || 0) + 1);
   }
   let dupes = 0;
@@ -122,7 +122,6 @@ function countIqrOutliers(vals: (string | number | null)[]): number {
   const q1 = quantile(nums, 0.25);
   const q3 = quantile(nums, 0.75);
   const iqr = q3 - q1;
-  if (iqr === 0) return 0;
   const lo = q1 - 1.5 * iqr;
   const hi = q3 + 1.5 * iqr;
   return nums.filter((n) => n < lo || n > hi).length;

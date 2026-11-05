@@ -1,4 +1,5 @@
 import { randomUUID } from "crypto";
+import { validateTaskInput } from "./input";
 import { getLlmMode } from "./llm";
 import { persistTerminalTask } from "./persist";
 import { runIntake } from "./roles/intake";
@@ -7,20 +8,13 @@ import { runValidation } from "./roles/validation";
 import { getTask, saveTask } from "./store";
 import type { AgentTask, CreateTaskInput } from "./types";
 
-const MAX_REQUEST = 8000;
-const MAX_EVIDENCE = 20000;
-
 /**
  * Orchestrator v0: sequential Intake → Research → Validation.
  * Narrow permissions: no shell, no deploy, no commercial commits, no private data access.
  * Terminal tasks dual-write to GitHub Issues when GITHUB_TOKEN is configured.
  */
 export async function createAndRunTask(input: CreateTaskInput): Promise<AgentTask> {
-  const request = (input.request || "").trim();
-  if (!request || request.length > MAX_REQUEST) {
-    throw new Error("Request is required and must be under 8000 characters.");
-  }
-  const evidence = input.evidence?.trim().slice(0, MAX_EVIDENCE);
+  const { request, evidence } = validateTaskInput(input);
 
   const now = new Date().toISOString();
   const task: AgentTask = {

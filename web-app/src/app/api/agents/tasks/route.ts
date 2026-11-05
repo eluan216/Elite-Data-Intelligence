@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { TaskInputError, validateTaskInput } from "@/lib/agents/input";
 import { createAndRunTask } from "@/lib/agents/runtime";
 
 /** Simple in-memory rate limit (per serverless instance). */
@@ -45,15 +46,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Invalid JSON body." }, { status: 400 });
     }
 
-    const raw = body as Record<string, unknown>;
-    const reqText = typeof raw.request === "string" ? raw.request : "";
-    const evidence = typeof raw.evidence === "string" ? raw.evidence : undefined;
-
-    if (!reqText.trim()) {
-      return NextResponse.json({ error: "Field 'request' is required." }, { status: 400 });
-    }
-
-    const task = await createAndRunTask({ request: reqText, evidence });
+    const input = validateTaskInput(body);
+    const task = await createAndRunTask(input);
 
     return NextResponse.json(
       {
@@ -70,6 +64,9 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     );
   } catch (e) {
+    if (e instanceof TaskInputError) {
+      return NextResponse.json({ error: e.message }, { status: 400 });
+    }
     const message = e instanceof Error ? e.message : "Task failed";
     return NextResponse.json({ error: message }, { status: 500 });
   }

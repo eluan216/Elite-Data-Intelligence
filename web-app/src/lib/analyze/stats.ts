@@ -35,7 +35,7 @@ function profileColumn(table: DataTable, index: number, name: string): ColumnPro
   const base: ColumnProfile = {
     name,
     index,
-    type: numeric ? "numeric" : "categorical",
+    type: numeric ? "numeric" : present.some((v) => typeof v === "number") ? "mixed" : "categorical",
     missing,
     missingPct: table.rowCount ? (missing / table.rowCount) * 100 : 0,
     unique,
@@ -173,7 +173,7 @@ export function summaryText(table: DataTable, profiles: ColumnProfile[]): string
       );
     } else {
       lines.push(
-        `- ${p.name}: categorical · unique=${p.unique} missing=${p.missingPct.toFixed(1)}%`
+        `- ${p.name}: ${p.type} · unique=${p.unique} missing=${p.missingPct.toFixed(1)}%`
       );
     }
   }
