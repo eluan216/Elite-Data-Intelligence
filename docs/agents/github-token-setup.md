@@ -1,38 +1,24 @@
-# Enable durable agent task records (GitHub)
+# Internal runtime audit issues
 
-Terminal agent runs can open an issue on this repo for audit.
+This integration is optional and applies only to **trusted direct calls** to `createAndRunTask` outside a public model session. Public `/agents` requests bypass it, even when a GitHub token is configured. They return `persistence: {"kind":"response"}` and never publish visitor evidence.
 
-## 1. Create a fine-grained or classic PAT
+## Configure an internal deployment
 
-- Scope: **Issues: Read and write** on `eluan216/Elite-Data-Intelligence`
-- Do not enable broad repo admin unless required
+Use a fine-grained token limited to **Issues: read and write** on the intended repository. Store it in a local ignored environment file or the deployment's secret settings:
 
-## 2. Add to Vercel (project `web-app`)
+| Variable | Purpose |
+| --- | --- |
+| `GITHUB_TOKEN` | Token for the internal audit destination |
+| `GITHUB_REPO` | Destination in `owner/repository` form |
 
-| Name | Value |
-|------|--------|
-| `GITHUB_TOKEN` | the PAT |
-| `GITHUB_REPO` | `eluan216/Elite-Data-Intelligence` (optional; this is the default) |
+The legacy `GH_TOKEN` alias is supported. The code defaults the repository to `eluan216/Elite-Data-Intelligence`; set your own destination explicitly when self-hosting. Do not put private task content into a public issue.
 
-Target: **Production** (and Preview if you test there).
+There is no public endpoint that turns this internal persistence on. A maintainer must use a trusted internal caller and provide appropriate access control for any new integration.
 
-## 3. Redeploy
+## Result
 
-Env vars apply on the next deployment.
+Successful internal persistence returns `kind: "github_issue"` and a URL. Missing credentials or delivery failure returns `kind: "memory"` with an error. Instance memory is not durable or shared across serverless instances.
 
-## 4. Verify
+Issue labels are `agent:runtime` and `quality-gate`. Configure them on the target repository as needed. Persistence failures do not change the completed agent outcome.
 
-Run the PowerShell agent check. In the JSON look for:
-
-```json
-"persistence": {
-  "kind": "github_issue",
-  "url": "https://github.com/eluan216/Elite-Data-Intelligence/issues/..."
-}
-```
-
-If kind is `memory`, read the `error` string (missing token or GitHub API error).
-
-## 5. Label
-
-Issues are created with labels `agent:runtime` and `quality-gate`. Create those labels in the repo if GitHub rejects unknown labels.
+Tests mock persistence and must never create live issues.

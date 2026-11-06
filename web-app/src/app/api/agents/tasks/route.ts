@@ -1,73 +1,51 @@
+import { redactSecret } from "@/lib/agents/secrets";
 import { NextRequest, NextResponse } from "next/server";
 import { TaskInputError, validateTaskInput } from "@/lib/agents/input";
 import { createAndRunTask } from "@/lib/agents/runtime";
-
-/** Simple in-memory rate limit (per serverless instance). */
-const hits = new Map<string, { count: number; reset: number }>();
-const RATE_LIMIT = 10;
-const RATE_WINDOW_MS = 15 * 60 * 1000;
-
-function clientIp(request: NextRequest): string {
-  const xf = request.headers.get("x-forwarded-for");
-  if (xf) return xf.split(",")[0]?.trim() || "unknown";
-  return request.headers.get("x-real-ip") || "unknown";
+import { requestSession } from "@/lib/agents/credentials";
+import { withModelSession } from "@/lib/agents/model-context";
+export const runtime="nodejs";
+export const maxDuration=120;
+const hits=new Map<string,{count:number;reset:number}>();
+function reply(body:unknown,status:number) {
+ return NextResponse.json(body,{status,headers:{"Cache-Control":"no-store, private","Referrer-Policy":"no-referrer"}});
 }
-
-function rateLimited(ip: string): boolean {
-  const now = Date.now();
-  const row = hits.get(ip);
-  if (!row || now > row.reset) {
-    hits.set(ip, { count: 1, reset: now + RATE_WINDOW_MS });
-    return false;
+export async function POST(request:NextRequest) {
+ try {
+  const origin=request.headers.get("origin");
+  if(origin && origin!==request.nextUrl.origin) return reply({error:"Cross-origin requests are not accepted."},403);
+  const ip=request.headers.get("x-forwarded-for")?.split(",")[0]?.trim()||request.headers.get("x-real-ip")||"unknown";
+  const now=Date.now();
+  for(const [key,row] of hits) if(row.reset<=now) hits.delete(key);
+  if(hits.size>=10000 && !hits.has(ip)) return reply({error:"Server busy. Try again later."},429);
+  const row=hits.get(ip)||{count:0,reset:now+15*60*1000};
+  row.count++; hits.set(ip,row);
+  if(row.count>10) return reply({error:"Too many requests. Please try again later."},429);
+  let body:unknown;
+  // Bound the stream before buffering so chunked/forged content lengths cannot allocate unbounded input.
+  const reader=request.body?.getReader();
+  if(!reader) return reply({error:"Invalid JSON body."},400);
+  let size=0; const chunks:Uint8Array[]=[];
+  while(true) {
+   const {done,value}=await reader.read(); if(done) break;
+   size+=value.byteLength;
+   if(size>128000) { await reader.cancel(); return reply({error:"Request body is too large."},413); }
+   chunks.push(value);
   }
-  row.count += 1;
-  return row.count > RATE_LIMIT;
-}
-
-/**
- * POST /api/agents/tasks
- * Creates a task and runs Intake → Research → Validation (v0 synchronous).
- * Terminal tasks persist to a GitHub issue when GITHUB_TOKEN is set.
- */
-export async function POST(request: NextRequest) {
   try {
-    const ip = clientIp(request);
-    if (rateLimited(ip)) {
-      return NextResponse.json(
-        { error: "Too many requests. Please try again later." },
-        { status: 429 }
-      );
-    }
-
-    let body: unknown;
-    try {
-      body = await request.json();
-    } catch {
-      return NextResponse.json({ error: "Invalid JSON body." }, { status: 400 });
-    }
-
-    const input = validateTaskInput(body);
-    const task = await createAndRunTask(input);
-
-    return NextResponse.json(
-      {
-        id: task.id,
-        status: task.status,
-        mode: task.mode,
-        brief: task.brief,
-        research: task.research,
-        validation: task.validation,
-        steps: task.steps,
-        error: task.error,
-        persistence: task.persistence,
-      },
-      { status: 201 }
-    );
-  } catch (e) {
-    if (e instanceof TaskInputError) {
-      return NextResponse.json({ error: e.message }, { status: 400 });
-    }
-    const message = e instanceof Error ? e.message : "Task failed";
-    return NextResponse.json({ error: message }, { status: 500 });
-  }
+   const raw=new Uint8Array(size); let offset=0;
+   for(const chunk of chunks) {raw.set(chunk,offset);offset+=chunk.length;}
+   body=JSON.parse(new TextDecoder().decode(raw));
+  } catch {return reply({error:"Invalid JSON body."},400);}
+  const input=validateTaskInput(body);
+  const session=requestSession(request.headers,body as Record<string,unknown>);
+  session.signal=AbortSignal.any([request.signal,AbortSignal.timeout(105000)]);
+  const safeInput=session.config?redactSecret(input,session.config.apiKey):input;
+  const task=await withModelSession(session,()=>createAndRunTask(safeInput));
+  const status=task.errorCode==="invalid_key"?401:task.errorCode==="quota_exceeded"?429:task.errorCode?502:201;
+  return reply(session.config?redactSecret(task,session.config.apiKey):task,status);
+ } catch(error) {
+  if(error instanceof TaskInputError) return reply({error:error.message},400);
+  return reply({error:"Task could not be completed. Please retry."},500);
+ }
 }

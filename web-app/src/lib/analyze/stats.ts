@@ -75,8 +75,8 @@ function percentile(sorted: number[], p: number): number {
   return sorted[lo] * (hi - idx) + sorted[hi] * (idx - lo);
 }
 
-export function pearsonCorrelations(table: DataTable, maxPairs = 12): CorrelationPair[] {
-  const numericIdx = table.headers.map((_, i) => i).filter((i) => isNumericColumn(table, i));
+export function pearsonCorrelations(table: DataTable, maxPairs = 12, maxColumns = Infinity): CorrelationPair[] {
+  const numericIdx = table.headers.map((_, i) => i).filter((i) => isNumericColumn(table, i)).slice(0, maxColumns);
   const pairs: CorrelationPair[] = [];
   for (let i = 0; i < numericIdx.length; i++) {
     for (let j = i + 1; j < numericIdx.length; j++) {
@@ -121,6 +121,9 @@ export function histogram(
   colIndex: number,
   bins = 10
 ): { label: string; count: number }[] {
+  if (!Number.isInteger(bins) || bins < 1) {
+    throw new RangeError("Histogram bins must be a positive integer.");
+  }
   const nums = columnValues(table, colIndex).filter((v): v is number => typeof v === "number");
   if (!nums.length) return [];
   const min = Math.min(...nums);
@@ -136,8 +139,14 @@ export function histogram(
   return counts.map((count, i) => {
     const lo = min + i * width;
     const hi = lo + width;
-    return { label: `${lo.toFixed(1)}–${hi.toFixed(1)}`, count };
+    return { label: `${histogramBoundary(lo, width)}–${histogramBoundary(hi, width)}`, count };
   });
+}
+
+function histogramBoundary(value: number, width: number): string {
+  const decimals = Math.max(0, Math.ceil(-Math.log10(Math.abs(width))) + 1);
+  if (decimals > 8 || Math.abs(value) >= 1e12) return Number(value.toPrecision(15)).toString();
+  return value.toFixed(decimals);
 }
 
 export function categoryCounts(
@@ -190,5 +199,6 @@ export function summaryText(table: DataTable, profiles: ColumnProfile[]): string
 
 function fmt(n?: number): string {
   if (n === undefined || Number.isNaN(n)) return "—";
+  if (n !== 0 && Math.abs(n) < 0.001) return n.toExponential(3);
   return Number.isInteger(n) ? String(n) : n.toFixed(3);
 }

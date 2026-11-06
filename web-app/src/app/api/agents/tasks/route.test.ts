@@ -13,7 +13,7 @@ function request(body: unknown, raw = false) {
       "content-type": "application/json",
       "x-forwarded-for": `test-${requestId++}`,
     },
-    body: raw ? String(body) : JSON.stringify(body),
+    body: raw ? String(body) : JSON.stringify(body && typeof body === "object" && !Array.isArray(body) ? { ...body, demo: true } : body),
   });
 }
 

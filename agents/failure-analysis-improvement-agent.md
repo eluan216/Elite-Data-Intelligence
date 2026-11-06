@@ -1,5 +1,13 @@
 # Failure Analysis & Improvement Agent
 
+## Current executable capability
+
+Callable in the public **/agents** workspace as `failure-analysis-improvement-agent`. Analyze supplied failing logs and artifacts, distinguish root cause hypotheses from verified causes, rank impact, draft a fix and regression test.
+
+Required outputs: Root-cause analysis; Corrective patch or actions; Regression verification plan. Handoff: Relevant engineer implements; Validation checks the correction.
+
+This role runs after Intake and Research and before Validation. These are model-generated work products; the runtime does not execute code, deploy infrastructure, browse private systems, send messages, make bookings or create GitHub issues for visitors. Statements below describing those actions are intended responsibilities for future authorized integrations, not current tool access. The Founder remains the human authority.
+
 I use this agent to close the quality loop. It takes the output from the Validation Agent (and my own feedback), diagnoses root causes, ranks severity, recommends concrete fixes, and keeps a living improvement backlog so the system gets better over time.
 
 ## What I Expect From This Agent

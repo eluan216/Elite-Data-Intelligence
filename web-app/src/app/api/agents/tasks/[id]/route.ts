@@ -1,20 +1,6 @@
-import { NextRequest, NextResponse } from "next/server";
-import { readTask } from "@/lib/agents/runtime";
-
-export async function GET(
-  _request: NextRequest,
-  context: { params: Promise<{ id: string }> }
-) {
-  const { id } = await context.params;
-  const task = readTask(id);
-  if (!task) {
-    return NextResponse.json(
-      {
-        error: "Task not found",
-        note: "v0 store is in-memory per instance; use the POST response body for immediate results.",
-      },
-      { status: 404 }
-    );
-  }
-  return NextResponse.json(task);
+import { NextResponse } from "next/server";
+/** Public results are returned once, never placed in a shared cross-user task store. */
+export async function GET() {
+ return NextResponse.json({error:"Public task history is not stored. Use the original response or download your result."},
+  {status:410,headers:{"Cache-Control":"no-store, private"}});
 }

@@ -1,57 +1,47 @@
-# Elite-Data-Intelligence Agent System
+# Elite Data Intelligence agent system
 
-I run specialized agent **roles** (16 documented) plus a shared **runtime** for the first executable slice. This folder holds role definitions. Runtime code lives under `web-app/src/lib/agents/`.
+The roster has 16 documented roles: **15 executable AI specialists and one human Founder**. Runtime code lives in web-app/src/lib/agents; the source of truth for executable missions, output contracts and handoffs is catalog.ts.
 
-## Levels of capability (honest)
+Public entry point: **/agents**. Visitors bring an OpenAI, Anthropic or Gemini key for each run, or explicitly choose demo mode. Keys are request-local and public results are response-only. See [setup and capability documentation](../docs/agents/byok-workspace.md).
 
-| Level | Status |
-|-------|--------|
-| **1 — Documented roles** | Complete (16 markdown definitions) |
-| **2 — Workflow automation** | GitHub labels/Actions for PM, validation, failure analysis |
-| **3 — Executable runtime** | **v0 live:** Intake → Research → Validation (see below) |
-| **4 — Full 16 autonomous agents** | Not claimed — expand only after v0 is durable |
+## Executable workflow
 
-## Runtime v0 (three agents)
+Intake → Research → optional selected specialist → Validation.
 
-Shared TypeScript orchestration:
+- Project Manager uses Intake to produce the brief and acceptance criteria.
+- Data Scientist uses Research to analyze supplied evidence.
+- Validation evaluates criteria with complete, consistent checks.
+- The other twelve specialists produce concrete role-specific drafts and structured handoffs, checked before the quality gate.
+- Demo mode is not performed specialist work and cannot certify acceptance.
 
-1. **Intake** — structured brief, missing info, acceptance criteria, subtasks  
-2. **Research** — facts / assumptions / limitations from supplied evidence only  
-3. **Validation** — pass / fail / needs_human_review against criteria  
+## Boundaries
 
-API: `POST /api/agents/tasks` · docs: `docs/agents/runtime-v0.md`  
-Mode: `mock` without `OPENAI_API_KEY`; `llm` when key is set server-side.  
-Permissions: no shell, no deploy, no private data access, no commercial commits.  
-Store: in-memory (replace with Postgres before multi-instance production).
+Agents produce code, SQL, test drafts, configurations, analyses, reports and plans. They have no shell, deployment, web browsing, private-data, messaging, booking or GitHub-write tools. No agent may claim those actions have happened. Human review owns commercial commitments, regulated/high-risk decisions and releases. The Founder role is never impersonated as an autonomous executor.
 
-## Agent Roster (role definitions)
-1. Founder / Managing Partner / Strategy Lead (me) — **human authority**
-2. Principal Decision Scientist / Senior AI Lead
-3. Lead Data Engineer / Lakehouse Architect
-4. Senior MLOps / Production & Platform Engineer
-5. AI Governance, Risk & Compliance Lead
-6. Domain / Industry & Change Management Lead
-7. Engagement / Delivery Manager
-8. Project Manager Agent — GitHub intake + runtime Intake
-9. Applied ML / Agent Engineer
-10. Data Scientist / Decision Analyst — partial via runtime Research
-11. Platform & Integration Specialist
-12. Mid-level Data Engineer / Analytics Engineer
-13. Business Development / Client Success & Operations Support
-14. Validation / Test Execution Agent — GitHub checklist + runtime Validation
-15. Failure Analysis & Improvement Agent — GitHub intake
-16. Customer Support & Client Interaction Agent — website FAQ (knowledge mode)
+Existing role documents include the agency's intended responsibilities. Their "Current executable capability" sections define what the current software actually does. External integrations and execution environments are future work, not implied by supplying a model key.
 
-## GitHub invocation (Level 2)
+## Role catalog
 
-| Label | Intent | Auto Action |
-|-------|--------|-------------|
-| `agent:project-manager` | Sequencing | PM intake comment |
-| `agent:validation` | Quality checks | Validation checklist |
-| `agent:failure-analysis` | Root-cause | Failure analysis intake |
-| `agent:customer-support` | Inbound | Website chat + form |
+- [Project Manager / Intake](project-manager-agent.md) — `intake`
+- [Data Scientist / Research](data-scientist-decision-analyst.md) — `research`
+- [Validation / Quality](validation-test-execution-agent.md) — `validation`
+- [Principal Decision Scientist](principal-decision-scientist.md) — `principal-decision-scientist`
+- [Lead Data Engineer](lead-data-engineer.md) — `lead-data-engineer`
+- [MLOps / Platform Engineer](senior-mlops-engineer.md) — `senior-mlops-engineer`
+- [Governance / Risk Lead](ai-governance-risk-compliance.md) — `ai-governance-risk-compliance`
+- [Domain / Change Lead](domain-change-management-lead.md) — `domain-change-management-lead`
+- [Engagement / Delivery Manager](engagement-delivery-manager.md) — `engagement-delivery-manager`
+- [Applied ML / Agent Engineer](applied-ml-agent-engineer.md) — `applied-ml-agent-engineer`
+- [Platform / Integration Specialist](platform-integration-specialist.md) — `platform-integration-specialist`
+- [Analytics Engineer](mid-level-data-engineer.md) — `mid-level-data-engineer`
+- [Business Development / Client Success](business-development-client-success.md) — `business-development-client-success`
+- [Failure Analysis / Improvement](failure-analysis-improvement-agent.md) — `failure-analysis-improvement-agent`
+- [Customer Support](customer-support-agent.md) — `customer-support-agent`
 
-Templates: New Engagement · Validation Request · Failure Analysis  
-Playbook: `docs/delivery-playbook.md`
+[Founder / Managing Partner](founder-managing-partner.md) remains human.
 
-**Status:** Role docs + GitHub ops + **runtime v0 (3 agents)** + CI tests. Founder remains final authority on commercial, risk, and release.
+GitHub label automations are separate from the public BYOK workspace. They do not grant visitor tasks repository access or publish visitor content.
+
+## Separate website discovery assistant
+
+The homepage also has a contextual project-discovery chat with guided mode and optional server-configured OpenAI responses. It is separate from the visitor-key specialist workspace. See [its conversation and privacy contract](../docs/agents/website-assistant.md).

@@ -54,6 +54,16 @@ export function buildQualityReport(
     }
   }
 
+  for (const profile of profiles) {
+    if (profile.type === "mixed") {
+      findings.push({
+        severity: "warn",
+        code: "mixed_column",
+        message: `Column "${profile.name}" mixes numeric and text values. Numeric statistics are not computed for this column.`,
+      });
+    }
+  }
+
   const duplicateRowCount = countDuplicateRows(table);
   if (duplicateRowCount > 0) {
     findings.push({
@@ -92,6 +102,9 @@ export function buildQualityReport(
       message: `Quality checks apply to the analyzed subset (${table.rowCount.toLocaleString()} of ${table.sourceRowCount.toLocaleString()} source rows).`,
     });
   }
+
+  const severityOrder = { high: 0, warn: 1, info: 2 };
+  findings.sort((a, b) => severityOrder[a.severity] - severityOrder[b.severity]);
 
   return {
     totalMissingCells,

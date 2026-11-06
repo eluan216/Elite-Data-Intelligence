@@ -1,0 +1,33 @@
+# Local credentials
+.env
+.env.*
+!.env.example
+*.pem
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+.coverage
+htmlcov/
+
+# JavaScript and generated application output
+node_modules/
+.next/
+out/
+coverage/
+*.tsbuildinfo
+
+# Browser QA artifacts
+web-app/artifacts/
+web-app/design-artifacts/
+playwright-report/
+test-results/
+
+# Local editor / operating system files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

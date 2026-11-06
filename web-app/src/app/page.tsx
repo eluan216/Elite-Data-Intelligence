@@ -1,22 +1,88 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
-import { useState } from "react";
-import SupportChat from "@/components/SupportChat";
+import { useEffect, useRef, useState } from "react";
+import { Arrow, BrandMark } from "@/components/BrandIcons";
+import RepositoryVisual from "@/components/RepositoryVisual";
 import SelectedWork from "@/components/SelectedWork";
+import SupportChat from "@/components/SupportChat";
+import { MAX_EMAIL, MAX_NAME, MAX_PROJECT } from "@/lib/contact-helpers";
+
+const LINKS = [
+  { href: "#approach", label: "Capabilities" },
+  { href: "#projects", label: "Selected work" },
+  { href: "#how-we-work", label: "Our process" },
+  { href: "/analyze", label: "Data workbench" },
+  { href: "/agents", label: "Agent workspace" },
+];
+
+const CAPABILITIES = [
+  {
+    number: "01",
+    poster: "/images/optimized/wireframe-head-poster.webp",
+    animation: "/images/wireframe-head.gif.GIF",
+    visualAlt: "Blue and violet wireframe head against a black background.",
+    visualCaption: "Conceptual intelligence",
+    title: "Decision intelligence",
+    body: "Give a business decision a clear objective, the right evidence, and a system people can act on.",
+    details: ["Prioritization & ranking", "Decision support", "Applied analytics"],
+  },
+  {
+    number: "02",
+    poster: "/images/optimized/terminal-interface-poster.webp",
+    animation: "/images/terminal-interface.gif.GIF",
+    visualAlt: "Abstract white data points forming a deep geometric tunnel.",
+    visualCaption: "Connected data",
+    title: "Data foundations",
+    body: "Build a dependable path from scattered source data to information your team can trust.",
+    details: ["Data pipelines", "Quality contracts", "Analytics engineering"],
+  },
+  {
+    number: "03",
+    poster: "/images/optimized/data-lattice-poster.webp",
+    animation: "/images/data-lattice.gif.GIF",
+    visualAlt: "Green terminal-style interface and data readouts on a dark field.",
+    visualCaption: "Systems in motion",
+    title: "ML built to operate",
+    body: "Take models and agent workflows through validation, monitoring, and a practical handover.",
+    details: ["ML & agent workflows", "Evaluation & monitoring", "Governance & ownership"],
+  },
+];
+
+const PROCESS = [
+  ["Discover", "Define the decision, the owner, and what success means."],
+  ["Design", "Assess the data and choose a method that fits the risk."],
+  ["Build", "Develop the smallest useful system and test its assumptions."],
+  ["Validate", "Check performance, failure modes, and acceptance criteria."],
+  ["Operate", "Document, hand over, monitor, and measure adoption."],
+];
 
 export default function HomePage() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const menuButton = useRef<HTMLButtonElement>(null);
+  const projectField = useRef<HTMLTextAreaElement>(null);
   const [formStatus, setFormStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setFormStatus("submitting");
-    const form = e.currentTarget;
+  useEffect(() => {
+    if (!menuOpen) return;
+    function closeOnEscape(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setMenuOpen(false);
+        menuButton.current?.focus();
+      }
+    }
+    document.addEventListener("keydown", closeOnEscape);
+    return () => document.removeEventListener("keydown", closeOnEscape);
+  }, [menuOpen]);
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (formStatus === "submitting") return;
+    const form = event.currentTarget;
     const formData = new FormData(form);
+    setFormStatus("submitting");
     try {
-      const res = await fetch("/api/contact", {
+      const response = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -25,7 +91,7 @@ export default function HomePage() {
           project: formData.get("project"),
         }),
       });
-      if (!res.ok) throw new Error("Submission failed");
+      if (!response.ok) throw new Error("Submission failed");
       setFormStatus("success");
       form.reset();
     } catch {
@@ -34,212 +100,166 @@ export default function HomePage() {
   }
 
   return (
-    <main className="min-h-screen overflow-hidden bg-background text-foreground">
-      <header className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-background/90 backdrop-blur-md">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          <Link href="/" className="text-sm font-semibold tracking-tight text-foreground">Elite-Data-Intelligence</Link>
-          <nav className="hidden items-center gap-8 text-sm text-muted md:flex">
-            <Link href="#problems" className="hover:text-foreground transition-colors">Problems</Link>
-            <Link href="#approach" className="hover:text-foreground transition-colors">Approach</Link>
-            <Link href="#projects" className="hover:text-foreground transition-colors">Work</Link>
-            <Link href="/analyze" className="hover:text-foreground transition-colors">Analyze</Link>
-            <Link href="#how-we-work" className="hover:text-foreground transition-colors">How we work</Link>
-            <Link href="#contact" className="hover:text-foreground transition-colors">Contact</Link>
+    <div className="edi-home">
+      <a href="#main-content" className="edi-skip-link">Skip to content</a>
+      <header className="edi-header">
+        <div className="edi-frame edi-header-row">
+          <Link href="/" className="edi-brand" aria-label="Elite Data Intelligence home">
+            <BrandMark />
+            <span>ELITE DATA<span>INTELLIGENCE</span></span>
+          </Link>
+          <nav className="edi-desktop-nav" aria-label="Main navigation">
+            {LINKS.map((link) => <Link key={link.href} href={link.href}>{link.label}</Link>)}
           </nav>
-          <div className="flex items-center gap-4">
-            <Link href="#contact" className="hidden rounded-full bg-lime px-5 py-2 text-sm font-medium text-lime-foreground transition-opacity hover:opacity-90 sm:inline-flex">Book a Call</Link>
-            <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden flex flex-col gap-1.5 p-2" aria-label="Toggle menu">
-              <span className={`block h-0.5 w-5 bg-foreground transition-transform ${menuOpen ? "translate-y-2 rotate-45" : ""}`} />
-              <span className={`block h-0.5 w-5 bg-foreground transition-opacity ${menuOpen ? "opacity-0" : ""}`} />
-              <span className={`block h-0.5 w-5 bg-foreground transition-transform ${menuOpen ? "-translate-y-2 -rotate-45" : ""}`} />
+          <div className="edi-header-actions">
+            <Link href="#contact" className="edi-header-cta">Let’s talk <Arrow diagonal /></Link>
+            <button
+              ref={menuButton}
+              type="button"
+              className="edi-menu-toggle"
+              onClick={() => setMenuOpen(!menuOpen)}
+              aria-expanded={menuOpen}
+              aria-controls="mobile-navigation"
+              aria-label={menuOpen ? "Close navigation" : "Open navigation"}
+            >
+              <span className={menuOpen ? "is-open" : ""} /><span className={menuOpen ? "is-open" : ""} />
             </button>
           </div>
         </div>
-        {menuOpen && (
-          <div className="border-t border-white/10 bg-background px-6 py-6 md:hidden">
-            <nav className="flex flex-col gap-4 text-sm">
-              <Link href="#problems" onClick={() => setMenuOpen(false)} className="text-muted hover:text-foreground">Problems</Link>
-              <Link href="#approach" onClick={() => setMenuOpen(false)} className="text-muted hover:text-foreground">Approach</Link>
-              <Link href="#projects" onClick={() => setMenuOpen(false)} className="text-muted hover:text-foreground">Work</Link>
-              <Link href="/analyze" onClick={() => setMenuOpen(false)} className="text-muted hover:text-foreground">Analyze</Link>
-              <Link href="#how-we-work" onClick={() => setMenuOpen(false)} className="text-muted hover:text-foreground">How we work</Link>
-              <Link href="#contact" onClick={() => setMenuOpen(false)} className="mt-2 inline-flex w-fit rounded-full bg-lime px-5 py-2 text-sm font-medium text-lime-foreground">Book a Call</Link>
-            </nav>
-          </div>
-        )}
+        <nav id="mobile-navigation" className="edi-mobile-nav edi-frame" hidden={!menuOpen} aria-label="Mobile navigation">
+          {LINKS.map((link) => <Link key={link.href} href={link.href} onClick={() => setMenuOpen(false)}>{link.label}<Arrow /></Link>)}
+          <Link href="#contact" onClick={() => setMenuOpen(false)}>Start a conversation<Arrow diagonal /></Link>
+        </nav>
       </header>
 
-      <section className="relative flex min-h-screen items-center px-6 pt-24">
-        <div className="absolute inset-0">
-          <Image src="/images/hero-background.png.jpg" alt="" fill className="object-cover object-center" priority quality={90} />
-          <div className="absolute inset-0 bg-background/75" />
-          <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-background/40" />
-        </div>
-        <div className="relative mx-auto max-w-7xl">
-          <div className="max-w-2xl">
-            <p className="mb-6 text-sm font-medium uppercase tracking-widest text-lime">AI · Data · Engineering</p>
-            <h1 className="display-2xl text-foreground">AI systems built around<br /><span className="text-muted">real business problems.</span></h1>
-            <p className="mt-8 max-w-xl text-lg text-muted">I help operations and technology teams turn complex data into decisions and working systems — with documented testing, clear ownership, and human accountability on every release.</p>
-            <p className="mt-4 max-w-xl text-sm text-muted">Primary focus today: <span className="text-foreground">decision systems and production-ready ML workflows</span> for teams that cannot afford silent model failure.</p>
-            <div className="mt-12 flex flex-wrap gap-4">
-              <Link href="#contact" className="rounded-full bg-lime px-8 py-3.5 text-sm font-semibold text-lime-foreground transition-opacity hover:opacity-90">Discuss a business problem</Link>
-              <Link href="/analyze" className="rounded-full border border-white/20 px-8 py-3.5 text-sm font-medium text-foreground transition-colors hover:bg-white/5">Try CSV analyze →</Link>
+      <main id="main-content" tabIndex={-1}>
+        <section className="edi-hero edi-frame" aria-labelledby="hero-title">
+          <div className="edi-hero-copy">
+            <p className="edi-eyebrow"><span className="edi-dot" /> Independent AI & data consultancy</p>
+            <h1 id="hero-title">Complex data.<br />Clear decisions.<br /><em>Real progress.</em></h1>
+            <p className="edi-hero-description">We turn data, machine learning, and thoughtful engineering into systems that help your team make its next move.</p>
+            <div className="edi-hero-actions">
+              <Link href="#contact" className="edi-button edi-button-primary">Discuss your project<Arrow diagonal /></Link>
+              <Link href="#projects" className="edi-text-link">Explore our work<Arrow /></Link>
             </div>
+            <div className="edi-hero-note"><span className="edi-note-line" /> Founder-led. Evidence-driven. Built for everyday use.</div>
           </div>
-        </div>
-      </section>
+          <div className="edi-hero-visual">
+            <RepositoryVisual
+              poster="/images/optimized/hero-collage.webp"
+              alt="Monochrome collage of a human head assembled from technical pages and interface fragments."
+              caption="Many signals. A clearer perspective."
+              className="edi-hero-art"
+              priority
+            />
+            <span className="edi-art-index edi-mono" aria-hidden="true">01 / Intelligence, by design</span>
+          </div>
+          <div className="edi-hero-footer">
+            <span>Strategy meets engineering.</span>
+            <a href="#approach">Explore what’s possible<span aria-hidden="true">↓</span></a>
+            <span className="edi-mono">DATA / MODELS / DECISIONS</span>
+          </div>
+        </section>
 
-      <section id="problems" className="border-t border-white/10 px-6 py-32">
-        <div className="mx-auto max-w-7xl">
-          <h2 className="display-lg mb-6 text-foreground">Problems we solve</h2>
-          <p className="mb-16 max-w-2xl text-lg text-muted">Written for the buyer, not the model card.</p>
-          <div className="grid gap-8 md:grid-cols-2">
-            {[
-              { title: "Decisions that still depend on gut feel", outcome: "A defined decision, metrics that match the business case, and a system people will actually use." },
-              { title: "Pilots that never become operations", outcome: "Validation gates, monitoring, and hand-off so a model does not die in a notebook." },
-              { title: "Data teams firefighting quality", outcome: "Contracts, tests, and lineage so downstream AI is not built on sand." },
-              { title: "Nobody owns the model after go-live", outcome: "Runbooks, escalation paths, and human review where the cost of error is real." },
-            ].map((p) => (
-              <div key={p.title} className="rounded-xl border border-white/10 bg-card p-8">
-                <h3 className="mb-3 text-lg font-semibold text-foreground">{p.title}</h3>
-                <p className="text-sm text-muted"><span className="text-lime">→</span> {p.outcome}</p>
+        <section id="approach" className="edi-capabilities edi-section" aria-labelledby="capabilities-title">
+          <div className="edi-frame">
+            <div className="edi-section-heading">
+              <p className="edi-eyebrow">01 / What we help you build</p>
+              <div>
+                <h2 id="capabilities-title">Good AI starts with<br /><em>a better question.</em></h2>
+                <p>What decision needs to improve? What gets in the way? We start there, then bring the data and engineering together.</p>
               </div>
-            ))}
+            </div>
+            <div className="edi-capability-list">
+              {CAPABILITIES.map((item) => (
+                <article key={item.number} className="edi-capability">
+                  <span className="edi-mono">{item.number}</span>
+                  <h3>{item.title}</h3>
+                  <div className="edi-capability-copy">
+                    <p>{item.body}</p>
+                    <ul>{item.details.map((detail) => <li key={detail}>{detail}</li>)}</ul>
+                  </div>
+                  <RepositoryVisual poster={item.poster} animation={item.animation} alt={item.visualAlt} caption={item.visualCaption} className="edi-service-visual" />
+                </article>
+              ))}
+            </div>
+            <div className="edi-workbench-callout">
+              <div><span className="edi-mono">A useful place to start</span><h3>Get to know your data.</h3><p>Explore a CSV with column profiles, quality checks, and charts. Analysis stays in your browser.</p></div>
+              <Link href="/analyze" className="edi-button edi-button-dark">Open the data workbench<Arrow diagonal /></Link>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section id="approach" className="border-t border-white/10 bg-card px-6 py-32">
-        <div className="mx-auto max-w-7xl">
-          <h2 className="display-lg mb-6 text-foreground">What we deliver</h2>
-          <p className="mb-16 max-w-2xl text-lg text-muted">Technical work paired with the business result it is meant to produce.</p>
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {[
-              { tech: "Decision systems", biz: "Fewer high-stakes calls made without evidence or accountability." },
-              { tech: "ML & agents", biz: "Automation of repetitive judgment work — with human checkpoints where risk is high." },
-              { tech: "Data engineering", biz: "Fewer downstream failures caused by silent data drift or broken pipelines." },
-              { tech: "Production assurance", biz: "Earlier detection when a model degrades; a path to roll back." },
-              { tech: "Governance documentation", biz: "Model cards, audit trails, and clear ownership — not compliance theater." },
-              { tech: "Adoption support", biz: "Process fit so the system is used after the project ends." },
-            ].map((item) => (
-              <div key={item.tech} className="rounded-xl border border-white/10 bg-background p-6">
-                <h3 className="mb-2 text-base font-semibold text-foreground">{item.tech}</h3>
-                <p className="text-sm text-muted">{item.biz}</p>
+        <SelectedWork />
+
+        <section id="how-we-work" className="edi-process edi-section" aria-labelledby="process-title">
+          <div className="edi-frame">
+            <div className="edi-section-heading">
+              <p className="edi-eyebrow">03 / A clear path forward</p>
+              <div><h2 id="process-title">From the first question<br /><em>to the working system.</em></h2><p>Clear milestones, documented decisions, and human review keep the work grounded in your business.</p></div>
+            </div>
+            <ol className="edi-process-steps">
+              {PROCESS.map(([title, body], index) => (
+                <li key={title}><span className="edi-mono">0{index + 1}</span><h3>{title}</h3><p>{body}</p></li>
+              ))}
+            </ol>
+            <div className="edi-founder">
+              <div className="edi-founder-monogram" aria-hidden="true">EO<span>Founder-led practice</span></div>
+              <div>
+                <p className="edi-eyebrow">People own the decisions.</p>
+                <h3>Senior judgment.<br />Hands-on accountability.</h3>
+                <p>I’m Oguma Eluanatein Odo, founder of Elite Data Intelligence. I lead discovery, own client relationships, and hold the final quality gate. Specialized roles and automated workflows support delivery, with human review at the decisions that matter.</p>
+                <a href="https://github.com/eluan216" target="_blank" rel="noopener noreferrer" className="edi-text-link">Meet the work behind the practice<Arrow diagonal /></a>
               </div>
-            ))}
-          </div>
-          <div className="mt-16 grid gap-8 md:grid-cols-5">
-            {[
-              { step: "01", title: "Discover", desc: "Decision, risk, success metric" },
-              { step: "02", title: "Design", desc: "Data path and method bar" },
-              { step: "03", title: "Build", desc: "Model or workflow" },
-              { step: "04", title: "Validate", desc: "Evidence before release" },
-              { step: "05", title: "Operate", desc: "Monitor, adopt, measure" },
-            ].map((item) => (
-              <div key={item.step}>
-                <span className="text-sm font-medium text-lime">{item.step}</span>
-                <h4 className="mt-2 text-lg font-semibold text-foreground">{item.title}</h4>
-                <p className="mt-1 text-sm text-muted">{item.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <SelectedWork />
-
-      <section id="how-we-work" className="relative border-t border-white/10 px-6 py-32">
-        <div className="absolute inset-0">
-          <Image src="/images/network-brain.gif.GIF" alt="" fill className="object-cover object-center" unoptimized />
-          <div className="absolute inset-0 bg-background/80" />
-          <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/75 to-background/70" />
-        </div>
-        <div className="relative mx-auto max-w-7xl">
-          <h2 className="display-lg mb-6 text-foreground">How we work</h2>
-          <p className="mb-16 max-w-2xl text-lg text-muted">Founder-led. Specialized roles. Automation where it is implemented. Human authority where it matters.</p>
-          <div className="grid gap-10 lg:grid-cols-2">
-            <div className="rounded-xl border border-white/10 bg-background/50 p-8 backdrop-blur-sm">
-              <h3 className="mb-4 text-xl font-semibold text-foreground">Leadership</h3>
-              <p className="mb-4 text-muted">Elite-Data-Intelligence is founder-led. I own strategy, client relationships, final quality gates, and risk. Commercial terms and high-risk acceptance are not delegated.</p>
-              <p className="text-sm text-muted">Contact for discovery: the form below reaches my inbox directly.</p>
-            </div>
-            <div className="rounded-xl border border-white/10 bg-background/50 p-8 backdrop-blur-sm">
-              <h3 className="mb-4 text-xl font-semibold text-foreground">Operating model — 16 roles</h3>
-              <p className="mb-4 text-muted">Sixteen specialized role definitions guide delivery. Some steps are automated in GitHub today: Project Manager intake, Validation checklists, Failure Analysis intake, and the website Support agent.</p>
-              <p className="text-sm text-muted">The rest are executed by the senior core using those definitions — not by unsupervised LLM agents.</p>
-            </div>
-            <div className="rounded-xl border border-white/10 bg-background/50 p-8 backdrop-blur-sm lg:col-span-2">
-              <h3 className="mb-4 text-xl font-semibold text-foreground">Security & responsible delivery</h3>
-              <ul className="grid gap-3 text-sm text-muted md:grid-cols-2">
-                <li>• Human review before client-facing or production release</li>
-                <li>• Validation and failure-analysis workflows on material deliverables</li>
-                <li>• Escalation for commercial, legal, and high-risk decisions</li>
-                <li>• Version-controlled artifacts and documentation practices</li>
-                <li>• Governance language limited to what we actually implement</li>
-                <li>• No claim of EU AI Act certification or legal advice</li>
-              </ul>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section id="contact" className="border-t border-white/10 px-6 py-32">
-        <div className="mx-auto max-w-7xl">
-          <div className="grid gap-16 lg:grid-cols-2">
+        <section id="contact" className="edi-contact edi-section" aria-labelledby="contact-title">
+          <div className="edi-frame edi-contact-grid">
             <div>
-              <h2 className="display-lg mb-4 text-foreground">Discuss a business problem</h2>
-              <p className="mb-6 max-w-xl text-lg text-muted">A short discovery conversation — free, no obligation. I respond personally.</p>
-              <ul className="mb-8 space-y-3 text-sm text-muted">
-                <li><span className="text-lime">1.</span> Submit the form with a work email and a short description of the problem.</li>
-                <li><span className="text-lime">2.</span> I reply within <span className="text-foreground">one business day</span> with next steps or clarifying questions.</li>
-                <li><span className="text-lime">3.</span> If it is a fit, we schedule a discovery call to define decision, risk, and scope.</li>
-              </ul>
-              <p className="text-sm text-muted">Prefer email? Write directly to <a href="mailto:ogumaeluan@gmail.com" className="text-lime hover:opacity-90">ogumaeluan@gmail.com</a>.</p>
-              <p className="mt-4 text-xs text-muted">We use your details only to respond to this inquiry. No marketing list, no sharing with third parties for advertising.</p>
+              <p className="edi-eyebrow">04 / Start a conversation</p>
+              <h2 id="contact-title">Bring the problem.<br /><em>Let’s find a way forward.</em></h2>
+              <p className="edi-contact-intro">Tell us what you’re working on, what’s getting in the way, and what a better outcome would look like.</p>
+              <a className="edi-contact-email" href="mailto:ogumaeluan@gmail.com">ogumaeluan@gmail.com<Arrow diagonal /></a>
+              <div className="edi-contact-note"><span className="edi-dot" /> A personal reply within one business day.<br /><span>No obligation. A practical first conversation.</span></div>
             </div>
-            <form onSubmit={handleSubmit} className="max-w-md space-y-4">
-              <div>
-                <label htmlFor="name" className="mb-1.5 block text-sm text-muted">Name</label>
-                <input id="name" name="name" type="text" required className="w-full rounded-lg border border-white/15 bg-background px-4 py-3 text-sm text-foreground outline-none placeholder:text-muted focus:border-lime" />
+            <form onSubmit={handleSubmit} className="edi-contact-form" aria-label="Project inquiry">
+              <p className="edi-mono">A few details to get us started</p>
+              <div className="edi-form-row">
+                <div><label htmlFor="name">Your name</label><input id="name" name="name" autoComplete="name" maxLength={MAX_NAME} placeholder="Ada Lovelace" required /></div>
+                <div><label htmlFor="email">Work email</label><input id="email" name="email" type="email" autoComplete="email" maxLength={MAX_EMAIL} placeholder="ada@company.com" required /></div>
               </div>
-              <div>
-                <label htmlFor="email" className="mb-1.5 block text-sm text-muted">Work email</label>
-                <input id="email" name="email" type="email" required className="w-full rounded-lg border border-white/15 bg-background px-4 py-3 text-sm text-foreground outline-none placeholder:text-muted focus:border-lime" />
+              <div><label htmlFor="project">What are you trying to solve?</label><textarea ref={projectField} id="project" name="project" rows={5} maxLength={MAX_PROJECT} placeholder="Your goal, your team, and any constraints or timeline…" required /></div>
+              <button type="submit" disabled={formStatus === "submitting"} className="edi-button edi-button-primary">{formStatus === "submitting" ? "Sending your inquiry…" : "Let’s start a conversation"}<Arrow diagonal /></button>
+              <p className="edi-form-privacy">Your details are used to respond to this inquiry. Read our <Link href="/privacy">privacy policy</Link>.</p>
+              <div aria-live="polite" aria-atomic="true" className="edi-form-feedback">
+                {formStatus === "success" && <p className="edi-success">Thank you. Your inquiry is in — I’ll reply within one business day.</p>}
+                {formStatus === "error" && <p role="alert" className="edi-error">We couldn’t send your inquiry. Please try again or email <a href="mailto:ogumaeluan@gmail.com">ogumaeluan@gmail.com</a>.</p>}
               </div>
-              <div>
-                <label htmlFor="project" className="mb-1.5 block text-sm text-muted">What problem are you trying to solve?</label>
-                <textarea id="project" name="project" rows={4} required placeholder="Decision, team, constraints, timeline…" className="w-full rounded-lg border border-white/15 bg-background px-4 py-3 text-sm text-foreground outline-none placeholder:text-muted focus:border-lime" />
-              </div>
-              <button type="submit" disabled={formStatus === "submitting"} className="w-full rounded-full bg-lime py-3.5 text-sm font-semibold text-lime-foreground transition-opacity hover:opacity-90 disabled:opacity-60">
-                {formStatus === "submitting" ? "Sending…" : "Request a discovery call"}
-              </button>
-              {formStatus === "success" && <p className="text-sm text-lime">Received. I will respond within one business day.</p>}
-              {formStatus === "error" && <p className="text-sm text-red-400">Something went wrong. Email ogumaeluan@gmail.com directly.</p>}
             </form>
           </div>
-        </div>
-      </section>
+        </section>
+      </main>
 
-      <footer className="border-t border-white/10 px-6 py-12">
-        <div className="mx-auto flex max-w-7xl flex-col gap-8 md:flex-row md:items-center md:justify-between">
-          <div>
-            <p className="text-sm font-medium text-foreground">Elite-Data-Intelligence</p>
-            <p className="mt-1 text-sm text-muted">Decision systems · Production ML · Founder accountability</p>
+      <footer className="edi-footer">
+        <div className="edi-frame">
+          <div className="edi-footer-top">
+            <Link href="/" className="edi-brand"><BrandMark /><span>ELITE DATA<span>INTELLIGENCE</span></span></Link>
+            <p>Thoughtful systems.<br />Better decisions.</p>
+            <nav aria-label="Footer navigation"><Link href="/analyze">Data workbench</Link><a href="https://github.com/eluan216" target="_blank" rel="noopener noreferrer">GitHub<Arrow diagonal /></a><Link href="/privacy">Privacy</Link></nav>
           </div>
-          <nav className="flex flex-wrap gap-6 text-sm text-muted">
-            <Link href="#problems" className="hover:text-foreground">Problems</Link>
-            <Link href="#approach" className="hover:text-foreground">Approach</Link>
-            <Link href="#projects" className="hover:text-foreground">Work</Link>
-            <Link href="/analyze" className="hover:text-foreground">Analyze</Link>
-            <Link href="#how-we-work" className="hover:text-foreground">How we work</Link>
-            <Link href="#contact" className="hover:text-foreground">Contact</Link>
-            <Link href="/privacy" className="hover:text-foreground">Privacy</Link>
-          </nav>
-          <p className="text-sm text-muted">© {new Date().getFullYear()} Elite-Data-Intelligence</p>
+          <div className="edi-footer-bottom"><span>© {new Date().getFullYear()} Elite Data Intelligence</span><span>AI · Data science · Engineering</span><a href="#hero-title">Back to top ↑</a></div>
         </div>
       </footer>
-
-      <SupportChat />
-    </main>
+      <SupportChat onUseBrief={(brief) => {
+        if (projectField.current) {
+          projectField.current.value = brief;
+          setFormStatus("idle");
+          document.getElementById("contact")?.scrollIntoView({ behavior: "auto", block: "start" });
+          projectField.current.focus({ preventScroll: true });
+        }
+      }} />
+    </div>
   );
 }

@@ -1,4 +1,6 @@
 # Product Requirements Document
+
+> Historical planning document. Some requirements below remain future work. See the [current application guide](../web-app/README.md) and [documentation index](README.md) for implemented capabilities and setup.
 ## Elite-Data-Intelligence Web Application
 
 **Owner:** Founder, Elite-Data-Intelligence  
