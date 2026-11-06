@@ -18,7 +18,7 @@ export async function runValidation(task: AgentTask): Promise<NonNullable<AgentT
   summary:"Human review required; acceptance has not been verified."
  };
  if (!getOpenAiKey() || !criteria.length) return fallback;
- const { data } = await completeJson({system:SYSTEM,user:JSON.stringify({brief:task.brief,research:task.research,criteria}),mock:fallback});
+ const { data } = await completeJson({system:SYSTEM,user:JSON.stringify({brief:task.brief,research:task.research,specialist:task.specialist,criteria}),mock:fallback});
  if (!record(data) || !Array.isArray(data.checks)) return fallback;
  const allowed = new Set(["pass","fail","unknown"]);
  const known = new Set(criteria.map(c=>c.id));
@@ -36,7 +36,7 @@ export async function runValidation(task: AgentTask): Promise<NonNullable<AgentT
  const checks = criteria.map(c=>byId.get(c.id) ?? {
   criterionId:c.id,result:"unknown" as const,note:"No valid check returned for this criterion."
  });
- const blocked = malformed || (task.brief?.missingInformation.length ?? 0)>0 ||
+ const blocked = malformed || (task.specialist?.missingInformation.length ?? 0)>0 || (task.brief?.missingInformation.length ?? 0)>0 ||
    !(task.research?.evidence.length) || !task.research?.findings.length || !task.research?.limitations.length;
  if (blocked) for (const c of checks) if(c.result==="pass") {
   c.result="unknown"; c.note="Cannot certify this check: evidence, intake information, or valid output is incomplete.";

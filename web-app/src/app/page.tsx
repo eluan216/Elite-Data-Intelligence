@@ -43,6 +43,7 @@ export default function HomePage() {
             <Link href="#approach" className="hover:text-foreground transition-colors">Approach</Link>
             <Link href="#projects" className="hover:text-foreground transition-colors">Work</Link>
             <Link href="/analyze" className="hover:text-foreground transition-colors">Analyze</Link>
+            <Link href="/agents" className="hover:text-foreground transition-colors">Agents</Link>
             <Link href="#how-we-work" className="hover:text-foreground transition-colors">How we work</Link>
             <Link href="#contact" className="hover:text-foreground transition-colors">Contact</Link>
           </nav>
@@ -62,6 +63,7 @@ export default function HomePage() {
               <Link href="#approach" onClick={() => setMenuOpen(false)} className="text-muted hover:text-foreground">Approach</Link>
               <Link href="#projects" onClick={() => setMenuOpen(false)} className="text-muted hover:text-foreground">Work</Link>
               <Link href="/analyze" onClick={() => setMenuOpen(false)} className="text-muted hover:text-foreground">Analyze</Link>
+              <Link href="/agents" onClick={() => setMenuOpen(false)} className="text-muted hover:text-foreground">Agents</Link>
               <Link href="#how-we-work" onClick={() => setMenuOpen(false)} className="text-muted hover:text-foreground">How we work</Link>
               <Link href="#contact" onClick={() => setMenuOpen(false)} className="mt-2 inline-flex w-fit rounded-full bg-lime px-5 py-2 text-sm font-medium text-lime-foreground">Book a Call</Link>
             </nav>

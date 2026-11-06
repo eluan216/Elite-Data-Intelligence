@@ -41,6 +41,6 @@ export default function PrivacyPage() {
           <p className="text-xs">This page describes current website practice. It is not a full legal privacy policy for every jurisdiction. Update with counsel when you expand regions or data processing.</p>
         </div>
       </div>
-    </main>
+    <section className="mx-auto mt-10 max-w-3xl px-6 pb-10"><h2 className="text-xl font-semibold">Agent workspace</h2><p className="mt-4">When you use /agents, your API key is sent through this server to your selected model provider for the current run. The application does not store it in browser storage, task history, or GitHub. Public results are returned directly and are not saved in shared server history. Your request and evidence are processed by your selected provider under its policies. Only use a deployment you trust, and download your result before leaving the page.</p></section></main>
   );
 }

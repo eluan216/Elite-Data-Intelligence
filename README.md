@@ -1,45 +1,47 @@
-# Elite-Data-Intelligence
+# Elite Data Intelligence
 
-I built Elite-Data-Intelligence as a specialized AI, data science, and advanced analytics consulting agency. The goal is simple: deliver measurable enterprise outcomes while systematically overcoming the real limitations that cause most AI projects to fail — high failure rates, talent scarcity, poor data readiness, weak production operationalization, compliance gaps, cash-flow pressure, and intense competition.
+An open-source, bring-your-own-key workspace for AI and analytics work, alongside the Elite Data Intelligence consulting website.
 
-## How I Run the Agency
+## Use the agents
 
-I keep a small senior human core (myself as Founder/Managing Partner plus a few senior specialists). We own strategy, client relationships, governance, final quality gates, and risk.
+```sh
+git clone https://github.com/eluan216/Elite-Data-Intelligence.git
+cd Elite-Data-Intelligence/web-app
+npm install
+npm run dev
+```
 
-Around that core I operate 16 specialized agents inside GitHub and on the agency website:
+Requires Node.js 22+. Open **http://localhost:3000/agents**. Choose a role, select OpenAI, Anthropic or Google Gemini, enter a model ID and your API key, then submit a request with relevant evidence. Your key is used for that request only. No platform subscription is required; provider API usage is billed to your own account. Only enter keys on a deployment you trust.
 
-1. Founder / Managing Partner / Strategy Lead (me)
-2. Principal Decision Scientist / Senior AI Lead
-3. Lead Data Engineer / Lakehouse Architect
-4. Senior MLOps / Production & Platform Engineer
-5. AI Governance, Risk & Compliance Lead
-6. Domain / Industry & Change Management Lead
-7. Engagement / Delivery Manager
-8. Project Manager Agent
-9. Applied ML / Agent Engineer
-10. Data Scientist / Decision Analyst
-11. Platform & Integration Specialist
-12. Mid-level Data Engineer / Analytics Engineer
-13. Business Development / Client Success & Operations Support
-14. Validation / Test Execution Agent
-15. Failure Analysis & Improvement Agent
-16. Customer Support & Client Interaction Agent
+**15 specialist roles are callable.** Every run uses Intake → Research → Validation; additional specialists generate their required deliverables before the shared quality gate. The Founder is a human authority, not an autonomous agent.
 
-Delivery always follows the same path: data → models and agents → production → real adoption → measurable business value. The two validation agents continuously test everything we produce. The Customer Support Agent handles live interaction, bookings, status reports, and documentation on the website and client portal.
+Roles cover project planning, research, validation, decision science, data architecture, MLOps, governance, adoption, engagement delivery, applied ML, integrations, analytics engineering, client success, failure analysis and customer support.
 
-## Target
+They draft work products such as code, SQL, tests, reports and runbooks. They do not execute code, deploy infrastructure, contact third parties, create bookings, or access private systems. Missing evidence and unresolved requirements require human review. Demo mode uses templates and makes no model calls.
 
-I am building this to reach a sustainable **$100,000 in monthly revenue** with strong contribution margins by combining agent leverage with tight human oversight.
+[Full setup, role contracts, API and privacy boundaries](docs/agents/byok-workspace.md)
 
-## Website Design Direction
+## Privacy
 
-The public site and client portal follow a bold editorial style inspired by the Mission responsive landing page concept (strong typography, high-contrast black and white layouts, premium structured feel, cinematic scrolling, and restrained but impactful accent color).
+Public requests never use the deployment owner's model key. Visitor keys are not stored in browser storage, task records or GitHub issues. Public results are returned directly and are not retained in shared server history; download your JSON result before leaving. Requests and evidence go through the hosting server to the selected provider. Self-host for control over the deployment and its logging.
 
-## Repository Structure
+## Development
 
-- `/agents` — All agent definitions and operating instructions
-- `/web-app` — Agency website, client portal, and internal dashboards
-- `/accelerators` — Reusable frameworks, patterns, and templates I use across engagements
-- `/docs` — Operating playbooks, compliance materials, metrics, and financial model
+```sh
+cd web-app
+npm install
+npm test
+npm run build
+```
 
-This repository is the operational backbone of my agency.
+Tests mock model APIs and persistence; they do not spend provider credits. The repository also includes Python accelerator tests in CI.
+
+## Structure
+
+- `web-app/`: Next.js website, agent workspace and CSV analyzer
+- `web-app/src/lib/agents/`: provider adapters, role catalog, contracts and orchestration
+- `agents/`: role definitions; each identifies current executable capabilities
+- `accelerators/`: reusable analytics and machine-learning examples
+- `docs/`: setup, operating playbooks and implementation notes
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) to contribute. The software is provided under the [MIT license](LICENSE). Third-party dependencies, datasets and assets retain their own licenses; the project license does not grant rights to external client data.

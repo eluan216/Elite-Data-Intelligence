@@ -1,3 +1,4 @@
+import { findAgent } from "./catalog";
 import type { CreateTaskInput } from "./types";
 
 export const MAX_TASK_REQUEST = 8000;
@@ -25,5 +26,9 @@ export function validateTaskInput(value: unknown): CreateTaskInput {
   if (evidence && evidence.length > MAX_TASK_EVIDENCE) {
     throw new TaskInputError("Evidence must be at most 20000 characters.");
   }
-  return { request, evidence };
+  if (raw.agent !== undefined && (typeof raw.agent !== "string" || !findAgent(raw.agent))) {
+    throw new TaskInputError("Unknown agent role.");
+  }
+  const agent = typeof raw.agent === "string" ? findAgent(raw.agent)?.id : undefined;
+  return agent ? { request, evidence, agent } : { request, evidence };
 }
