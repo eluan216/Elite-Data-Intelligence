@@ -25,6 +25,7 @@ describe("per-request provider credentials",()=>{
   expect(JSON.stringify(options.headers)).toContain(key);
   expect(JSON.stringify(options)).not.toContain("owner-secret-do-not-use");
   expect(options.signal).toBeInstanceOf(AbortSignal);
+  expect(options.redirect).toBe("error");
  });
  it("never uses the owner's key in demo mode",async()=>{
   const fetch=vi.fn();vi.stubGlobal("fetch",fetch);
@@ -56,6 +57,18 @@ describe("per-request provider credentials",()=>{
   const body=kind==="empty"?{choices:[]}:{choices:[{finish_reason:kind==="truncated"?"length":"stop",message:{content:"not-json"}}]};
   vi.stubGlobal("fetch",vi.fn().mockResolvedValue(new Response(JSON.stringify(body))));
   await expect(withModelSession({demo:false,config:cfg()},()=>completeJson(payload))).rejects.toThrow();
+ });
+ it("redacts JSON-escaped credential echoes after decoding",async()=>{
+  const content=JSON.stringify({ok:key}).replace("test-user","\\u0074est-user");
+  vi.stubGlobal("fetch",vi.fn().mockResolvedValue(new Response(JSON.stringify({choices:[{message:{content}}]}))));
+  const out=await withModelSession({demo:false,config:cfg()},()=>completeJson(payload));
+  expect(out.data).toEqual({ok:"[REDACTED]"});
+ });
+ it("never includes the provider key in prompt text",async()=>{
+  const fetch=vi.fn().mockResolvedValue(new Response(JSON.stringify(envelope("openai",{ok:true}))));
+  vi.stubGlobal("fetch",fetch);
+  await withModelSession({demo:false,config:cfg()},()=>completeJson({...payload,user:"Accidental secret "+key}));
+  expect(fetch.mock.calls[0][1].body).not.toContain(key);
  });
  it("sanitizes a network exception containing credentials",async()=>{
   vi.stubGlobal("fetch",vi.fn().mockRejectedValue(new Error(key)));

@@ -1,3 +1,4 @@
+import { redactSecret } from "@/lib/agents/secrets";
 import { NextRequest, NextResponse } from "next/server";
 import { TaskInputError, validateTaskInput } from "@/lib/agents/input";
 import { createAndRunTask } from "@/lib/agents/runtime";
@@ -39,9 +40,10 @@ export async function POST(request:NextRequest) {
   const input=validateTaskInput(body);
   const session=requestSession(request.headers,body as Record<string,unknown>);
   session.signal=AbortSignal.any([request.signal,AbortSignal.timeout(105000)]);
-  const task=await withModelSession(session,()=>createAndRunTask(input));
+  const safeInput=session.config?redactSecret(input,session.config.apiKey):input;
+  const task=await withModelSession(session,()=>createAndRunTask(safeInput));
   const status=task.errorCode==="invalid_key"?401:task.errorCode==="quota_exceeded"?429:task.errorCode?502:201;
-  return reply(task,status);
+  return reply(session.config?redactSecret(task,session.config.apiKey):task,status);
  } catch(error) {
   if(error instanceof TaskInputError) return reply({error:error.message},400);
   return reply({error:"Task could not be completed. Please retry."},500);

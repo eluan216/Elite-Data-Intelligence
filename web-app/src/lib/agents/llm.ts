@@ -1,3 +1,4 @@
+import { redactSecret } from "./secrets";
 import { modelSession } from "./model-context";
 import type { ModelConfig } from "./model-context";
 export type LlmMode = "mock" | "llm";
@@ -25,27 +26,28 @@ export async function completeJson<T>(params: {
  const headers: Record<string,string> = {"Content-Type":"application/json"};
  let url:string;
  let body:unknown;
- const system = params.system + "\nReturn a single valid JSON object, without Markdown fences. Never claim tools were executed.";
+ const user = params.user.split(apiKey).join("[REDACTED]");
+ const system = params.system.split(apiKey).join("[REDACTED]") + "\nReturn a single valid JSON object, without Markdown fences. Never claim tools were executed.";
  if (provider === "openai") {
   url="https://api.openai.com/v1/chat/completions";
   headers.Authorization="Bearer "+apiKey;
   body={model,response_format:{type:"json_object"},max_completion_tokens:4096,
-   messages:[{role:"system",content:system},{role:"user",content:params.user}]};
+   messages:[{role:"system",content:system},{role:"user",content:user}]};
  } else if(provider === "anthropic") {
   url="https://api.anthropic.com/v1/messages";
   headers["x-api-key"]=apiKey; headers["anthropic-version"]="2023-06-01";
-  body={model,max_tokens:4096,system,messages:[{role:"user",content:params.user}]};
+  body={model,max_tokens:4096,system,messages:[{role:"user",content:user}]};
  } else {
   url="https://generativelanguage.googleapis.com/v1beta/models/"+encodeURIComponent(model)+":generateContent";
   headers["x-goog-api-key"]=apiKey;
-  body={systemInstruction:{parts:[{text:system}]},contents:[{role:"user",parts:[{text:params.user}]}],
+  body={systemInstruction:{parts:[{text:system}]},contents:[{role:"user",parts:[{text:user}]}],
    generationConfig:{responseMimeType:"application/json",maxOutputTokens:4096}};
  }
  const timeout = AbortSignal.timeout(Math.min(params.timeoutMs ?? 25000, 25000));
  const parent = modelSession()?.signal;
  const signal = parent ? AbortSignal.any([parent,timeout]) : timeout;
  try {
-  const res=await fetch(url,{method:"POST",headers,body:JSON.stringify(body),signal,cache:"no-store"});
+  const res=await fetch(url,{method:"POST",headers,body:JSON.stringify(body),signal,cache:"no-store",redirect:"error"});
   if(!res.ok) {
    // Never surface provider response bodies: some echo credentials or user content.
    const code=res.status===401||res.status===403 ? "invalid_key" : res.status===429 ? "quota_exceeded" : "provider_error";
@@ -72,7 +74,7 @@ export async function completeJson<T>(params: {
   if(typeof content!=="string" || !content.trim()) throw new ModelError("empty_output","Provider returned no usable output.");
   const safe=content.split(apiKey).join("[REDACTED]").trim().replace(/^\x60\x60\x60(?:json)?\s*/i,"").replace(/\s*\x60\x60\x60$/,"");
   let data:T;
-  try { data=JSON.parse(safe) as T; } catch { throw new ModelError("invalid_json","Provider returned invalid JSON. Try a smaller request or a different model."); }
+  try { data=redactSecret(JSON.parse(safe),apiKey) as T; } catch { throw new ModelError("invalid_json","Provider returned invalid JSON. Try a smaller request or a different model."); }
   return {data,mode:"llm",usageTokens:typeof usageTokens==="number"?usageTokens:undefined};
  } catch(error) {
   if(error instanceof ModelError) throw error;
