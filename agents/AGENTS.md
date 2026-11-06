@@ -41,3 +41,7 @@ Existing role documents include the agency's intended responsibilities. Their "C
 [Founder / Managing Partner](founder-managing-partner.md) remains human.
 
 GitHub label automations are separate from the public BYOK workspace. They do not grant visitor tasks repository access or publish visitor content.
+
+## Separate website discovery assistant
+
+The homepage also has a contextual project-discovery chat with guided mode and optional server-configured OpenAI responses. It is separate from the visitor-key specialist workspace. See [its conversation and privacy contract](../docs/agents/website-assistant.md).

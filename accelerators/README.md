@@ -1,11 +1,11 @@
-# Accelerators
+# Reusable patterns and templates
 
-Reusable intellectual property that speeds delivery and raises quality:
+I use this directory as an index for reusable work in the repository. The implementations and templates currently live in their linked locations:
 
-- Decision frameworks and problem-framing canvases
-- Platform patterns (Databricks, Dataiku, DataRobot, H2O, etc.)
-- Governance & compliance templates (EU AI Act, GDPR, model cards, risk registers)
-- Validation checklists and quality gates
-- Common forecasting, optimization, and agentic workflow starters
+- [Production decision-system pattern](../docs/patterns/production-decision-system.md)
+- [Operations-priority demonstration](../projects/ops-priority-decision-system/README.md)
+- [Delivery playbook](../docs/delivery-playbook.md)
+- [Discovery response playbook](../docs/commercial/discovery-response-playbook.md)
+- [Proposal / statement-of-work template](../docs/commercial/proposal-sow-template.md)
 
-These accelerators are maintained by the agent team and refined after every engagement.
+I will add standalone accelerators here as they become reproducible and documented. This directory is not a claim that a full library of forecasting, compliance or platform integrations has already been implemented.

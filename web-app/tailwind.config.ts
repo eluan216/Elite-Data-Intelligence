@@ -10,14 +10,14 @@ const config: Config = {
     extend: {
       colors: {
         // Core brand palette from your swatch
-        background: "#1A202C",   // Graphite
-        foreground: "#F5F2EB",   // Ivory
-        muted: "#a1a1aa",
+        background: "#0d1410",   // Graphite
+        foreground: "#f3f4e9",   // Ivory
+        muted: "#a8b1a9",
 
         // 2026 Design Trends accents
         lime: {
-          DEFAULT: "#c8ff00",
-          foreground: "#1A202C",
+          DEFAULT: "#d6fa60",
+          foreground: "#0d1410",
         },
         purple: {
           DEFAULT: "#a855f7",
@@ -25,15 +25,15 @@ const config: Config = {
           deep: "#7e22ce",
         },
         accent: {
-          DEFAULT: "#c8ff00",
-          foreground: "#1A202C",
+          DEFAULT: "#d6fa60",
+          foreground: "#0d1410",
         },
-        border: "#2d3748",
-        card: "#161b26",
+        border: "#2c3930",
+        card: "#141e17",
       },
       fontFamily: {
-        sans: ["var(--font-geist-sans)", "system-ui", "sans-serif"],
-        display: ["var(--font-geist-sans)", "system-ui", "sans-serif"],
+        sans: ["Arial", "Helvetica", "sans-serif"],
+        display: ["Arial", "Helvetica", "sans-serif"],
       },
       fontSize: {
         "display-2xl": ["4.5rem", { lineHeight: "1.05", letterSpacing: "-0.02em" }],
