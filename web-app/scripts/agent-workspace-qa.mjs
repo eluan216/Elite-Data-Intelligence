@@ -30,7 +30,7 @@ try{
  await page.getByRole("button",{name:"Run demo workflow"}).click();
  await page.getByRole("heading",{name:"awaiting human",exact:true}).waitFor();
  assert.equal(await page.locator('section[aria-label="Agent result"]').count(),1);
- assert.match(await page.locator('section[aria-label="Agent result"]').innerText(),/Demo result/);
+ assert.match(await page.locator('section[aria-label="Agent result"]').innerText(),/Demo result/i);
  const downloadPromise=page.waitForEvent("download");
  await page.getByRole("button",{name:"Download JSON"}).click();
  const download=await downloadPromise;

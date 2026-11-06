@@ -12,5 +12,6 @@ export function requestSession(headers:Headers, body:Record<string,unknown>):Mod
  if(key.length<10 || key.length>512 || !/^[\x21-\x7e]+$/.test(key)) throw new TaskInputError("API key format is invalid.");
  if(!["openai","anthropic","gemini"].includes(String(body.provider))) throw new TaskInputError("Choose OpenAI, Anthropic, or Gemini.");
  if(typeof body.model!=="string" || !/^[a-zA-Z0-9][a-zA-Z0-9._:-]{0,119}$/.test(body.model)) throw new TaskInputError("Provide a valid model ID from your provider account.");
+ if(body.model.includes(key)) throw new TaskInputError("Model ID must not contain an API key.");
  return {demo:false,config:{provider:body.provider as Provider,model:body.model,apiKey:key}};
 }

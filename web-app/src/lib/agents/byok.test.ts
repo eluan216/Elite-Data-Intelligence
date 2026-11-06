@@ -85,7 +85,7 @@ describe("per-request provider credentials",()=>{
   expect(()=>requestSession(new Headers(),{demo:true})).not.toThrow();
  });
  it.each([{provider:"other",model:"test"},{provider:"openai",model:"https://evil.example"},
-  {provider:"openai",model:"test",demo:true}])("rejects unsafe configuration %j",body=>{
+  {provider:"openai",model:"test",demo:true}, {provider:"gemini",model:key}])("rejects unsafe configuration %j",body=>{
    expect(()=>requestSession(new Headers({"x-agent-api-key":key}),body)).toThrow();
  });
 });

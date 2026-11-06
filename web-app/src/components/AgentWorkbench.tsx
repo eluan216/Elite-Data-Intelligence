@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { AGENT_CATALOG, findAgent } from "@/lib/agents/catalog";
 import type { AgentTask } from "@/lib/agents/types";
 type Provider="openai"|"anthropic"|"gemini";
-const field="mt-2 w-full rounded-lg border border-neutral-300 bg-white p-3 text-neutral-950";
+const field="mt-2 min-w-0 w-full rounded-lg border border-neutral-300 bg-white p-3 text-neutral-950";
 export default function AgentWorkbench(){
  const [provider,setProvider]=useState<Provider>("openai");
  const [model,setModel]=useState("");
@@ -58,7 +58,7 @@ export default function AgentWorkbench(){
    <h1 className="mt-4 text-4xl font-semibold tracking-tight md:text-6xl">A specialist for the work.</h1>
    <p className="mt-5 max-w-2xl text-lg text-neutral-600">Bring your API key, choose a role, and receive concrete work products with an evidence-based quality review.</p>
    <div className="mt-10 grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
-    <form onSubmit={run} className="rounded-2xl border border-neutral-200 bg-white p-6 md:p-8">
+    <form onSubmit={run} className="min-w-0 rounded-2xl border border-neutral-200 bg-white p-6 md:p-8">
      <h2 className="text-xl font-semibold">01 / Configure your run</h2>
      <p className="mt-3 text-sm text-neutral-600">Your key is sent over HTTPS through this server to your chosen provider. The app does not save it in browser storage, task history, or GitHub. Only use a deployment you trust. Provider usage is billed to your account.</p>
      <fieldset disabled={running} className="mt-6 space-y-5">
@@ -84,7 +84,7 @@ export default function AgentWorkbench(){
      <p role="status" aria-live="polite" className="mt-4 text-sm">{stage}</p>
      {error&&<p role="alert" className="mt-4 rounded-lg bg-red-50 p-3 text-sm text-red-800">{error}</p>}
     </form>
-    <aside className="space-y-6">
+    <aside className="min-w-0 space-y-6">
      <section className="rounded-2xl bg-neutral-950 p-6 text-white md:p-8"><p className="text-xs uppercase tracking-widest text-neutral-400">15 callable specialist roles</p><h2 className="mt-3 text-2xl font-semibold">{selected?.name||"One accountable workflow"}</h2>
       <p className="mt-4 text-neutral-300">{selected?.mission||"Every run starts with a scoped brief and supplied-evidence research. Additional specialists produce role-specific deliverables before the quality gate."}</p>
       <h3 className="mt-6 text-sm font-semibold">You receive</h3><ul className="mt-3 space-y-2 text-sm text-neutral-300">{(selected?.deliverables||["Structured brief and missing information","Findings, assumptions, and limitations","Per-criterion quality checks"]).map(item=><li key={item}>↗ {item}</li>)}</ul>
