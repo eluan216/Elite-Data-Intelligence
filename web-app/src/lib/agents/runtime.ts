@@ -70,10 +70,6 @@ export async function createAndRunTask(input: CreateTaskInput): Promise<AgentTas
       task.status = "completed";
     }
 
-    task.persistence = await persistTerminalTask(task);
-    task.updatedAt = new Date().toISOString();
-    saveTask(task);
-    return task;
   } catch (e) {
     task.status = "failed";
     task.error = e instanceof Error ? e.message : "Unknown agent error";
@@ -84,11 +80,23 @@ export async function createAndRunTask(input: CreateTaskInput): Promise<AgentTas
       running.error = task.error;
       running.finishedAt = task.updatedAt;
     }
-    task.persistence = await persistTerminalTask(task);
-    task.updatedAt = new Date().toISOString();
-    saveTask(task);
-    return task;
+    for (const step of task.steps) {
+      if (step.status === "pending") {
+        step.status = "skipped";
+        step.finishedAt = task.updatedAt;
+      }
+    }
   }
+  // Persistence is best-effort and must not alter the agent outcome or retry issue creation.
+  saveTask(task);
+  try {
+    task.persistence = await persistTerminalTask(task);
+  } catch {
+    task.persistence = { kind: "memory", error: "Task persistence unavailable; result retained in memory." };
+  }
+  task.updatedAt = new Date().toISOString();
+  saveTask(task);
+  return task;
 }
 
 export function readTask(id: string): AgentTask | undefined {

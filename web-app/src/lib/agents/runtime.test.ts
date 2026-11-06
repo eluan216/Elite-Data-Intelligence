@@ -39,12 +39,12 @@ describe("agent runtime v0 (mock mode)", () => {
     ).rejects.toThrow(/20000/);
   });
 
-  it("validator can fail when limitations would be missing path is simulated via thin request still passes AC structure", async () => {
+  it("routes a request without evidence to human review", async () => {
     const task = await createAndRunTask({
       request: "Short ops prioritization decision for the triage team with clear ownership.",
     });
-    // Mock research always documents limitations → AC3 pass; overall should not crash
-    expect(["completed", "awaiting_human", "failed"]).toContain(task.status);
+    expect(task.status).toBe("awaiting_human");
+    expect(task.validation?.checks.every(c => c.result === "unknown")).toBe(true);
     expect(task.validation).toBeDefined();
   });
 });

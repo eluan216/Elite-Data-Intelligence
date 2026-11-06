@@ -26,7 +26,7 @@ describe("agent output contracts and quality gate", () => {
   reply(data); await expect(runResearch({request:"Reduce backlog"})).rejects.toThrow(/research/i);
  });
  it("rejects invented evidence quotes", async () => {
-  reply({findings:["Sales increased"],facts:[],assumptions:[],limitations:[],evidence:["Revenue doubled"]});
+  reply({findings:["Sales increased"],facts:[],assumptions:[],limitations:["Requester supplied data only"],evidence:["Revenue doubled"]});
   await expect(runResearch({request:"Analyze sales",evidence:"Revenue was flat"})).rejects.toThrow(/evidence/i);
  });
  it("does not pass an empty set of criteria", async () => {
