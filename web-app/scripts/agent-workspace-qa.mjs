@@ -14,7 +14,8 @@ try{
  for(let i=0;i<60;i++){try{if((await fetch("http://localhost:3000/agents")).ok){ready=true;break;}}catch{}await delay(500);}
  assert(ready,"Next server did not start");
  browser=await chromium.launch({channel:"chrome"});
- const page=await browser.newPage({viewport:{width:1440,height:1000}});
+ const context=await browser.newContext({viewport:{width:1440,height:1000}});
+ const page=await context.newPage();
  const errors=[];page.on("pageerror",e=>errors.push(e.message));
  await page.goto("http://localhost:3000/agents");
  await page.getByRole("heading",{name:"A specialist for the work."}).waitFor();
