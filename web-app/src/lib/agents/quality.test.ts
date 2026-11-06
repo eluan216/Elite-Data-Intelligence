@@ -10,7 +10,7 @@ const reply = (data: unknown) => vi.mocked(completeJson).mockResolvedValue({ dat
 const task = (): AgentTask => ({
  id: "test", createdAt: "", updatedAt: "", status: "running", request: "Reduce ticket backlog", mode: "llm", steps: [],
  brief: {title:"Tickets", problem:"Reduce ticket backlog", missingInformation:[], acceptanceCriteria:[{id:"TARGET",description:"Backlog reduced by 20% on held-out data",measurable:true}],proposedSubtasks:[],riskNotes:[]},
- research:{findings:["An analysis plan exists"],facts:[],assumptions:[],limitations:["No measured results supplied"],evidence:[]}
+ research:{findings:["An analysis plan exists"],facts:[],assumptions:[],limitations:["Requester evidence is not independently verified"],evidence:["Observed backlog fell 25%"]}
 });
 beforeEach(() => vi.clearAllMocks());
 afterEach(() => vi.unstubAllEnvs());
@@ -50,6 +50,17 @@ describe("agent output contracts and quality gate", () => {
  });
  it("cannot certify a result without supplied evidence", async () => {
   reply({outcome:"pass",checks:[{criterionId:"TARGET",result:"pass",note:"Verified"}],summary:"All good"});
+  const t=task(); t.research!.evidence=[];
+  expect((await runValidation(t)).outcome).toBe("needs_human_review");
+ });
+ it("requires unresolved intake questions to be answered", async () => {
+  reply({outcome:"pass",checks:[{criterionId:"TARGET",result:"pass",note:"Verified"}],summary:"All good"});
+  const t=task(); t.brief!.missingInformation=["Confirm decision owner"];
+  expect((await runValidation(t)).outcome).toBe("needs_human_review");
+ });
+ it("rejects duplicate checks even with evidence", async () => {
+  const check={criterionId:"TARGET",result:"pass",note:"Verified"};
+  reply({outcome:"pass",checks:[check,check],summary:"All good"});
   expect((await runValidation(task())).outcome).toBe("needs_human_review");
  });
  it("allows a complete model check with supplied evidence", async () => {
